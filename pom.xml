@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>postulacionMovilidad</artifactId>
+	<artifactId>correspondencia</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>postulacionMovilidad</name>
-	<description>Sistema de gestionamiento para las postulaciones de movilidad de estudiantes, docentes y administrativos</description>
+	<name>correspondencia</name>
+	<description>Sistema de Correspondencia UAP</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
