@@ -2,6 +2,7 @@ package com.example.Proyecto.Model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -30,7 +31,7 @@ public class Documento implements Serializable{
     private String codigo;
     private String asunto;
     private String estado;
-    private LocalDate fechaCreacion;
+    private Date fechaCreacion;
     
     @ManyToOne
     private TipoDocumento tipoDocumento;

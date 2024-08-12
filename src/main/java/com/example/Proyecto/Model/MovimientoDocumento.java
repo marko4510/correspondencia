@@ -2,6 +2,7 @@ package com.example.Proyecto.Model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,6 +36,6 @@ public class MovimientoDocumento implements Serializable{
     @ManyToOne
     private Usuario usuarioRegistro;
     
-    private LocalDateTime fechaHoraRegistro;
+    private Date fechaHoraRegistro;
     private String observaciones;
 }
