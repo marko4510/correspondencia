@@ -24,15 +24,13 @@ body{
   box-shadow: 0px 4px 10px 1px rgba(0,0,0,0.1);
 }
 .wrapper .title{
-  height: 90px;
+  height: 100px;
   background: #16a085;
   border-radius: 5px 5px 0 0;
   color: #fff;
   font-size: 30px;
   font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+ 
 }
 .wrapper form{
   padding: 30px 25px 25px 25px;
