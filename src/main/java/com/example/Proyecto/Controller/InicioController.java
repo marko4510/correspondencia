@@ -10,9 +10,16 @@ public class InicioController {
 
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String login() {
+    public String inicio() {
 
         return "index";
+    }
+
+
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String login() {
+
+        return "login";
     }
 
 }
