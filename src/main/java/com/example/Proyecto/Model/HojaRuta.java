@@ -29,7 +29,7 @@ public class HojaRuta implements Serializable{
     @OneToOne
     private Documento documento;
     
-    @OneToMany(mappedBy = "hojaRuta", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("orden")
-    private List<Unidad> rutaProgramada;
+    // @OneToMany(mappedBy = "hojaRuta", cascade = CascadeType.ALL, orphanRemoval = true)
+    // @OrderBy("orden")
+    // private List<Unidad> rutaProgramada;
 }

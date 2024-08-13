@@ -17,18 +17,21 @@ import lombok.Setter;
 @Table(name = "unidad")
 @Getter
 @Setter
-public class Unidad implements Serializable{
+public class Unidad implements Serializable {
     private static final long serialVersionUID = 2629195288020321924L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String nombre;
     private String codigo;
-    
+
     @OneToMany(mappedBy = "unidad")
     private List<Usuario> usuarios;
-    
-    @OneToMany(mappedBy = "unidadActual")
-    private List<MovimientoDocumento> movimientosActuales;
+
+    @OneToMany(mappedBy = "unidadOrigen")
+    private List<MovimientoDocumento> movimientosOrigen;
+
+    @OneToMany(mappedBy = "unidadDestino")
+    private List<MovimientoDocumento> movimientosDestino;
 }
