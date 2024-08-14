@@ -13,5 +13,10 @@ public class DocumentoController {
     public String inicio() {
         return "documento/ventana";
     }
+
+    @GetMapping("/tablaRegistros")
+    public String tablaRegistros() {
+        return "documento/tablaRegistros";
+    }
     
 }
