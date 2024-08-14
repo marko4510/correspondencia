@@ -4,12 +4,12 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <h4>Basic DataTables</h4>
-                    <button type="button" class="btn btn-primary" data-toggle="modal"
-                    data-target=".modal-documento" onclick="cargarFormulario()">Registrar Documento</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".modal-documento"
+                        onclick="cargarFormulario()">Registrar Documento</button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-striped" id="table-1">
+                        <table class="table table-hover" id="table-1">
                             <thead>
                                 <tr>
                                     <th class="text-center">
@@ -29,7 +29,30 @@
                                     <td th:text="${doc.nroRuta}"></td>
                                     <td th:text="${#dates.format(doc.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
                                     <td th:text="${doc.asunto}"></td>
-                                    <td>Acciones</td>
+                                    <td>
+                                        <!-- <div class="dropdown dropdown-list-toggle">
+                                            <a href="#" data-toggle="dropdown" class="nav-link message-toggle">
+                                                <i class="fa fa-spin fa-cog"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-list dropdown-menu-left pullDown">
+                                                <div class="dropdown-header">
+                                                    Opciones
+                                                </div>
+                                                <div class="dropdown-list-content dropdown-list-icons">
+                                                    <a href="#" class="dropdown-item">
+                                                        <span class="dropdown-item-desc">
+                                                            <i class="far fa-edit"></i>Editar
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div> -->
+                                        <a href="#" class="btn btn-icon icon-left btn-primary" 
+                                        th:attr="onclick='cargarFormulario(\'' + ${doc.id} + '\')'"
+                                        data-toggle="modal" data-target=".modal-documento">
+                                            <i class="far fa-edit"></i>Editar</a>
+                                        <a href="#" class="btn btn-icon icon-left btn-success"><i class="far fa-file-archive"></i>Ver</a>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>

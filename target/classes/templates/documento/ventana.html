@@ -43,6 +43,16 @@
       });
     }
 
+    function cargarFormulario(id) {
+      $.ajax({
+        type: 'POST',
+        url: "/documento/formulario/"+id,  // Ruta del metodo del controlador en Spring Boot
+        success: function (response) {
+          $("#contenidoFormularioModal").html(response);  // Actualiza el contenido del div con la respuesta del servidor
+        }
+      });
+    }
+
     function cargarTabla() {
       $.ajax({
         type: 'POST',
