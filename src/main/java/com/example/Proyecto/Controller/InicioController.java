@@ -1,5 +1,7 @@
 package com.example.Proyecto.Controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -9,17 +11,23 @@ public class InicioController {
 
 
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String inicio() {
+    @RequestMapping(value = "/inicio", method = RequestMethod.GET)
+    public String inicio(HttpServletRequest request) {
 
-        return "index";
+        if (request.getSession().getAttribute("usuario") != null) {
+
+            return "index";
+        }else{
+            return "redirect:/login";
+        }
+        
     }
 
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login() {
+    // @RequestMapping(value = "/login", method = RequestMethod.GET)
+    // public String login() {
 
-        return "login";
-    }
+    //     return "login";
+    // }
 
 }
