@@ -28,7 +28,9 @@ public class Documento implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    private String codigo;
+    private String cite;
+    private String nroRuta;
+    private String ruta;
     private String asunto;
     private String estado;
     private Date fechaCreacion;
