@@ -1,0 +1,95 @@
+<!-- Modal Header -->
+<div class="modal-header">
+    <h5 class="modal-title" id="myLargeModalLabel">Formulario Registro</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<!-- Formulario -->
+<form class="needs-validation" th:action="@{/documento/registrar}" id="formularioModalDocumento" enctype="multipart/form-data" method="POST" novalidate>
+    <div class="modal-body">
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label>Cite</label>
+                <input type="text" class="form-control" required="" th:field="${documento.cite}">
+                <div class="invalid-feedback">
+                    Tiene que introducir un cite valido
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <label>Nro. Hoja Ruta</label>
+                <input type="text" class="form-control" required="" th:field="${documento.nroRuta}">
+                <div class="invalid-feedback">
+                    Tiene que introducir un numero de hoja de ruta
+                </div>
+            </div>
+        </div>
+        <div class="form-group mb-0">
+            <label>Asunto</label>
+            <textarea class="form-control" required="" th:field="${documento.asunto}"></textarea>
+            <div class="invalid-feedback">
+                Introduzca el asunto del documento
+            </div>
+        </div>
+        <br>
+        <div class="form-group">
+            <label>Adjuntar Documento</label>
+            <input type="file" class="form-control" required="" name="file">
+            <div class="invalid-feedback">
+                Debe adjuntar el documento escaneado en PDF o Imagen
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function () {
+        $('#formularioModalDocumento').on('submit', function (event) {
+            event.preventDefault(); // Previene el envío del formulario
+
+            // Verifica la validez del formulario
+            if (this.checkValidity() === false) {
+                $(this).addClass('was-validated');
+                return;
+            }
+
+            var form = $(this)[0];
+            var formData = new FormData(form);
+
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: formData,
+                contentType: false,  // No establecer el tipo de contenido aquí
+                processData: false,  // No procesar los datos
+                success: function (response) {
+                    if (response === "Registrado") {
+                        Swal.fire(
+                            'Registrado!',
+                            response,
+                            'success'
+                        );
+                    } else {
+                        Swal.fire(
+                            'Imposible Registrar!',
+                            response,
+                            'error'
+                        );
+                    }
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire(
+                        'Error!',
+                        'Ocurrió un error al registrar: ' + xhr.responseText,
+                        'error'
+                    );
+                }
+            });
+        });
+    });
+</script>
