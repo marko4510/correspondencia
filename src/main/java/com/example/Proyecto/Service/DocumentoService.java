@@ -9,5 +9,6 @@ public interface DocumentoService {
     Documento findById(Long id);
     void save(Documento documento);
     void deleteById(Long id);
+    public Documento obtener_documento_hojaRuta(String nroRuta);
     
 }

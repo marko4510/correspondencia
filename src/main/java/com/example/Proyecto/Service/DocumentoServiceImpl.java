@@ -34,6 +34,11 @@ public class DocumentoServiceImpl implements DocumentoService{
         documento.setEstado("X");
         dao.save(documento);
     }
+
+    @Override
+    public Documento obtener_documento_hojaRuta(String nroRuta) {
+        return dao.obtener_documento_hojaRuta(nroRuta);
+    }
     
 
 }
