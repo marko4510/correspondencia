@@ -27,12 +27,16 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row mb-4">
-                                        <div class="col-4 col-12 col-md-6 col-lg-4">
+                                        <div class="col-4 col-12 col-md-6 ">
                                             <div class="input-group">
                                                 <input type="text" id="nroRuta" class="form-control" placeholder="Ingrese Numero de Hoja de Ruta">
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-primary" onclick="cargarFlujo(document.getElementById('nroRuta').value)">Buscar</button>
-                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="input-group-append">
+                                                <button class="btn btn-primary" onclick="cargarFlujo(document.getElementById('nroRuta').value)">Buscar</button> &nbsp;&nbsp;
+                                                <button class="btn btn-warning" onclick="Limpiarflujo()">Limpiar</button>
+                                            </div>
+                                            <div class="input-group-append">
                                             </div>
                                         </div>
                                     </div>
@@ -54,16 +58,65 @@
     <div th:replace="layout/script :: script">
     </div>
     <script>
+        function cargarFlujo() {
+            var nroRuta = document.getElementById("nroRuta").value;
+    
+            if (nroRuta != null && nroRuta.trim() !== "") {
+                $.ajax({
+                    type: 'POST',
+                    url: "/seguimiento/buscar_documento/" + nroRuta,
+                    success: function(response) {
+                        // Aquí puedes verificar si la respuesta contiene la vista que esperas
+                        if (response.includes("No se encontraron documentos")) { 
+                            Swal.fire(
+                                'Error',
+                                'No se encontraro la Hoja de Ruta proporcionada.',
+                                'error'
+                            );
+                        } else {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Búsqueda realizada con éxito",
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                // Este código se ejecuta después de que el SweetAlert se cierre
+                                $("#flujoDocumento").html(response);
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire(
+                            'Error',
+                            'Ocurrió un error al procesar la solicitud.',
+                            'error'
+                        );
+                    }
+                });
+            } else {
+                Swal.fire(
+                    'Error',
+                    'Por favor ingrese un número de Hoja de Ruta.',
+                    'info'
+                );
+            }
+        }
 
-        function cargarFlujo(nroRuta) {
-        $.ajax({
-          type: 'POST',
-          url: "/seguimiento/buscar_documento/"+nroRuta,  // Ruta del metodo del controlador en Spring Boot
-          success: function (response) {
-            $("#flujoDocumento").html(response);  // Actualiza el contenido del div con la respuesta del servidor
-          }
-        });
-      }
+        function Limpiarflujo() {
+            // Limpiar el valor del input
+            document.getElementById("nroRuta").value = "";
+    
+            // Ocultar o limpiar el contenido del div #flujoDocumento
+            $("#flujoDocumento").html(""); // O puedes usar .hide() si quieres ocultarlo
+    
+            // Opcional: Mostrar un mensaje o alerta que el contenido ha sido limpiado
+            Swal.fire({
+                icon: "info",
+                title: "Formulario limpiado",
+                showConfirmButton: false,
+                timer: 1000
+            });
+        }
     </script>
 </body>
 

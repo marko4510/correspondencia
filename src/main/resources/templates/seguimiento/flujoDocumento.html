@@ -2,46 +2,64 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
+                <!-- <div class="card-header">
                     <h4>Flujo del Documento</h4>
-                </div>
+                </div> -->
                 <div class="card-body">
                     <div class="section-body">
-                        <h2 class="section-title">September 2018</h2>
+                        <h2 class="section-title">Movimientos del Documento</h2>
                         <div class="row">
                             <div class="col-12">
                                 <div class="activities">
-                                    <div class="activity">
-                                        <div class="activity-icon bg-primary text-white">
-                                            <i class="fas fa-arrows-alt"></i>
-                                        </div>
-                                        <div class="activity-detail">
-                                            <div class="mb-2">
-                                                <span class="text-job">1 hour ago</span>
-                                                <span class="bullet"></span>
-                                                <a class="text-job" href="#">View</a>
-                                                <div class="float-right dropdown">
-                                                    <a href="#" data-toggle="dropdown"><i
-                                                            class="fas fa-ellipsis-h"></i></a>
-                                                    <div class="dropdown-menu">
-                                                        <div class="dropdown-title">Options</div>
-                                                        <a href="#" class="dropdown-item has-icon"><i
-                                                                class="fas fa-eye"></i> View</a>
-                                                        <a href="#" class="dropdown-item has-icon"><i
-                                                                class="fas fa-list"></i> Detail</a>
-                                                        <div class="dropdown-divider"></div>
-                                                        <a href="#" class="dropdown-item has-icon text-danger"
-                                                            data-confirm="Wait, wait, wait...|This action can't be undone. Want to take risks?"
-                                                            data-confirm-text-yes="Yes, IDC"><i
-                                                                class="fas fa-trash-alt"></i> Archive</a>
+                                    <th:block th:each="f : ${flujo}">
+                                        <div class="activity">
+                                            <div class="activity-icon bg-primary text-white">
+                                                <i class="far fa-file-alt"></i>
+                                            </div>
+                                            <div class="activity-detail">
+                                                <div class="mb-2">
+                                                    <!-- <span class="text-job" th:text="${#dates.format(f.fechaHoraRegistro, 'dd/MM/yyyy hh:mm')}"></span>
+                                                    <span class="bullet"></span>
+                                                    <a class="text-job" href="#">View</a> -->
+                                                    <div class="float-right dropdown">
+                                                        <a href="#" data-toggle="dropdown"><i class="fas fa-ellipsis-h"></i></a>
+                                                        <div class="dropdown-menu">
+                                                            <div class="dropdown-title">Options</div>
+                                                            <a href="#" class="dropdown-item has-icon"><i class="fas fa-eye"></i> View</a>
+                                                            <a href="#" class="dropdown-item has-icon"><i class="fas fa-list"></i> Detail</a>
+                                                            <div class="dropdown-divider"></div>
+                                                            <a href="#" class="dropdown-item has-icon text-danger"
+                                                                data-confirm="Wait, wait, wait...|This action can't be undone. Want to take risks?"
+                                                                data-confirm-text-yes="Yes, IDC"><i class="fas fa-trash-alt"></i> Archive</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <p th:text="${#dates.format(f.fechaHoraRegistro, 'dd/MM/yyyy hh:mm')}">Moved the task "<a href="#">Fix some features that are bugs in the
+                                                        master module</a>" from
+                                                    Progress to Finish.</p>
+                                                <div class="col-12 ">
+                                                    <div class="card l-bg-cyan">
+                                                        <div class="card-statistic-3">
+                                                            <div class="card-icon card-icon-large"><i class="fa fa-briefcase"></i></div>
+                                                            <div class="card-content">
+                                                                <h4 class="card-title">Observacion del Documento</h4>
+                                                                <span th:text="${f.observaciones}">1,258</span>
+                                    
+                                                                <p class="mb-0 text-sm">
+                                                                    <span class="mr-2"><i class="fa fa-arrow-up"></i> Unidad Origen:</span>
+                                                                    <span class="text-nowrap">Since last month</span>
+                                                                </p>
+                                                                <p class="mb-0 text-sm">
+                                                                    <span class="mr-2"><i class="fa fa-arrow-up"></i> Unidad Destino:</span>
+                                                                    <span class="text-nowrap">Since last month</span>
+                                                                </p>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <p>Moved the task "<a href="#">Fix some features that are bugs in the
-                                                    master module</a>" from
-                                                Progress to Finish.</p>
                                         </div>
-                                    </div>
+                                    </th:block>
                                 </div>
                             </div>
                         </div>
