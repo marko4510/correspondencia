@@ -5,7 +5,7 @@
                 <div class="card-header d-flex justify-content-between">
                     <h4>Basic DataTables</h4>
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".modal-documento"
-                        onclick="cargarFormulario()">Registrar Documento</button>
+                        onclick="cargarFormulari()">Registrar Documento</button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -48,11 +48,11 @@
                                             </div>
                                         </div> -->
                                         <a href="#" class="btn btn-icon icon-left btn-primary" 
-                                        th:attr="onclick='cargarFormulario(\'' + ${doc.id} + '\')'"
+                                        th:attr="onclick='cargarFormulario(\'' + ${doc.id_documento} + '\')'"
                                         data-toggle="modal" data-target=".modal-documento">
                                             <i class="far fa-edit"></i>Editar</a>
                                         <a href="#" class="btn btn-icon icon-left btn-success"
-                                        th:attr="onclick='verDocumento(\'' + ${doc.id} + '\')'"
+                                        th:attr="onclick='verDocumento(\'' + ${doc.id_documento} + '\')'"
                                         data-toggle="modal" data-target=".modal-documento">
                                         <i class="far fa-file-archive"></i>Ver</a>
                                     </td>

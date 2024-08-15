@@ -7,9 +7,13 @@
 </div>
 
 <!-- Formulario -->
-<form class="needs-validation" th:action="@{/documento/registrar}" id="formularioModalDocumento" enctype="multipart/form-data" method="POST" novalidate>
-    <input type="hidden" th:field="${documento.id_documento}" th:if="${documento.id_documento != null}">
+<form class="needs-validation" th:action="@{/documento/registrar}" id="formularioModalDocumento"
+    enctype="multipart/form-data" method="POST" novalidate>
+
     <div class="modal-body">
+        <th:block th:if="${edit != null}">
+            <input type="hidden" th:field="${documento.id_documento}">
+        </th:block>
         <div class="row">
             <div class="form-group col-md-6">
                 <label>Cite</label>
@@ -36,13 +40,12 @@
         <br>
         <div class="form-group">
             <label>Adjuntar Documento</label>
-            <input type="file" class="form-control" required="" name="file">
+            <input type="file" class="form-control" th:if="${edit == null}" required="" id="inputFile" name="file" accept="application/pdf">
+            <input type="file" class="form-control" th:if="${edit != null}" id="inputFile" name="file" accept="application/pdf">
             <div class="invalid-feedback">
-                Debe adjuntar el documento escaneado en PDF o Imagen
+                Debe adjuntar el documento escaneado en PDF
             </div>
         </div>
-        
-        
     </div>
     <div class="modal-footer">
         <button type="submit" class="btn btn-primary" th:text="${edit}? 'Guardar Cambios': 'Guardar'">Guardar</button>
@@ -51,15 +54,16 @@
 </form>
 
 <script>
+
     $(document).ready(function () {
         $('#formularioModalDocumento').on('submit', function (event) {
             event.preventDefault(); // Previene el envío del formulario
 
-            // Verifica la validez del formulario
-            // if (this.checkValidity() === false) {
-            //     $(this).addClass('was-validated');
-            //     return;
-            // }
+            //Verifica la validez del formulario
+            if (this.checkValidity() === false) {
+                $(this).addClass('was-validated');
+                return;
+            }
 
             var form = $(this)[0];
             var formData = new FormData(form);
@@ -95,5 +99,18 @@
                 }
             });
         });
+
+        $('#inputFile').on('change', function (event) {
+            const fileInput = event.target;
+
+            // Obtener el archivo seleccionado
+            const file = fileInput.files[0];
+
+            if (file.type != 'application/pdf') {
+                $('#formularioModalDocumento').addClass('was-validated');
+                fileInput.value = ''; // Limpiar el input si el archivo no es PDF
+            }
+        });
     });
+
 </script>

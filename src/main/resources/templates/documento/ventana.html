@@ -13,7 +13,7 @@
       <!-- Main Content -->
       <div class="main-content">
         <section class="section">
-          <embed src="/uploads/0bc2e4c2-6677-4050-80fb-1fdeb38ac15a_CIRCULAR N°0152024 (1).pdf" type="application/pdf" frameborder="0" style="height: 600px; width: 100%;"></embed>
+
           <div id="tablaRegistro"></div>
         </section>
       </div>
@@ -44,15 +44,16 @@
   <script>
     cargarTabla();
 
-    function cargarFormulario() {
+    function cargarFormulari() {
       $.ajax({
-        type: 'POST',
-        url: "/documento/formulario",  // Ruta del metodo del controlador en Spring Boot
+        type: 'GET',
+        url: "/documento/formularioM",  // Ruta del metodo del controlador en Spring Boot
         success: function (response) {
           $("#contenidoFormularioModal").html(response);  // Actualiza el contenido del div con la respuesta del servidor
         }
       });
     }
+
 
     function cargarFormulario(id) {
       $.ajax({
@@ -84,7 +85,7 @@
     </a>
 </div>
 <div class="modal-body">
-    <embed src="/verDocumento/${id}" type="application/pdf" frameborder="0" style="height: 600px; width: 100%;"></embed>
+    <embed src="/documento/verDocumento/${id}" type="application/pdf" frameborder="0" style="height: 600px; width: 100%;"></embed>
 </div>
 `);
     }

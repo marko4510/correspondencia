@@ -51,26 +51,27 @@ public class DocumentoController {
         return "documento/tablaRegistros";
     }
 
-    @PostMapping("/formulario")
+    @GetMapping("/formularioM")
     public String formulario(Model model) {
         model.addAttribute("documento", new Documento());
         return "documento/formulario";
     }
 
-    @PostMapping("/formulario/{id}")
-    public String formulario(Model model, @PathVariable("id") Long id) {
+    @PostMapping("/formulario/{id_documento}")
+    public String formulario(Model model, @PathVariable("id_documento") Long id) {
         model.addAttribute("documento", documentoService.findById(id));
+        model.addAttribute("edit", "true");
         return "documento/formulario";
     }
 
-    @GetMapping("/verDocumento/{id}")
-    public ResponseEntity<Resource> verDocumento(@PathVariable Long id) throws IOException {
+    @GetMapping("/verDocumento/{id_documento}")
+    public ResponseEntity<Resource> verDocumento(@PathVariable("id_documento") Long id) throws IOException {
         Documento documento = documentoService.findById(id);
 
         // Obtener la ruta completa del archivo
         Path projectPath = Paths.get("").toAbsolutePath();
         String ruta = projectPath + "/uploads/" + documento.getRuta();
-
+        System.out.println(ruta);
         // Cargar el archivo PDF como recurso
         Resource resource = new InputStreamResource(new FileInputStream(ruta));
 
@@ -109,15 +110,12 @@ public class DocumentoController {
             @RequestParam(value = "file", required = false) MultipartFile archivo) {
         Documento documento = documentoService.findById(doc.getId_documento());
         try {
-            if (archivo != null) {
-                String arch = config.guardarArchivo((MultipartFile) archivo);
+            if (archivo != null && !archivo.isEmpty()) {
+                String arch = config.guardarArchivo(archivo);
                 documento.setRuta(arch);
             } else {
                 documento.setRuta(doc.getRuta());
             }
-
-            documento.setFechaCreacion(new Date());
-            documento.setEstado("A");
             documentoService.save(documento);
             return ResponseEntity.ok("Modificado");
         } catch (Exception e) {
