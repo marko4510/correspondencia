@@ -25,6 +25,7 @@ public class Unidad implements Serializable {
 
     private String nombre;
     private String codigo;
+    private String estado;
 
     @OneToMany(mappedBy = "unidad")
     private List<Usuario> usuarios;

@@ -39,6 +39,12 @@ public class DocumentoServiceImpl implements DocumentoService{
     public Documento obtener_documento_hojaRuta(String nroRuta) {
         return dao.obtener_documento_hojaRuta(nroRuta);
     }
+
+    @Override
+    public List<Documento> obtener_Flujo_Documento(String nroRuta) {
+        // TODO Auto-generated method stub
+        return dao.obtener_Flujo_Documento(nroRuta);
+    }
     
 
 }
