@@ -1,82 +1,126 @@
+<!-- Large modal -->
+<div class="modal fade bd-example-modal-lg" id="resultadoModal" tabindex="-1" role="dialog"
+  aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myLargeModalLabel">Formulario de Recepción de Documento</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form th:action="@{/regMovimientoDocumento}" id="regMovimientoFormulario" enctype="multipart/form-data"
+        method="POST" novalidate>
+        <div class="modal-body">
+          <hr>
 
-   
-   <!-- Large modal -->
-   <div class="modal fade bd-example-modal-lg" id="resultadoModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-   aria-hidden="true">
-   <div class="modal-dialog modal-lg">
-     <div class="modal-content">
-       <div class="modal-header">
-         <h4 class="modal-title" id="myLargeModalLabel">Formulario de Recepción de Documento</h4>
-         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-           <span aria-hidden="true">&times;</span>
-         </button>
-       </div>
-       <div class="modal-body">
-        <hr>
-        <form class="needs-validation" th:action="@{/documento/registrar}" id="formularioModalDocumento" enctype="multipart/form-data" method="POST" novalidate>
-
-            <div class="row">
-                <div class="form-group col-md-6">
-                    <label>Cite</label>
-                    <input type="text" class="form-control" readonly th:value="${documento.cite}">
-                    <div class="invalid-feedback">
-                        Tiene que introducir un cite valido
-                    </div>
-                </div>
-                <div class="form-group col-md-6">
-                    <label>Nro. Hoja Ruta</label>
-                    <input type="text" class="form-control" readonly th:value="${documento.nroRuta}">
-                    <div class="invalid-feedback">
-                        Tiene que introducir un numero de hoja de ruta
-                    </div>
-                </div>
-               
-            </div>
-            <div class="form-group mb-0">
-                <label>Asunto</label>
-                <textarea class="form-control" readonly th:text="${documento.asunto}"></textarea>
-                <div class="invalid-feedback">
-                    Introduzca el asunto del documento
-                </div>
-            </div>
-            <br>
-            <div class="form-group">
-                <a  class="btn btn-icon icon-left btn-info" style="color: white;"><i class="fas fa-info-circle"></i> Ver Documento</a>
-
-            </div>
-            <hr>
-
-            <div class="row">
-              <div class="form-group col-md-6">
-                <label>Unidad Destino</label>
-                <select class="form-control select2" style="width: 100%">
-                  <option value="">Seleccionar una Unidad Destino...</option>
-                  <option th:each="uni : ${unidades}"
-                  th:value="${uni.id_unidad}"
-                  th:if="${uni.estado != 'X'}"
-                  th:text="${uni.nombre}">
-              </option>
-                </select>
+          <input type="hidden" class="form-control" th:value="${documento.id_documento}" name="id_documento">
+          <div class="row">
+            <div class="form-group col-md-6">
+              <label>Cite</label>
+              <input type="text" class="form-control" readonly th:value="${documento.cite}">
+              <div class="invalid-feedback">
+                Tiene que introducir un cite valido
               </div>
             </div>
-                    
-            <div class="form-group">
-                <label>Adjuntar Documento</label>
-                <input type="file" class="form-control" required="" name="file">
-                <div class="invalid-feedback">
-                    Debe adjuntar el documento escaneado en PDF o Imagen
-                </div>
+            <div class="form-group col-md-6">
+              <label>Nro. Hoja Ruta</label>
+              <input type="text" class="form-control" readonly th:value="${documento.nroRuta}">
+              <div class="invalid-feedback">
+                Tiene que introducir un numero de hoja de ruta
+              </div>
+            </div>
+
+          </div>
+          <div class="form-group mb-0">
+            <label>Asunto</label>
+            <textarea class="form-control" readonly th:text="${documento.asunto}"></textarea>
+            <div class="invalid-feedback">
+              Introduzca el asunto del documento
+            </div>
+          </div>
+          <br>
+          <div class="form-group">
+
+            <a class="btn btn-icon icon-left btn-info" style="color: white;"
+              th:attr="onclick='verDocumento(\'' + ${documento.id_documento} + '\')'" data-toggle="modal"
+              data-target=".modal-documento"><i class="far fa-file-archive"></i> Ver Documento</a>
+
+          </div>
+          <hr>
+
+          <div class="row">
+            <div class="form-group col-md-6">
+              <label>Unidad Destino</label>
+              <select class="form-control select2" style="width: 100%" name="id_unidad_destino">
+                <option value="">Seleccionar una Unidad Destino...</option>
+                <option th:each="uni : ${unidades}" th:value="${uni.id_unidad}" th:if="${uni.estado != 'X'}"
+                  th:text="${uni.nombre}">
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group mb-0">
+            <label>Observaciones</label>
+            <textarea class="form-control" name="observacion"></textarea>
+            <div class="invalid-feedback">
+                Introduzca el asunto del documento
             </div>
         </div>
+        <br>
+
+          <div class="form-group">
+            <label>Adjuntar Documento</label>
+            <input type="file" class="form-control" name="file">
+            <div class="invalid-feedback">
+              Debe adjuntar el documento escaneado en PDF o Imagen
+            </div>
+          </div>
+        </div>
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Guardar</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+
+          <button type="submit" class="btn btn-primary">Confirmar Recepción</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
         </div>
 
-        </form>
-       </div>
-     </div>
-   </div>
- </div>
+      </form>
+    </div>
+  </div>
 
+</div>
 
+<script>
+  $(document).ready(function () {
+    $('#regMovimientoFormulario').submit(function (event) {
+      event.preventDefault();
+      var form = $(this)[0];
+      var formData = new FormData(form);
+
+      $.ajax({
+        type: 'POST',
+        url: $(this).attr('action'),
+        data: formData,
+        contentType: false,  // No establecer el tipo de contenido aquí
+        processData: false,  // No procesar los datos
+        success: function (response) {
+          Swal.fire({
+            title: 'Operación exitosa',
+            text: response,
+            icon: 'success',
+            confirmButtonText: 'OK'
+          });
+          $('#resultadoModal').modal('hide');
+        },
+        error: function (xhr, status, error) {
+          Swal.fire({
+            title: 'Error',
+            text: 'Ocurrió un error: ' + error,
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        }
+      });
+    });
+  });
+</script>

@@ -62,7 +62,14 @@
 
   <div id="formulario"></div>
  
+  <div class="modal fade modal-documento" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content" id="contenidoFormularioModal">
 
+      </div>
+    </div>
+  </div>
   <div th:replace="layout/script :: script">
   </div>
 
@@ -107,7 +114,26 @@
        });
      });
    });
+
+   function verDocumento(id) {
+    $('#contenidoFormularioModal').html(
+      `<!-- Modal Header -->
+<div class="modal-header">
+    <h5 class="modal-title" id="myLargeModalLabel">Visualización de Documento</h5>
+    <a type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </a>
+</div>
+<div class="modal-body">
+    <embed src="/documento/verDocumento/${id}" type="application/pdf" frameborder="0" style="height: 600px; width: 100%;"></embed>
+</div>
+`);
+  }
+
+  
  </script>
+
+
  
 </body>
 
