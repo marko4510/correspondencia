@@ -8,6 +8,7 @@
 
 <!-- Formulario -->
 <form class="needs-validation" th:action="@{/documento/registrar}" id="formularioModalDocumento" enctype="multipart/form-data" method="POST" novalidate>
+    <input type="hidden" th:field="${documento.id_documento}" th:if="${documento.id_documento != null}">
     <div class="modal-body">
         <div class="row">
             <div class="form-group col-md-6">
@@ -40,9 +41,11 @@
                 Debe adjuntar el documento escaneado en PDF o Imagen
             </div>
         </div>
+        
+        
     </div>
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Guardar</button>
+        <button type="submit" class="btn btn-primary" th:text="${edit}? 'Guardar Cambios': 'Guardar'">Guardar</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
     </div>
 </form>
@@ -53,10 +56,10 @@
             event.preventDefault(); // Previene el envío del formulario
 
             // Verifica la validez del formulario
-            if (this.checkValidity() === false) {
-                $(this).addClass('was-validated');
-                return;
-            }
+            // if (this.checkValidity() === false) {
+            //     $(this).addClass('was-validated');
+            //     return;
+            // }
 
             var form = $(this)[0];
             var formData = new FormData(form);
@@ -68,12 +71,13 @@
                 contentType: false,  // No establecer el tipo de contenido aquí
                 processData: false,  // No procesar los datos
                 success: function (response) {
-                    if (response === "Registrado") {
+                    if (response === "Registrado" || response === "Modificado") {
                         Swal.fire(
                             'Registrado!',
                             response,
                             'success'
                         );
+                        cargarTabla();
                     } else {
                         Swal.fire(
                             'Imposible Registrar!',

@@ -51,7 +51,10 @@
                                         th:attr="onclick='cargarFormulario(\'' + ${doc.id} + '\')'"
                                         data-toggle="modal" data-target=".modal-documento">
                                             <i class="far fa-edit"></i>Editar</a>
-                                        <a href="#" class="btn btn-icon icon-left btn-success"><i class="far fa-file-archive"></i>Ver</a>
+                                        <a href="#" class="btn btn-icon icon-left btn-success"
+                                        th:attr="onclick='verDocumento(\'' + ${doc.id} + '\')'"
+                                        data-toggle="modal" data-target=".modal-documento">
+                                        <i class="far fa-file-archive"></i>Ver</a>
                                     </td>
                                 </tr>
                             </tbody>
