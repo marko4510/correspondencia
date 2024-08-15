@@ -6,12 +6,13 @@
    <div class="modal-dialog modal-lg">
      <div class="modal-content">
        <div class="modal-header">
-         <h5 class="modal-title" id="myLargeModalLabel">Formulario de Recepción de Documento</h5>
+         <h4 class="modal-title" id="myLargeModalLabel">Formulario de Recepción de Documento</h4>
          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
            <span aria-hidden="true">&times;</span>
          </button>
        </div>
        <div class="modal-body">
+        <hr>
         <form class="needs-validation" th:action="@{/documento/registrar}" id="formularioModalDocumento" enctype="multipart/form-data" method="POST" novalidate>
 
             <div class="row">
@@ -32,7 +33,7 @@
             </div>
             <div class="form-group mb-0">
                 <label>Asunto</label>
-                <textarea class="form-control" readonly th:value="${documento.asunto}"></textarea>
+                <textarea class="form-control" readonly th:text="${documento.asunto}"></textarea>
                 <div class="invalid-feedback">
                     Introduzca el asunto del documento
                 </div>
@@ -42,7 +43,17 @@
                 <a  class="btn btn-icon icon-left btn-info" style="color: white;"><i class="fas fa-info-circle"></i> Ver Documento</a>
 
             </div>
-            
+            <hr>
+
+           
+                    <div class="form-group">
+                      <label>Select2</label>
+                      <select class="form-control select2">
+                        <option>Option 1</option>
+                        <option>Option 2</option>
+                        <option>Option 3</option>
+                      </select>
+                    </div>
             <div class="form-group">
                 <label>Adjuntar Documento</label>
                 <input type="file" class="form-control" required="" name="file">

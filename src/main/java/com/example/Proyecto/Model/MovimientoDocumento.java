@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -22,19 +23,24 @@ public class MovimientoDocumento implements Serializable{
     private static final long serialVersionUID = 2629195288020321924L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id_movimiento_documento;
     
+
+    private Integer usuarioRegistro;
+
     @ManyToOne
+    @JoinColumn(name = "id_documento")
     private Documento documento;
     
     @ManyToOne
+    @JoinColumn(name = "id_unidad_origen")
     private Unidad unidadOrigen;
     
     @ManyToOne
+    @JoinColumn(name = "id_unidad_destino")
     private Unidad unidadDestino;
     
-    @ManyToOne
-    private Usuario usuarioRegistro;
+   
     
     private Date fechaHoraRegistro;
     private String observaciones;

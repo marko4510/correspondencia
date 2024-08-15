@@ -24,8 +24,9 @@ public class HojaRuta implements Serializable{
     private static final long serialVersionUID = 2629195288020321924L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id_hoja_ruta;
     private String estado;
+    
     @OneToOne
     private Documento documento;
     

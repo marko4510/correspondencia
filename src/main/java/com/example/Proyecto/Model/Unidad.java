@@ -21,7 +21,7 @@ public class Unidad implements Serializable {
     private static final long serialVersionUID = 2629195288020321924L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id_unidad;
 
     private String nombre;
     private String codigo;

@@ -24,7 +24,7 @@ public class TipoDocumento implements Serializable{
     private static final long serialVersionUID = 2629195288020321924L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id_tipo_documento;
     
     private String nombre;
     private String descripcion;
