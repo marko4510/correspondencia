@@ -64,6 +64,14 @@ public class DocumentoController {
         return "documento/formulario";
     }
 
+    @PostMapping("/validarDocumento/{nroRuta}")
+    public ResponseEntity<String> formulario(@PathVariable("nroRuta") String nroRuta) {
+        if (documentoService.obtener_documento_hojaRuta(nroRuta) != null) {
+            return ResponseEntity.ok("invalido");
+        }
+        return ResponseEntity.ok("valido");
+    }
+
     @GetMapping("/verDocumento/{id_documento}")
     public ResponseEntity<Resource> verDocumento(@PathVariable("id_documento") Long id) throws IOException {
         Documento documento = documentoService.findById(id);
