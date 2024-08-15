@@ -17,12 +17,16 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.example.Proyecto.Model.Documento;
 import com.example.Proyecto.Service.DocumentoService;
+import com.example.Proyecto.Service.UnidadService;
 
 @Controller
 public class pruebaController {
 
     @Autowired
     private DocumentoService documentoService;
+
+    @Autowired
+    private UnidadService unidadService;
 
     @Autowired
 	private SpringTemplateEngine templateEngine;
@@ -44,6 +48,7 @@ public class pruebaController {
                 }
 
 		model.addAttribute("documento", documento);
+        model.addAttribute("unidades", unidadService.findAll());
 
 		WebContext context = new WebContext(request, response, request.getServletContext());
 		context.setVariables(model.asMap());

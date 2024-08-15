@@ -93,6 +93,11 @@
              $("#formulario").html(response);
               // Activar el modal
               $('#resultadoModal').modal('show');
+
+              // Inicializar Select2 en el modal
+             $('.select2').select2({
+                 dropdownParent: $('#resultadoModal')  // Especificar el parent para el dropdown
+                });
            }
          },
          error: function (xhr, status, error) {

@@ -30,6 +30,7 @@
                         Tiene que introducir un numero de hoja de ruta
                     </div>
                 </div>
+               
             </div>
             <div class="form-group mb-0">
                 <label>Asunto</label>
@@ -45,15 +46,20 @@
             </div>
             <hr>
 
-           
-                    <div class="form-group">
-                      <label>Select2</label>
-                      <select class="form-control select2">
-                        <option>Option 1</option>
-                        <option>Option 2</option>
-                        <option>Option 3</option>
-                      </select>
-                    </div>
+            <div class="row">
+              <div class="form-group col-md-6">
+                <label>Unidad Destino</label>
+                <select class="form-control select2" style="width: 100%">
+                  <option value="">Seleccionar una Unidad Destino...</option>
+                  <option th:each="uni : ${unidades}"
+                  th:value="${uni.id_unidad}"
+                  th:if="${uni.estado != 'X'}"
+                  th:text="${uni.nombre}">
+              </option>
+                </select>
+              </div>
+            </div>
+                    
             <div class="form-group">
                 <label>Adjuntar Documento</label>
                 <input type="file" class="form-control" required="" name="file">
