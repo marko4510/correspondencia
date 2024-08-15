@@ -21,13 +21,13 @@ import com.example.Proyecto.Service.DocumentoService;
 @Controller
 public class pruebaController {
 
-     @Autowired
+    @Autowired
     private DocumentoService documentoService;
 
     @Autowired
 	private SpringTemplateEngine templateEngine;
 
-      @RequestMapping(value = "/prueba", method = RequestMethod.GET)
+    @RequestMapping(value = "/prueba", method = RequestMethod.GET)
     public String prueba() {
 
         return "busqueda/prueba";

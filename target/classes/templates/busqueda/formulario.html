@@ -1,63 +1,65 @@
-<div class="row" th:fragment="formulario">
-    <p>AAAAAAAAAAAAAAAAAAAAAA</p>
-  <!-- <div class="col-lg-6">
-      <div class="card">
-          <div class="card-header bg-transparent p-3">
-              <h4 class="mb-0">Información de su Ficha</h4>
-          </div>
-          <ul class="list-group list-group-flush" th:each="f : ${fichas}" th:if="${f.estado == 'AA'}">
-              <li class="list-group-item" >
-                  <div class="media my-2">
-                      
-                      <div class="media-body">
-                          <p class="text-muted mb-2">Estado</p>
-                          <h5 class="mb-0" th:if="${f.estado == 'AA'}"> Asignada</h5>
-                      </div>
-                      <div class="icons-lg ml-2 align-self-center">
-                          <i class="uim uim-layer-group"></i>
-                      </div>
-                  </div>
-              </li>
-              <li class="list-group-item" >
-                <div class="media my-2">
-                    
-                    <div class="media-body">
-                        <p class="text-muted mb-2">Fecha Generación</p>
-                        <h5 class="mb-0" th:text="${f.fechaRegistroFichaa}"></h5>
-                    </div>
-                    <div class="icons-lg ml-2 align-self-center">
-                        <i class="uim uim-layer-group"></i>
+
+   
+   <!-- Large modal -->
+   <div class="modal fade bd-example-modal-lg" id="resultadoModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog modal-lg">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h5 class="modal-title" id="myLargeModalLabel">Formulario de Recepción de Documento</h5>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+         </button>
+       </div>
+       <div class="modal-body">
+        <form class="needs-validation" th:action="@{/documento/registrar}" id="formularioModalDocumento" enctype="multipart/form-data" method="POST" novalidate>
+
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label>Cite</label>
+                    <input type="text" class="form-control" readonly th:value="${documento.cite}">
+                    <div class="invalid-feedback">
+                        Tiene que introducir un cite valido
                     </div>
                 </div>
-            </li>
-            <li class="list-group-item" >
-              <div class="media my-2">
-                  
-                  <div class="media-body">
-                      <p class="text-muted mb-2">Servicio</p>
-                      <h5 class="mb-0" th:text="${f.servicioMedico.servicio.servicios}"></h5>
-                  </div>
-                  <div class="icons-lg ml-2 align-self-center">
-                      <i class="uim uim-layer-group"></i>
-                  </div>
-              </div>
-          </li>
-          <li class="list-group-item" >
-            <div class="media my-2">
-                
-                <div class="media-body">
-                    <p class="text-muted mb-2">Fecha de Atención</p>
-                    <h5 class="mb-0" th:text="${f.horario}"></h5>
-                </div>
-                <div class="icons-lg ml-2 align-self-center">
-                    <i class="uim uim-layer-group"></i>
+                <div class="form-group col-md-6">
+                    <label>Nro. Hoja Ruta</label>
+                    <input type="text" class="form-control" readonly th:value="${documento.nroRuta}">
+                    <div class="invalid-feedback">
+                        Tiene que introducir un numero de hoja de ruta
+                    </div>
                 </div>
             </div>
-        </li>
+            <div class="form-group mb-0">
+                <label>Asunto</label>
+                <textarea class="form-control" readonly th:value="${documento.asunto}"></textarea>
+                <div class="invalid-feedback">
+                    Introduzca el asunto del documento
+                </div>
+            </div>
+            <br>
+            <div class="form-group">
+                <a  class="btn btn-icon icon-left btn-info" style="color: white;"><i class="fas fa-info-circle"></i> Ver Documento</a>
 
-          </ul>
-      </div>
-  </div> -->
+            </div>
+            
+            <div class="form-group">
+                <label>Adjuntar Documento</label>
+                <input type="file" class="form-control" required="" name="file">
+                <div class="invalid-feedback">
+                    Debe adjuntar el documento escaneado en PDF o Imagen
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
 
-</div>
+        </form>
+       </div>
+     </div>
+   </div>
+ </div>
+
 

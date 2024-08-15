@@ -36,7 +36,7 @@
                         <div class="input-group" >
                           <input type="text" class="form-control" placeholder="Ingrese la Hoja de Ruta" required name="nroRuta">
                           <div class="input-group-append">
-                            <button class="btn btn-primary">Buscar</button>
+                            <button class="btn btn-primary" >Buscar</button>
                           </div>
                         </div>
                       </form>
@@ -44,11 +44,12 @@
                     </div>
                 </div>
 
-                <div id="formulario"></div>
+      
+                
               </div>
             </div>
           </div>
-
+         
         </section>
       </div>
 
@@ -58,6 +59,8 @@
 
     </div>
   </div>
+
+  <div id="formulario"></div>
  
 
   <div th:replace="layout/script :: script">
@@ -88,6 +91,8 @@
                    });
            } else {
              $("#formulario").html(response);
+              // Activar el modal
+              $('#resultadoModal').modal('show');
            }
          },
          error: function (xhr, status, error) {
@@ -98,6 +103,7 @@
      });
    });
  </script>
+ 
 </body>
 
 
