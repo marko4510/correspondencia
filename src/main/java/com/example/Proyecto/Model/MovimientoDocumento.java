@@ -25,7 +25,7 @@ public class MovimientoDocumento implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_movimiento_documento;
     
-
+    private String ruta_movimiento;
     private Integer usuarioRegistro;
 
     @ManyToOne
