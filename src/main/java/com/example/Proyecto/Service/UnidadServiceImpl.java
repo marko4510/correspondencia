@@ -37,6 +37,11 @@ public class UnidadServiceImpl implements UnidadService{
         dao.save(unidad);
     }
 
+    @Override
+    public List<Unidad> findUnidadesNoRelacionadasConUsuario(Long idUsuario) {
+       return dao.findUnidadesNoRelacionadasConUsuario(idUsuario);
+    }
+
 
 
 }

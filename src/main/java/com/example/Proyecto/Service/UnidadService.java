@@ -2,6 +2,7 @@ package com.example.Proyecto.Service;
 
 import java.util.List;
 
+
 import com.example.Proyecto.Model.Unidad;
 
 public interface UnidadService {
@@ -9,7 +10,7 @@ public interface UnidadService {
     Unidad findById(Long id);
     void save(Unidad documento);
     void deleteById(Long id);
-
+    List<Unidad> findUnidadesNoRelacionadasConUsuario(Long idUsuario);
 
     
 }

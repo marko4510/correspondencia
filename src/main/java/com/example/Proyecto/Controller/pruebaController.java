@@ -54,7 +54,7 @@ public class pruebaController {
     @PostMapping("/formularioDocumento")
 	public ResponseEntity<?> formularioDocumento(@RequestParam(name = "nroRuta") String nroRuta, Model model, HttpServletRequest request,
 			HttpServletResponse response) {
-
+                Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
                 Documento documento = documentoService.obtener_documento_hojaRuta(nroRuta);
 
                 if (documento == null) {
@@ -62,7 +62,7 @@ public class pruebaController {
                 }
 
 		model.addAttribute("documento", documento);
-        model.addAttribute("unidades", unidadService.findAll());
+        model.addAttribute("unidades", unidadService.findUnidadesNoRelacionadasConUsuario(usuario.getId_usuario()));
 
 		WebContext context = new WebContext(request, response, request.getServletContext());
 		context.setVariables(model.asMap());
