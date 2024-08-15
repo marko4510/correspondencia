@@ -7,7 +7,7 @@
 </div>
 
 <!-- Formulario -->
-<form class="needs-validation" th:action="@{/documento/registrar}" id="formularioModalDocumento"
+<form class="needs-validation" th:action="${edit}? @{/documento/modificar}: @{/documento/registrar}" id="formularioModalDocumento"
     enctype="multipart/form-data" method="POST" novalidate>
 
     <div class="modal-body">
