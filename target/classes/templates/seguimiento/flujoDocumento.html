@@ -12,46 +12,47 @@
                             <div class="col-12">
                                 <div class="activities">
                                     <th:block th:each="f : ${flujo}">
-                                        <div class="activity">
+                                        <div class="activity" >
                                             <div class="activity-icon bg-primary text-white">
                                                 <i class="far fa-file-alt"></i>
                                             </div>
-                                            <div class="activity-detail">
+                                            <div class="activity-detail" style="width: 50%;">
                                                 <div class="mb-2">
-                                                    <!-- <span class="text-job" th:text="${#dates.format(f.fechaHoraRegistro, 'dd/MM/yyyy hh:mm')}"></span>
-                                                    <span class="bullet"></span>
-                                                    <a class="text-job" href="#">View</a> -->
+                                                    <span class="text-job" style="font-size: larger;" th:text="${#dates.format(f.fechaHoraRegistro, 'dd/MM/yyyy hh:mm')}"></span>
+                                                    <!-- <span class="bullet"></span> -->
+                                                    <!-- <a class="text-job" href="#">View</a> -->
                                                     <div class="float-right dropdown">
                                                         <a href="#" data-toggle="dropdown"><i class="fas fa-ellipsis-h"></i></a>
                                                         <div class="dropdown-menu">
-                                                            <div class="dropdown-title">Options</div>
-                                                            <a href="#" class="dropdown-item has-icon"><i class="fas fa-eye"></i> View</a>
-                                                            <a href="#" class="dropdown-item has-icon"><i class="fas fa-list"></i> Detail</a>
-                                                            <div class="dropdown-divider"></div>
-                                                            <a href="#" class="dropdown-item has-icon text-danger"
+                                                            <div class="dropdown-title">Opciones</div>
+                                                            <a href="#" class="dropdown-item has-icon"><i class="fas fa-eye"></i> Ver</a>
+                                                            <!-- <a href="#" class="dropdown-item has-icon"><i class="fas fa-list"></i> Detail</a> -->
+                                                            <!-- <div class="dropdown-divider"></div> -->
+                                                            <!-- <a href="#" class="dropdown-item has-icon text-danger"
                                                                 data-confirm="Wait, wait, wait...|This action can't be undone. Want to take risks?"
-                                                                data-confirm-text-yes="Yes, IDC"><i class="fas fa-trash-alt"></i> Archive</a>
+                                                                data-confirm-text-yes="Yes, IDC"><i class="fas fa-trash-alt"></i> Archive</a> -->
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <p th:text="${#dates.format(f.fechaHoraRegistro, 'dd/MM/yyyy hh:mm')}">Moved the task "<a href="#">Fix some features that are bugs in the
+                                                <!-- <p >Moved the task "<a href="#">Fix some features that are bugs in the
                                                         master module</a>" from
-                                                    Progress to Finish.</p>
+                                                    Progress to Finish.</p> -->
                                                 <div class="col-12 ">
-                                                    <div class="card l-bg-cyan">
+                                                    <div class="card l-bg-cyan" style="margin-bottom: 5px;">
                                                         <div class="card-statistic-3">
                                                             <div class="card-icon card-icon-large"><i class="fa fa-briefcase"></i></div>
-                                                            <div class="card-content">
-                                                                <h4 class="card-title">Observacion del Documento</h4>
-                                                                <span th:text="${f.observaciones}">1,258</span>
-                                    
-                                                                <p class="mb-0 text-sm">
-                                                                    <span class="mr-2"><i class="fa fa-arrow-up"></i> Unidad Origen:</span>
-                                                                    <span class="text-nowrap">Since last month</span>
+                                                            <div class="card-content" >
+                                                                <h5 class="card-title">Observacion del Documento</h5>
+                                                                <p style="color: white;"><span th:text="${f.observaciones}">1,258</span></p>
+                                                                <p style="color: white;"><b>CITE: </b> <span th:text="${f.documento.cite}">1,258</span></p>
+
+                                                                <p class="mb-0 text-sm" style="color: white;">
+                                                                    <span class="mr-2"><i class="fas fa-file"></i> <b>Unidad Origen:</b></span>
+                                                                    <span class="text-nowrap" th:text="${f.unidadOrigen.nombre}">Since last month</span>
                                                                 </p>
-                                                                <p class="mb-0 text-sm">
-                                                                    <span class="mr-2"><i class="fa fa-arrow-up"></i> Unidad Destino:</span>
-                                                                    <span class="text-nowrap">Since last month</span>
+                                                                <p class="mb-0 text-sm" style="color: white;">
+                                                                    <span class="mr-2"><i class="fas fa-file-export"></i> <b>Unidad Destino:</b></span>
+                                                                    <span class="text-nowrap" th:text="${f.unidadDestino.nombre}">Since last month</span>
                                                                 </p>
                                                             </div>
                                                         </div>
