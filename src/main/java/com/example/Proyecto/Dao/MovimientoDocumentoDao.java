@@ -12,4 +12,9 @@ public interface MovimientoDocumentoDao extends JpaRepository<MovimientoDocument
                 "LEFT JOIN movimiento_documento md ON md.id_documento = d.id_documento \n" + //
                 "WHERE d.nro_ruta = ?1",nativeQuery = true)
     public List<MovimientoDocumento> obtener_Flujo_Documento(String nroRuta);
+
+    @Query(value = "SELECT md.* FROM documento d \n" + //
+                "LEFT JOIN movimiento_documento md ON md.id_documento = d.id_documento \n" + //
+                "WHERE d.nro_ruta = ?1 AND d.unidad_origen = ?2 AND TO_CHAR(d.fecha_creacion, 'YYYY') = ?3",nativeQuery = true)
+    public List<MovimientoDocumento> obtener_Flujos_Documentos(String nroRuta, Integer unidad_origen, String gestion);
 }

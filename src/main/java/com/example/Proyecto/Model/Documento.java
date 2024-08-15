@@ -34,7 +34,7 @@ public class Documento implements Serializable{
     private String asunto;
     private String estado;
     private Date fechaCreacion;
-    
+    private Integer unidad_origen;
     @ManyToOne
     private TipoDocumento tipoDocumento;
     

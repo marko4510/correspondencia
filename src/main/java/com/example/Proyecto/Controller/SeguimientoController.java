@@ -6,6 +6,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.FileInputStream;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -22,6 +26,7 @@ import com.example.Proyecto.Model.Documento;
 import com.example.Proyecto.Model.MovimientoDocumento;
 import com.example.Proyecto.Service.DocumentoService;
 import com.example.Proyecto.Service.MovimientoDocumentoService;
+import com.example.Proyecto.Service.UnidadService;
 
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -36,21 +41,39 @@ public class SeguimientoController {
     @Autowired
     private DocumentoService documentoService;
 
+    @Autowired
+    private UnidadService unidadService;
+
     @GetMapping("/inicio")
-    public String inicio(HttpServletRequest request) {
+    public String inicio(HttpServletRequest request, Model model) {
 
         if (request.getSession().getAttribute("usuario") != null) {
+            List<Documento> documentos = documentoService.findAll();
 
+            // Extraer los años y almacenarlos en un Set para evitar duplicados
+            Set<Integer> years = documentos.stream()
+                    .map(doc -> doc.getFechaCreacion().toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate().getYear())
+                    .collect(Collectors.toSet());
+
+            // Añadir los documentos y los años al modelo
+            model.addAttribute("unidades", unidadService.findAll());
+            model.addAttribute("years", years);
             return "seguimiento/ventana";
-        }else{
+        } else {
             return "redirect:/login";
         }
     }
     
 
-   @PostMapping("/buscar_documento/{nroRuta}")
-        public String buscar_documento(@PathVariable(name = "nroRuta") String nroRuta, Model model) {
-            List<MovimientoDocumento> flujoDocumentos = movimientoDocumentoService.obtener_Flujo_Documento(nroRuta);
+   @PostMapping("/buscar_documento/{nroRuta}/{year}/{id_unidad}")
+        public String buscar_documento(@PathVariable(name = "nroRuta") String nroRuta,
+        @PathVariable(name = "year")String year,
+        @PathVariable(name = "id_unidad")Integer id_unidad, Model model) {
+
+            // List<MovimientoDocumento> flujoDocumentos = movimientoDocumentoService.obtener_Flujo_Documento(nroRuta);
+            List<MovimientoDocumento> flujoDocumentos = movimientoDocumentoService.obtener_Flujos_Documentos(nroRuta,id_unidad,year);
 
             if (flujoDocumentos.size() > 0) {
                 model.addAttribute("flujo", flujoDocumentos);

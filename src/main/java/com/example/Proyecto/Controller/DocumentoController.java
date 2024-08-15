@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.util.Date;
 
 import javax.mail.Multipart;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -29,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.Proyecto.Config;
 import com.example.Proyecto.Model.Documento;
+import com.example.Proyecto.Model.Usuario;
 import com.example.Proyecto.Service.DocumentoService;
 
 @Controller
@@ -100,12 +102,18 @@ public class DocumentoController {
 
     @PostMapping("/registrar")
     public ResponseEntity<String> registrar(@Validated Documento documento,
-            @RequestParam("file") MultipartFile archivo) {
+            @RequestParam("file") MultipartFile archivo, HttpServletRequest request) {
         try {
+            
+            Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+            long idUsuarioLong = usuario.getId_usuario();
+            Integer idUsuarioInt = (int) idUsuarioLong;
+
             String arch = config.guardarArchivo((MultipartFile) archivo);
             documento.setRuta(arch);
             documento.setFechaCreacion(new Date());
             documento.setEstado("A");
+            documento.setUnidad_origen(usuario.getUnidad().getId_unidad().intValue());
             documentoService.save(documento);
             return ResponseEntity.ok("Registrado");
         } catch (Exception e) {
