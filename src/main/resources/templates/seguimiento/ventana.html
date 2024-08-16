@@ -69,10 +69,24 @@
             </div>
             <footer th:replace="layout/footer :: footer">
             </footer>
-
+            
         </div>
     </div>
+    
     <div th:replace="layout/script :: script">
+    </div>
+    <!-- Vertically Center -->
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="contenidoModal">
+                
+                <div class="modal-footer bg-whitesmoke br">
+                    <button type="button" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
     <script>
         function cargarFlujo() {
@@ -139,8 +153,25 @@
             }, 1100);
         }
         
-        function verDocumento(id) {
-            $('#contenidoFormularioModal').html(
+        function verDocumentoFlujo(id) {
+          
+            $('#contenidoModal').html(
+              `<!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="myLargeModalLabel">Visualización de Documento</h5>
+                <a type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </a>
+            </div>
+            <div class="modal-body">
+                <embed src="../../../../seguimiento/verDocumentoMovimiento/${id}" type="application/pdf" frameborder="0" style="height: 600px; width: 100%;"></embed>
+            </div>
+            `);
+            alert("AAAA");
+        }
+
+        function verDocumentoFlujo(id) {
+            $('#contenidoModal').html(
               `<!-- Modal Header -->
       <div class="modal-header">
           <h5 class="modal-title" id="myLargeModalLabel">Visualización de Documento</h5>

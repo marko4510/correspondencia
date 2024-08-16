@@ -83,11 +83,11 @@ public class SeguimientoController {
             }
         }
 
-         @GetMapping("/verDocumentoMovimiento/{id_documento}")
+         @GetMapping("/verDocumentoMovimiento/{id}")
     public ResponseEntity<Resource> verDocumentoMovimiento(@PathVariable("id") Long id) throws IOException {
         MovimientoDocumento movimientoDocumento = movimientoDocumentoService.findById(id);
         Documento documento = documentoService.findById(id);
-
+        System.out.println("aaaa");
         // Obtener la ruta completa del archivo
         Path projectPath = Paths.get("").toAbsolutePath();
         String ruta = projectPath + "/uploads/" + movimientoDocumento.getRuta_movimiento();
@@ -97,7 +97,7 @@ public class SeguimientoController {
 
         // Configurar las cabeceras de la respuesta
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=" + documento.getCite()); // "inline"
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=" + movimientoDocumento.getDocumento().getCite()); // "inline"
                                                                                                                 // para
                                                                                                                 // visualizar
                                                                                                                 // en el
