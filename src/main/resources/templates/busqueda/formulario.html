@@ -52,7 +52,7 @@
           <div class="row">
             <div class="form-group col-md-6">
               <label>Unidad Destino</label>
-              <select class="form-control select2" style="width: 100%" name="id_unidad_destino">
+              <select class="form-control select2" style="width: 100%" name="id_unidad_destino" required>
                 <option value="">Seleccionar una Unidad Destino...</option>
                 <option th:each="uni : ${unidades}" th:value="${uni.id_unidad}" th:if="${uni.estado != 'X'}"
                   th:text="${uni.nombre}">
@@ -115,8 +115,8 @@
         error: function (xhr, status, error) {
           Swal.fire({
             title: 'Error',
-            text: 'Ocurrió un error: ' + error,
-            icon: 'error',
+            text: 'Seleccione una Unidad Destino',
+            icon: 'warning',
             confirmButtonText: 'OK'
           });
         }

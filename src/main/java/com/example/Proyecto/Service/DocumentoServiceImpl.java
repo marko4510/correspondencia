@@ -40,5 +40,15 @@ public class DocumentoServiceImpl implements DocumentoService{
         return dao.obtener_documento_hojaRuta(nroRuta);
     }
 
+    @Override
+    public Documento obtener_DocumentosRutaGestionUnidad(String nroRuta, Integer unidad_origen, String gestion) {
+     return dao.obtener_DocumentosRutaGestionUnidad(nroRuta, unidad_origen, gestion);
+    }
+
+    @Override
+    public List<Documento> obtener_DocumentosUnidad(Integer unidad_origen) {
+      return dao.obtener_DocumentosUnidad(unidad_origen);
+    }
+
 
 }

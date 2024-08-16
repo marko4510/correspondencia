@@ -1,6 +1,10 @@
 package com.example.Proyecto.Controller;
 
+import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,16 +50,32 @@ public class pruebaController {
     Config config = new Config();
 
     @RequestMapping(value = "/recepcion", method = RequestMethod.GET)
-    public String prueba() {
+    public String prueba(HttpServletRequest request, Model model) {
+        if (request.getSession().getAttribute("usuario") != null) {
+            Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+            List<Documento> documentos = documentoService.findAll();
+        // Extraer los años y almacenarlos en un Set para evitar duplicados
+            Set<Integer> years = documentos.stream()
+                    .map(doc -> doc.getFechaCreacion().toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate().getYear())
+                    .collect(Collectors.toSet());
 
+            // Añadir los documentos y los años al modelo
+            model.addAttribute("unidades", unidadService.findUnidadesNoRelacionadasConUsuario(usuario.getId_usuario()));
+            model.addAttribute("years", years);
         return "busqueda/recepcion";
+    } else {
+        return "redirect:/login";
+    }
     }
 
     @PostMapping("/formularioDocumento")
-	public ResponseEntity<?> formularioDocumento(@RequestParam(name = "nroRuta") String nroRuta, Model model, HttpServletRequest request,
+	public ResponseEntity<?> formularioDocumento(@RequestParam(name = "nroRuta") String nroRuta,
+    @RequestParam(name = "year") String year,@RequestParam(name = "id_unidad") Integer id_unidad, Model model, HttpServletRequest request,
 			HttpServletResponse response) {
                 Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-                Documento documento = documentoService.obtener_documento_hojaRuta(nroRuta);
+                Documento documento = documentoService.obtener_DocumentosRutaGestionUnidad(nroRuta, id_unidad, year);
 
                 if (documento == null) {
                     return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No se encontró documento con el número de Hoja de Ruta proporcionado.");

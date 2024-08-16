@@ -29,20 +29,44 @@
                   <h4>Búsqueda de Documento</h4>
                 </div>
                 <div class="card-body">
-                  <div class="row mb-4">
-                    <div class="col-4 col-12 col-md-6 col-lg-4">
 
                       <form th:action="@{/formularioDocumento}" id="form1"  method="post">
-                        <div class="input-group" >
-                          <input type="text" class="form-control" placeholder="Ingrese la Hoja de Ruta" required name="nroRuta">
-                          <div class="input-group-append">
-                            <button class="btn btn-primary" >Buscar</button>
+                        <div class="row mb-12">
+                        <div class="col-2 ">
+                          <label>Hoja de Ruta</label>
+                          <div class="input-group">
+                              <input type="text" id="nroRuta" name="nroRuta" class="form-control" placeholder="Ingrese Numero de Hoja de Ruta">
                           </div>
+                      </div>
+
+                      <div class="col-2 ">
+                        <div class="form-group">
+                            <label>Gestión</label>
+                            <select class="form-control select2" name="year" id="year">
+                                <option value="" selected >Seleccione...</option>
+                                <option th:each="y : ${years}" th:text="${y}" th:value="${y}"></option>
+                            </select>
                         </div>
+                    </div>
+                    <div class="col-4 ">
+                      <div class="form-group">
+                          <label>Unidad</label>
+                          <select class="form-control select2" name="id_unidad" id="id_unidad">
+                              <option value="" selected >Seleccione...</option>
+                              <option th:each="u : ${unidades}" th:text="${u.nombre}" th:value="${u.id_unidad}"></option>
+                          </select>
+                      </div>
+                  </div>
+                  
+                  </div>
+                  <br>
+                  <div class="input-group-append">
+                      <button class="btn btn-primary" >Buscar</button>
+                  </div>
                       </form>
 
-                    </div>
-                </div>
+                    
+           
 
       
                 
@@ -91,10 +115,10 @@
            if (xhr.status === 204) {
             
                Swal.fire({
-                       title: 'No se encontró documento con el número de Hoja de Ruta proporcionado.',
+                       title: 'No se encontró documento con los parámetros proporcionado.',
                        icon: "warning",
                        showConfirmButton: false,
-                       timer: 1500
+                       timer: 2000
                    });
            } else {
              $("#formulario").html(response);

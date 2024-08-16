@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Year;
 import java.util.Date;
 
 import javax.mail.Multipart;
@@ -43,13 +44,20 @@ public class DocumentoController {
     Config config = new Config();
 
     @GetMapping("/inicio")
-    public String inicio() {
-        return "documento/ventana";
+    public String inicio(HttpServletRequest request, Model model) {
+        if (request.getSession().getAttribute("usuario") != null) {
+        
+            return "documento/ventana";
+    } else {
+        return "redirect:/login";
+    }
     }
 
     @PostMapping("/tablaRegistros")
-    public String tablaRegistros(Model model) {
-        model.addAttribute("documentos", documentoService.findAll());
+    public String tablaRegistros(Model model, HttpServletRequest request) {
+        Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+
+        model.addAttribute("documentos", documentoService.obtener_DocumentosUnidad(usuario.getUnidad().getId_unidad().intValue()));
         return "documento/tablaRegistros";
     }
 
@@ -67,8 +75,10 @@ public class DocumentoController {
     }
 
     @PostMapping("/validarDocumento/{nroRuta}")
-    public ResponseEntity<String> formulario(@PathVariable("nroRuta") String nroRuta) {
-        if (documentoService.obtener_documento_hojaRuta(nroRuta) != null) {
+    public ResponseEntity<String> formulario(@PathVariable("nroRuta") String nroRuta, HttpServletRequest request) {
+        String currentYear = Year.now().toString();
+        Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+        if (documentoService.obtener_DocumentosRutaGestionUnidad(nroRuta, usuario.getUnidad().getId_unidad().intValue(), currentYear) != null) {
             return ResponseEntity.ok("invalido");
         }
         return ResponseEntity.ok("valido");
