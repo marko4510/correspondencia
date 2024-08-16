@@ -83,31 +83,25 @@ public class SeguimientoController {
             }
         }
 
-         @GetMapping("/verDocumentoMovimiento/{id}")
-    public ResponseEntity<Resource> verDocumentoMovimiento(@PathVariable("id") Long id) throws IOException {
-        MovimientoDocumento movimientoDocumento = movimientoDocumentoService.findById(id);
-        Documento documento = documentoService.findById(id);
-        System.out.println("aaaa");
-        // Obtener la ruta completa del archivo
-        Path projectPath = Paths.get("").toAbsolutePath();
-        String ruta = projectPath + "/uploads/" + movimientoDocumento.getRuta_movimiento();
-        System.out.println(ruta);
-        // Cargar el archivo PDF como recurso
-        Resource resource = new InputStreamResource(new FileInputStream(ruta));
+        @GetMapping("/verDocumentoMovimiento/{id}")
+        public ResponseEntity<Resource> verDocumentoMovimiento(@PathVariable("id") Long id) throws IOException {
+            MovimientoDocumento movimientoDocumento = movimientoDocumentoService.findById(id);
+            // Obtener la ruta completa del archivo
+            Path projectPath = Paths.get("").toAbsolutePath();
+            String ruta = projectPath + "/uploads/" + movimientoDocumento.getRuta_movimiento();
+            System.out.println(ruta);
+            // Cargar el archivo PDF como recurso
+            Resource resource = new InputStreamResource(new FileInputStream(ruta));
 
-        // Configurar las cabeceras de la respuesta
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=" + movimientoDocumento.getDocumento().getCite()); // "inline"
-                                                                                                                // para
-                                                                                                                // visualizar
-                                                                                                                // en el
-                                                                                                                // navegador
-        headers.setContentType(MediaType.APPLICATION_PDF);
-
-        // Devolver la respuesta con el archivo PDF
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(resource);
-    }
+            // Configurar las cabeceras de la respuesta
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION,
+                    "inline; filename=" + movimientoDocumento.getDocumento().getCite());
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            // Devolver la respuesta con el archivo PDF
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(resource);
+        }
     
 }
