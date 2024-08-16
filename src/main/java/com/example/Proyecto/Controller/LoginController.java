@@ -39,8 +39,8 @@ public class LoginController {
         if (usuario != null && !usuario.getEstado().equals("X")) {
             HttpSession session = request.getSession(true);
 
-            session.setAttribute("persona", usuario.getPersona());
             session.setAttribute("usuario", usuario);
+            session.setAttribute("persona", usuario.getPersona());
             return "redirect:/inicio";
         }else{
             return "redirect:/login";

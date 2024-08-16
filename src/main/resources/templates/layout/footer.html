@@ -1,7 +1,10 @@
 <footer class="main-footer" th:fragment="footer">
     <div class="footer-left">
-      <a href="templateshub.net">Templateshub</a></a>
+      <a th:href="@{../../../../inicio}">Unidad de Sistemas de Información y Comunicación &copy;<span id="year"></span></a>
     </div>
     <div class="footer-right">
     </div>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
   </footer>

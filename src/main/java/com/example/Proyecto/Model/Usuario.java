@@ -31,7 +31,7 @@ public class Usuario implements Serializable {
 
     // Tabla Persona
     @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_persona")
     private Persona persona;
 
