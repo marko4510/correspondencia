@@ -42,6 +42,11 @@ public class UnidadServiceImpl implements UnidadService{
        return dao.findUnidadesNoRelacionadasConUsuario(idUsuario);
     }
 
+    @Override
+    public Unidad obtener_unidadPorNombre(String nombreUnidad) {
+      return dao.obtener_unidadPorNombre(nombreUnidad);
+    }
+
 
 
 }

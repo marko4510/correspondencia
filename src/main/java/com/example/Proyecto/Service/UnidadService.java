@@ -11,6 +11,6 @@ public interface UnidadService {
     void save(Unidad documento);
     void deleteById(Long id);
     List<Unidad> findUnidadesNoRelacionadasConUsuario(Long idUsuario);
-
+    public Unidad obtener_unidadPorNombre(String nombreUnidad);
     
 }

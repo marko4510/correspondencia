@@ -26,8 +26,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.Proyecto.Model.Persona;
+import com.example.Proyecto.Model.Unidad;
 import com.example.Proyecto.Model.Usuario;
 import com.example.Proyecto.Service.PersonaService;
+import com.example.Proyecto.Service.UnidadService;
 import com.example.Proyecto.Service.UsuarioService;
 
 
@@ -40,6 +42,10 @@ public class LoginController {
 
     @Autowired
     private PersonaService personaService;
+
+    @Autowired
+    private UnidadService unidadService;
+
     @GetMapping("/login")
     public String login() {
 
@@ -71,9 +77,9 @@ public class LoginController {
     //     calendar.setTime(new Date());
     //     int numeroDeMes = calendar.get(Calendar.MONTH) + 1;
     //     int gestion = calendar.get(Calendar.YEAR);
-    //     //int periodo = calcularPeriodo(numeroDeMes);
+      
     //     try {
-    //         // Llamar a la API para obtener datos del funcionario
+      
     //         String url = "http://172.16.21.2:3333/api/londraPost/v1/obtenerDatos";
     //         HttpHeaders headers = new HttpHeaders();
     //         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -94,13 +100,33 @@ public class LoginController {
     //                 nuevaPersona.setNombre(data.get("per_nombres").toString());
     //                 nuevaPersona.setAp_paterno(data.get("per_ap_paterno").toString());
     //                 nuevaPersona.setAp_materno(data.get("per_ap_materno").toString());
-    //                 nuevaPersona.setEstado("P");
+    //                 nuevaPersona.setEstado("A");
     //                 personaService.save(nuevaPersona);
 
 
-
-
     //             }
+    //             Unidad unidadExiste = unidadService.obtener_unidadPorNombre(data.get("eo_descripcion").toString());
+
+    //             if (unidadExiste == null) {
+    //                 unidadExiste = new Unidad();
+    //                 unidadExiste.setEstado("A");
+    //                 unidadExiste.setNombre(data.get("eo_descripcion").toString());
+    //                 unidadService.save(unidadExiste);
+    //             }
+
+    //             Usuario usuarioExiste = usuarioService.obtener_Usuario(codFuncionario, Ci);
+
+    //             if (usuarioExiste == null) {
+    //             usuarioExiste = new Usuario();
+    //             usuarioExiste.setEstado("P");
+    //             usuarioExiste.setPersona(personaExistente);
+    //             usuarioExiste.setUnidad(unidadExiste);
+    //             usuarioExiste.setUsuario_nom(codFuncionario);
+    //             usuarioExiste.setContrasena(Ci);
+    //             usuarioService.save(usuarioExiste);
+    //             }
+
+                
 
     //                 return ResponseEntity.ok("Se creó un nuevo registro correctamente");
     //             }
