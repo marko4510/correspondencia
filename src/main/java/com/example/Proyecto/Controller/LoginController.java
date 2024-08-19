@@ -70,73 +70,70 @@ public class LoginController {
         
     }
 
-    // @PostMapping("/RegistrarPersona")
-    // public ResponseEntity<String> RegistrarPersona(@RequestParam(name = "codFuncionario") String codFuncionario,
-    //         @RequestParam(name = "Ci") String Ci) {
-    //     Calendar calendar = Calendar.getInstance();
-    //     calendar.setTime(new Date());
-    //     int numeroDeMes = calendar.get(Calendar.MONTH) + 1;
-    //     int gestion = calendar.get(Calendar.YEAR);
-      
-    //     try {
-      
-    //         String url = "http://172.16.21.2:3333/api/londraPost/v1/obtenerDatos";
-    //         HttpHeaders headers = new HttpHeaders();
-    //         headers.setContentType(MediaType.APPLICATION_JSON);
-    //         HttpEntity<String> requestEntity = new HttpEntity<>(
-    //                 "{\"usuario\":\"" + codFuncionario + "\", \"contrasena\":\"" + Ci + "\"}", headers);
-    //         RestTemplate restTemplate = new RestTemplate();
-    //         ResponseEntity<Map> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, Map.class);
+    @PostMapping("/LoginApiAdm")
+public ResponseEntity<String> RegistrarPersona(@RequestParam(name = "codFuncionario") String codFuncionario,
+                                               @RequestParam(name = "Ci") String Ci, HttpServletRequest request) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(new Date());
+    int numeroDeMes = calendar.get(Calendar.MONTH) + 1;
+    int gestion = calendar.get(Calendar.YEAR);
 
+    try {
+        String url = "http://localhost:3333/api/londraPost/v1/obtenerDatos";
+		//String url = "http://virtual.uap.edu.bo:7174/api/londraPost/v1/obtenerDatos";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> requestEntity = new HttpEntity<>(
+                "{\"usuario\":\"" + codFuncionario + "\", \"contrasena\":\"" + Ci + "\"}", headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Map> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, Map.class);
 
-    //         if (responseEntity.getStatusCodeValue() == 200) {
-    //             Map<String, Object> data = responseEntity.getBody();
+        if (responseEntity.getStatusCodeValue() == 200) {
+            Map<String, Object> data = responseEntity.getBody();
 
-               
-    //             Persona personaExistente = personaService.obtener_persona(Ci);
-    //             if (personaExistente == null) {
-    //                 Persona nuevaPersona = new Persona();
-    //                 nuevaPersona.setCi(data.get("per_num_doc").toString());
-    //                 nuevaPersona.setNombre(data.get("per_nombres").toString());
-    //                 nuevaPersona.setAp_paterno(data.get("per_ap_paterno").toString());
-    //                 nuevaPersona.setAp_materno(data.get("per_ap_materno").toString());
-    //                 nuevaPersona.setEstado("A");
-    //                 personaService.save(nuevaPersona);
+            Persona personaExistente = personaService.obtener_persona(Ci);
+            if (personaExistente == null) {
+                Persona nuevaPersona = new Persona();
+                nuevaPersona.setCi(data.get("per_num_doc").toString());
+                nuevaPersona.setNombre(data.get("per_nombres").toString());
+                nuevaPersona.setAp_paterno(data.get("per_ap_paterno").toString());
+                nuevaPersona.setAp_materno(data.get("per_ap_materno").toString());
+                nuevaPersona.setEstado("A");
+                personaService.save(nuevaPersona);
+                personaExistente = nuevaPersona; // Añadir esta línea para asignar la nueva persona creada
+            }
 
+            Unidad unidadExiste = unidadService.obtener_unidadPorNombre(data.get("eo_descripcion").toString());
+            if (unidadExiste == null) {
+                unidadExiste = new Unidad();
+                unidadExiste.setEstado("A");
+                unidadExiste.setNombre(data.get("eo_descripcion").toString());
+                unidadService.save(unidadExiste);
+            }
 
-    //             }
-    //             Unidad unidadExiste = unidadService.obtener_unidadPorNombre(data.get("eo_descripcion").toString());
+            Usuario usuarioExiste = usuarioService.obtener_Usuario(codFuncionario, Ci);
+            if (usuarioExiste == null) {
+                usuarioExiste = new Usuario();
+                usuarioExiste.setEstado("P");
+                usuarioExiste.setPersona(personaExistente);
+                usuarioExiste.setUnidad(unidadExiste);
+                usuarioExiste.setUsuario_nom(codFuncionario);
+                usuarioExiste.setContrasena(Ci);
+                usuarioService.save(usuarioExiste);
+            }
+            HttpSession session = request.getSession(true);
+            session.setAttribute("usuario", usuarioExiste);
+			session.setAttribute("persona", usuarioExiste.getPersona());
+            return ResponseEntity.ok("Se creó un nuevo registro correctamente");
+        } else {
+            return ResponseEntity.ok("No se pudo obtener los datos del funcionario con el código proporcionado");
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.ok("Error al procesar la solicitud");
+    }
+}
 
-    //             if (unidadExiste == null) {
-    //                 unidadExiste = new Unidad();
-    //                 unidadExiste.setEstado("A");
-    //                 unidadExiste.setNombre(data.get("eo_descripcion").toString());
-    //                 unidadService.save(unidadExiste);
-    //             }
-
-    //             Usuario usuarioExiste = usuarioService.obtener_Usuario(codFuncionario, Ci);
-
-    //             if (usuarioExiste == null) {
-    //             usuarioExiste = new Usuario();
-    //             usuarioExiste.setEstado("P");
-    //             usuarioExiste.setPersona(personaExistente);
-    //             usuarioExiste.setUnidad(unidadExiste);
-    //             usuarioExiste.setUsuario_nom(codFuncionario);
-    //             usuarioExiste.setContrasena(Ci);
-    //             usuarioService.save(usuarioExiste);
-    //             }
-
-                
-
-    //                 return ResponseEntity.ok("Se creó un nuevo registro correctamente");
-    //             }
-    //         } else {
-    //             return ResponseEntity.ok("No se pudo obtener los datos del funcionario con el código proporcionado");
-    //         }
-    //     } catch (Exception e) {
-    //         e.printStackTrace();
-    //         return ResponseEntity.ok("Error al procesar la solicitud");
-    //     }
     
     @RequestMapping(value = "/cerrar_sesion",method = RequestMethod.GET)
     public String cerrarSesion(HttpServletRequest request, RedirectAttributes flash){
