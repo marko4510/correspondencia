@@ -62,13 +62,10 @@ public class SeguimientoController {
                     .collect(Collectors.toSet());
 
             // Verifica el contenido de years
-            System.out.println("Years: " + years);
-
+    
             model.addAttribute("unidades", unidadService.findAll());
             model.addAttribute("years", years);
-            for (Integer year : years) {
-                System.out.println("Año: " + year);
-            }
+           
             return "seguimiento/ventana";
         } else {
             return "redirect:/login";
