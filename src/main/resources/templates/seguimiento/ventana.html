@@ -77,15 +77,11 @@
     <div th:replace="layout/script :: script">
     </div>
     <!-- Vertically Center -->
-    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="modalId" aria-labelledby="myLargeModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content" id="contenidoModal">
                 
-                <div class="modal-footer bg-whitesmoke br">
-                    <button type="button" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
             </div>
         </div>
     </div>
@@ -155,19 +151,48 @@
         }
         
         function verDocumentoFlujo(id) {
-          
-            $('#contenidoModal').html(
-              `<!-- Modal Header -->
-            <div class="modal-header">
-                <h5 class="modal-title" id="myLargeModalLabel">Visualización de Documento</h5>
-                <a type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </a>
-            </div>
-            <div class="modal-body">
-                <embed src="../../../../seguimiento/verDocumentoMovimiento/${id}" type="application/pdf" frameborder="0" style="height: 600px; width: 100%;"></embed>
-            </div>
-            `);
+            const url = `../../../../seguimiento/verDocumentoMovimiento/${id}`;
+        
+            fetch(url)
+                .then(response => {
+                    if (response.ok) {
+                        // El documento existe, se puede mostrar en el modal
+                        $('#contenidoModal').html(
+                            `<!-- Modal Header -->
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="myLargeModalLabel">Visualización de Documento</h5>
+                                <a type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </a>
+                            </div>
+                            <div class="modal-body">
+                                <embed src="${url}" type="application/pdf" frameborder="0" style="height: 600px; width: 100%;"></embed>
+                            </div>
+                            <div class="modal-footer bg-whitesmoke br">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            </div>`
+                        );
+                        $('#modalId').modal('show'); // Mostrar el modal
+                    } else {
+                        // El documento no existe, mostrar SweetAlert
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'El documento no existe o no se pudo encontrar.',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    }
+                })
+                .catch(error => {
+                    // Si hay algún otro error, manejarlo aquí
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Ocurrió un error al intentar cargar el documento.',
+                        confirmButtonText: 'Aceptar'
+                    });
+                });
         }
 
     </script>
