@@ -29,17 +29,30 @@
                   <h4>Búsqueda de Documento</h4>
                 </div>
                 <div class="card-body">
-
+                  <ul class="nav nav-pills" id="myTab3" role="tablist">
+                    <li class="nav-item">
+                      <a class="nav-link active" id="home-tab3" data-toggle="tab" href="#home3" role="tab"
+                        aria-controls="home" aria-selected="true">Recepción Externa</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="profile-tab3" data-toggle="tab" href="#profile3" role="tab"
+                        aria-controls="profile" aria-selected="false">Recepción Interna</a>
+                    </li>
+                 
+                  </ul>
+                  <br>
+                  <div class="tab-content" id="myTabContent2">
+                    <div class="tab-pane fade show active" id="home3" role="tabpanel" aria-labelledby="home-tab3">
                       <form th:action="@{/formularioDocumento}" id="form1"  method="post">
                         <div class="row mb-12">
-                        <div class="col-4 ">
+                        <div class="col-2 ">
                           <label>Hoja de Ruta</label>
                           <div class="input-group">
                               <input type="text" id="nroRuta" name="nroRuta" class="form-control" placeholder="Ingrese Numero de Hoja de Ruta">
                           </div>
                       </div>
 
-                      <div class="col-4 ">
+                      <div class="col-2 ">
                         <div class="form-group">
                             <label>Gestión</label>
                             <select class="form-control select2" style="width: 100%;" name="year" id="year">
@@ -64,6 +77,55 @@
                       <button class="btn btn-primary" >Buscar</button>
                   </div>
                       </form>
+                    </div>
+                    <div class="tab-pane fade" id="profile3" role="tabpanel" aria-labelledby="profile-tab3">
+                      <form th:action="@{/formularioDocumento}" id="form1"  method="post">
+                        <div class="row mb-12">
+                        <div class="col-2 ">
+                          <label>Hoja de Ruta</label>
+                          <div class="input-group">
+                              <input type="text" id="nroRuta" name="nroRuta" class="form-control" placeholder="Ingrese Numero de Hoja de Ruta">
+                          </div>
+                      </div>
+
+                      <div class="col-2 ">
+                        <div class="form-group">
+                            <label>Gestión</label>
+                            <select class="form-control select2" style="width: 100%;" name="year" id="year">
+                                <option value="" selected >Seleccione...</option>
+                                <option th:each="y : ${years}" th:text="${y}" th:value="${y}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-4 ">
+                      <div class="form-group">
+                          <label>Unidad</label>
+                          <select class="form-control select2" style="width: 100%;" name="id_unidad" id="id_unidad">
+                              <option value="" selected >Seleccione...</option>
+                              <option th:each="u : ${unidades}" th:text="${u.nombre}" th:value="${u.id_unidad}"></option>
+                          </select>
+                      </div>
+                  </div>
+
+                  <div class="col-4 ">
+                    <div class="form-group">
+                        <label>Persona</label>
+                        <select class="form-control select2" style="width: 100%;" name="id_usuario" id="id_usuario">
+                            <option value="" selected >Seleccione una Persona...</option>
+                            
+                        </select>
+                    </div>
+                </div>
+                  
+                  </div>
+                  <br>
+                  <div class="input-group-append">
+                      <button class="btn btn-primary" >Buscar</button>
+                  </div>
+                      </form>
+                    </div>
+                  </div>
+                     
               </div>
             </div>
           </div>

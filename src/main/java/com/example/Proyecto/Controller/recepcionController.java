@@ -33,7 +33,7 @@ import com.example.Proyecto.Service.MovimientoDocumentoService;
 import com.example.Proyecto.Service.UnidadService;
 
 @Controller
-public class pruebaController {
+public class recepcionController {
 
     @Autowired
     private DocumentoService documentoService;
