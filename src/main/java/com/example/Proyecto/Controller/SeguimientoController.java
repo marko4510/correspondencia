@@ -50,16 +50,22 @@ public class SeguimientoController {
         if (request.getSession().getAttribute("usuario") != null) {
             List<Documento> documentos = documentoService.findAll();
 
-            // Extraer los años y almacenarlos en un Set para evitar duplicados
             Set<Integer> years = documentos.stream()
-                    .map(doc -> doc.getFechaCreacion().toInstant()
+                    .map(doc -> doc.getFechaCreacion()
+                            .toInstant()
                             .atZone(ZoneId.systemDefault())
-                            .toLocalDate().getYear())
+                            .toLocalDate()
+                            .getYear())
                     .collect(Collectors.toSet());
 
-            // Añadir los documentos y los años al modelo
+            // Verifica el contenido de years
+            System.out.println("Years: " + years);
+
             model.addAttribute("unidades", unidadService.findAll());
             model.addAttribute("years", years);
+            for (Integer year : years) {
+                System.out.println("Año: " + year);
+            }
             return "seguimiento/ventana";
         } else {
             return "redirect:/login";
