@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="layout/head :: head"></head>
+
+<body>
+  <div class="loader"></div>
+  <div id="app">
+    <div class="main-wrapper main-wrapper-1">
+      <nav th:replace="layout/navbar :: navbar"></nav>
+      <div th:replace="layout/sidebar :: sidebar"></div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <section class="section">
+
+          <div id="tablaRegistro"></div>
+        </section>
+      </div>
+      <footer th:replace="layout/footer :: footer">
+      </footer>
+    </div>
+  </div>
+  <div th:replace="layout/script :: script">
+  </div>
+  <!-- Modal Formulario -->
+  <div class="modal fade modal-usuario" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content" id="contenidoFormularioModal">
+
+      </div>
+    </div>
+  </div>
+  <!-- Modal Ver Archivo -->
+  <!-- <div class="modal fade modal-ver-documento" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content" id="contenidoArchivoModal">
+
+      </div>
+    </div>
+  </div> -->
+  <script>
+    cargarTabla();
+
+    function cargarFormulari() {
+      $.ajax({
+        type: 'GET',
+        url: "/usuario/formularioM",  // Ruta del metodo del controlador en Spring Boot
+        success: function (response) {
+          $("#contenidoFormularioModal").html(response);  // Actualiza el contenido del div con la respuesta del servidor
+        }
+      });
+    }
+
+
+    function cargarFormulario(id) {
+      $.ajax({
+        type: 'POST',
+        url: "/usuario/formulario/" + id,  // Ruta del metodo del controlador en Spring Boot
+        success: function (response) {
+          $("#contenidoFormularioModal").html(response);  // Actualiza el contenido del div con la respuesta del servidor
+        }
+      });
+    }
+
+    function cargarTabla() {
+      $.ajax({
+        type: 'POST',
+        url: "/usuario/tablaRegistros",  // Ruta del metodo del controlador en Spring Boot
+        success: function (response) {
+          $("#tablaRegistro").html(response);  // Actualiza el contenido del div con la respuesta del servidor
+        }
+      });
+    }
+
+ 
+
+  </script>
+</body>
+
+</html>

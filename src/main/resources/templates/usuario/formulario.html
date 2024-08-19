@@ -16,39 +16,63 @@
         </th:block>
         <div class="row">
             <div class="form-group col-md-6">
-                <label>Cite</label>
-                <input type="text" class="form-control" required="" th:field="${documento.cite}">
+                <label>Nombre de Usuario</label>
+                <input type="text" class="form-control" required="" th:field="${usuario.usuario_nom}">
                 <div class="invalid-feedback">
-                    Tiene que introducir un cite valido
+                    Tiene que introducir un nombre de usuario
                 </div>
             </div>
             <div class="form-group col-md-6">
-                <label>Nro. Hoja Ruta</label>
-                <input type="text" class="form-control" required="" th:field="${documento.nroRuta}" id="nroHojaRuta">
+                <label>Contraseña</label>
+                <input type="text" class="form-control" required="" th:field="${usuario.contrasena}" id="contrasena">
                 <div class="invalid-feedback">
-                    Tiene que introducir un numero de hoja de ruta
+                    Tiene que introducir una contraseña
                 </div>
                 <div id="alertaValidacionNroRuta"></div>
             </div>
-        </div>
-        <div class="form-group mb-0">
-            <label>Asunto</label>
-            <textarea class="form-control" required="" th:field="${documento.asunto}"></textarea>
-            <div class="invalid-feedback">
-                Introduzca el asunto del documento
+            <div class="form-group col-md-6">
+                <label>Persona</label>
+                <select class="form-control select2" style="width: 100%" th:field="${usuario.persona}" required>
+                    <option value="">Seleccionar una Persona...</option>
+                    <option th:each="per : ${personas}" th:value="${per.id_persona}" th:if="${per.estado != 'X'}"
+                    th:text="${per.nombre} +' '+ ${per.ap_paterno} +' '+ ${per.ap_materno}">
+                  </option>
+                  </select>
+                <div class="invalid-feedback">
+                    Seleccione la Persona
+                </div>
             </div>
+            <div class="form-group col-md-6">
+                <label>Unidad</label>
+                <select class="form-control select2" style="width: 100%" th:field="${usuario.unidad}" required>
+                    <option value="">Seleccionar una Unidad...</option>
+                    <option th:each="uni : ${unidades}" th:value="${uni.id_unidad}" th:if="${uni.estado != 'X'}"
+                    th:text="${uni.nombre}">
+                  </option>
+                  </select>
+                <div class="invalid-feedback">
+                   Seleccione la unidad
+                </div>
+            </div>
+            <div class="form-group col-md-4">
+                <label>Rol</label>
+                <select class="form-control select2" style="width: 100%" th:field="${usuario.estado}" required>
+                    <option value="">Seleccionar un Rol...</option>
+                    <option value="P"> Pendiente</option>
+                    <option value="A"> Activo</option>
+                    <option value="S"> Admin</option>
+                  </select>
+                <div class="invalid-feedback">
+                    Introduzca el asunto del documento
+                </div>
+            </div>
+
+
         </div>
+       
+        
         <br>
-        <div class="form-group">
-            <label>Adjuntar Documento</label>
-            <input type="file" class="form-control" th:if="${edit == null}" required="" id="inputFile" name="file"
-                accept="application/pdf">
-            <input type="file" class="form-control" th:if="${edit != null}" id="inputFile" name="file"
-                accept="application/pdf">
-            <div class="invalid-feedback">
-                Debe adjuntar el documento escaneado en PDF
-            </div>
-        </div>
+   
     </div>
     <div class="modal-footer">
         <button type="submit" class="btn btn-primary" th:text="${edit}? 'Guardar Cambios': 'Guardar'"
@@ -60,7 +84,7 @@
 <script>
 
     $(document).ready(function () {
-        $('#formularioModalDocumento').on('submit', function (event) {
+        $('#formularioModalUsuario').on('submit', function (event) {
             event.preventDefault(); // Previene el envío del formulario
 
             //Verifica la validez del formulario
@@ -111,7 +135,7 @@
             const file = fileInput.files[0];
 
             if (file.type != 'application/pdf') {
-                $('#formularioModalDocumento').addClass('was-validated');
+                $('#formularioModalUsuario').addClass('was-validated');
                 fileInput.value = ''; // Limpiar el input si el archivo no es PDF
             }
         });

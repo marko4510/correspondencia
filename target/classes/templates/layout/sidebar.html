@@ -16,6 +16,10 @@
         <li class="dropdown ">
           <a th:href="@{/seguimiento/inicio}" class="nav-link"><i data-feather="eye"></i><span>Seguimiento</span></a>
         </li>
+
+        <li class="dropdown " th:if="${session.usuario.estado == 'S'}">
+          <a th:href="@{/usuario/inicio}" class="nav-link"><i data-feather="monitor"></i><span>Usuario</span></a>
+        </li>
         
       </ul>
     </aside>
