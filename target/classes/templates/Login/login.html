@@ -16,10 +16,108 @@
     <!-- Custom style CSS -->
     <link rel="stylesheet" href="../../../assets/css/custom.css">
     <link rel="stylesheet" href="../../../assets/css/sweetalert2.min.css">
+    <link rel="stylesheet" href="../../../assets/mdbootstrap/css/mdb.min.css">
     <link rel='shortcut icon' type='image/x-icon' href='assets/img/favicon.ico' />
 </head>
 
-<body >
+<body>
+    <style>
+        @keyframes cube {
+            from {
+                transform: scale(0) rotate(0deg) translate(-50%, -50%);
+                opacity: 1;
+            }
+
+            to {
+                transform: scale(20) rotate(960deg) translate(-50%, -50%);
+                opacity: 0;
+            }
+        }
+
+        .background {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            margin: 0;
+            padding: 0;
+            background: #276bd8;
+            overflow: hidden;
+        }
+
+        .background li {
+            position: absolute;
+            top: 80vh;
+            left: 45vw;
+            width: 10px;
+            height: 10px;
+            border: solid 1px #3B71CA;
+            color: transparent;
+            transform-origin: top left;
+            transform: scale(0) rotate(0deg) translate(-50%, -50%);
+            animation: cube 8s ease-in forwards infinite;
+        }
+
+        undefined .background li:nth-child(0) {
+            animation-delay: 0s;
+            left: 9vw;
+            top: 51vh;
+        }
+
+        .background li:nth-child(1) {
+            animation-delay: 2s;
+            left: 89vw;
+            top: 12vh;
+            border-color: #5685c2;
+        }
+
+        .background li:nth-child(2) {
+            animation-delay: 4s;
+            left: 61vw;
+            top: 24vh;
+            border-color: #5685c2;
+        }
+
+        .background li:nth-child(3) {
+            animation-delay: 6s;
+            left: 21vw;
+            top: 88vh;
+        }
+
+        .background li:nth-child(4) {
+            animation-delay: 8s;
+            left: 36vw;
+            top: 76vh;
+        }
+
+        .background li:nth-child(5) {
+            animation-delay: 10s;
+            left: 74vw;
+            top: 40vh;
+        }
+
+        /* Cambiar el color de fondo del botón */
+.custom-btn {
+  background-color: #ec351d; /* Cambia este color según tus necesidades */
+  border-color: #ec3225; /* Cambia este color según tus necesidades */
+  transition: all 0.5s;
+}
+
+/* Cambiar el color del botón al pasar el cursor (hover) */
+.custom-btn:hover {
+  background-color: #45a049; /* Cambia este color según tus necesidades */
+  border-color: #45a049; /* Cambia este color según tus necesidades */
+  transition: all 0.5s;
+transform: scale(1.1);
+}
+
+/* Opcional: Cambiar el color del texto del botón al pasar el cursor */
+.custom-btn:hover {
+  color: #fff; /* Cambia este color según tus necesidades */
+}
+
+    </style>
     <div class="loader"></div>
     <div id="app">
         <section class="section">
@@ -36,16 +134,17 @@
                 <div class="row">
                     <div
                         class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
-                        <div class="card card-primary">
+                        <!-- <div class="card card-primary">
                             <div class="card-header">
                                 <h4>Inicio de Sesion</h4>
                             </div>
                             <div class="card-body">
-                                <form method="POST" th:action="@{/LoginApiAdm}" class="needs-validation" novalidate="" id="formLogin">
+                                <form method="POST" th:action="@{/LoginApiAdm}" class="needs-validation" novalidate=""
+                                    id="formLogin">
                                     <div class="form-group">
                                         <label for="email">Código Funcionario</label>
-                                        <input id="user" type="text" class="form-control" name="codFuncionario" tabindex="1"
-                                            required autofocus>
+                                        <input id="user" type="text" class="form-control" name="codFuncionario"
+                                            tabindex="1" required autofocus>
                                         <div class="invalid-feedback">
                                             por favor ingresar usuario
                                         </div>
@@ -53,11 +152,11 @@
                                     <div class="form-group">
                                         <div class="d-block">
                                             <label for="password" class="control-label">C.I.</label>
-                                            <!-- <div class="float-right">
+                                            <div class="float-right">
                                                 <a href="auth-forgot-password.html" class="text-small">
                                                     olvido su contraseña?
                                                 </a>
-                                            </div> -->
+                                            </div> 
                                         </div>
                                         <input id="contrasena" type="password" class="form-control" name="ci"
                                             tabindex="2" required>
@@ -65,38 +164,65 @@
                                             por favor ingresar contraseña
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group">
                                         <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
                                             INGRESAR
                                         </button>
                                     </div>
                                 </form>
-                                <!-- <div class="text-center mt-4 mb-3">
-                                    <div class="text-job text-muted">Login With Social</div>
-                                </div>
-                                <div class="row sm-gutters">
-                                    <div class="col-6">
-                                        <a class="btn btn-block btn-social btn-facebook">
-                                            <span class="fab fa-facebook"></span> Facebook
-                                        </a>
-                                    </div>
-                                    <div class="col-6">
-                                        <a class="btn btn-block btn-social btn-twitter">
-                                            <span class="fab fa-twitter"></span> Twitter
-                                        </a>
-                                    </div>
-                                </div> -->
                             </div>
-                        </div>
+                        </div> -->
+                        <!-- Pills navs -->
+                         <div class="card" style="padding: 10%;">
+                            <!-- Pills content -->
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="pills-login" role="tabpanel"
+                                    aria-labelledby="tab-login">
+                                    <form method="POST" th:action="@{/LoginApiAdm}" class="needs-validation" novalidate="" id="formLogin">
+                                        <div class="text-center mb-3">
+                                            <h4>Sistema de Correspondecia</h4>
+                                            <img src="../../../assets/img/wired-flat-21-avatar.gif" alt="" style="height: 100px;">
+                                        </div>
+    
+                                        <!-- Email input -->
+                                        <div data-mdb-input-init class="form-outline mb-4">
+                                            <input type="text" id="user" name="codFuncionario" class="form-control" />
+                                            <label class="form-label" for="user">Código Funcionario</label>
+                                        </div>
+                                        
+    
+                                        <!-- Password input -->
+                                        <div data-mdb-input-init class="form-outline mb-4">
+                                            <input type="password" id="contrasena" class="form-control" name="ci" />
+                                            <label class="form-label" for="contrasena">C.I.</label>
+                                        </div>
+    
+                                        <!-- Submit button -->
+                                        <button type="submit" data-mdb-button-init data-mdb-ripple-init
+                                            class="btn btn-primary btn-block custom-btn mb-4">Ingresar</button>
+                                    </form>
+                                </div>
+                            </div>
+                         </div>
+                        
+                        <!-- Pills content -->
                         <div class="mt-5 text-muted text-center">
-                            Universidad Amazonica de Pando <a href="#"> #UAPDIGITAL</a>
+                            <span class="text-white">Universidad Amazonica de Pando</span><a href="#" class="text-white"> #UAPDIGITAL</a>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
     </div>
+    <ul class="background">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
     <!-- General JS Scripts -->
     <script src="../../../assets/js/app.min.js"></script>
     <!-- JS Libraies -->
@@ -108,7 +234,12 @@
 
     <script src="../../../assets/js/jquery-3.7.1.min.js"></script>
     <script src="../../../assets/js/sweetalert2.js"></script>
+    <script src="../../../assets/mdbootstrap/js/mdb.min.js"></script>
+
     <script>
+        document.querySelectorAll('.form-outline').forEach((formOutline) => {
+            new mdb.Input(formOutline).init();
+        });
         $(document).ready(function () {
             $('#formLogin').submit(function (event) {
                 event.preventDefault();
