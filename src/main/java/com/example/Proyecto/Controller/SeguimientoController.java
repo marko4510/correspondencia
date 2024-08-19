@@ -10,10 +10,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.time.LocalDate;
 import java.time.ZoneId;
+
+import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -90,32 +93,50 @@ public class SeguimientoController {
         }
 
         @GetMapping("/verDocumentoMovimiento/{id}")
-        public ResponseEntity<Resource> verDocumentoMovimiento(@PathVariable("id") Long id) throws IOException {
+        public ResponseEntity<Resource> verDocumentoMovimiento(@PathVariable("id") Long id) {
             MovimientoDocumento movimientoDocumento = movimientoDocumentoService.findById(id);
-            if (movimientoDocumento != null) {
+
+            // Verifica si el movimientoDocumento no es nulo y si la ruta del movimiento no
+            // está vacía o es nula
+            if (movimientoDocumento != null && movimientoDocumento.getRuta_movimiento() != null
+                    && !movimientoDocumento.getRuta_movimiento().trim().isEmpty()) {
                 // Obtener la ruta completa del archivo
                 Path projectPath = Paths.get("").toAbsolutePath();
-                String ruta = projectPath + "/uploads/" + movimientoDocumento.getRuta_movimiento();
-                System.out.println(ruta);
-                
-                // Cargar el archivo PDF como recurso
-                Resource resource = new InputStreamResource(new FileInputStream(ruta));
-        
-                // Configurar las cabeceras de la respuesta
-                HttpHeaders headers = new HttpHeaders();
-                headers.add(HttpHeaders.CONTENT_DISPOSITION,
-                        "inline; filename=" + movimientoDocumento.getDocumento().getCite());
-                headers.setContentType(MediaType.APPLICATION_PDF);
-                
-                // Devolver la respuesta con el archivo PDF
-                return ResponseEntity.ok()
-                        .headers(headers)
-                        .body(resource);
+                String ruta = projectPath.resolve("uploads").resolve(movimientoDocumento.getRuta_movimiento())
+                        .toString();
+                System.out.println("Ruta del archivo: " + ruta);
+
+                try {
+                    // Verificar si el archivo realmente existe en el sistema de archivos
+                    File file = new File(ruta);
+                    if (file.exists()) {
+                        // Cargar el archivo PDF como recurso
+                        Resource resource = new InputStreamResource(new FileInputStream(file));
+
+                        // Configurar las cabeceras de la respuesta
+                        HttpHeaders headers = new HttpHeaders();
+                        headers.add(HttpHeaders.CONTENT_DISPOSITION,
+                                "inline; filename=" + movimientoDocumento.getDocumento().getCite());
+                        headers.setContentType(MediaType.APPLICATION_PDF);
+
+                        // Devolver la respuesta con el archivo PDF
+                        return ResponseEntity.ok()
+                                .headers(headers)
+                                .body(resource);
+                    } else {
+                        // Archivo no encontrado en la ruta especificada
+                        return ResponseEntity.notFound().build();
+                    }
+                } catch (IOException e) {
+                    // Manejar excepciones de IO
+                    e.printStackTrace();
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+                }
             } else {
-                // Devolver una respuesta 404 Not Found si el documento no existe
+                // Devolver una respuesta 404 Not Found si el documento no existe o la ruta está
+                // vacía
                 return ResponseEntity.notFound().build();
             }
-            
         }
     
 }
