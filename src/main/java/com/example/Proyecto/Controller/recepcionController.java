@@ -31,6 +31,7 @@ import com.example.Proyecto.Model.Usuario;
 import com.example.Proyecto.Service.DocumentoService;
 import com.example.Proyecto.Service.MovimientoDocumentoService;
 import com.example.Proyecto.Service.UnidadService;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class recepcionController {
@@ -45,7 +46,7 @@ public class recepcionController {
     private MovimientoDocumentoService movimientoDocumentoService;
 
     @Autowired
-	private SpringTemplateEngine templateEngine;
+    private SpringTemplateEngine templateEngine;
 
     Config config = new Config();
 
@@ -54,7 +55,7 @@ public class recepcionController {
         if (request.getSession().getAttribute("usuario") != null) {
             Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
             List<Documento> documentos = documentoService.findAll();
-        // Extraer los años y almacenarlos en un Set para evitar duplicados
+            // Extraer los años y almacenarlos en un Set para evitar duplicados
             Set<Integer> years = documentos.stream()
                     .map(doc -> doc.getFechaCreacion().toInstant()
                             .atZone(ZoneId.systemDefault())
@@ -64,33 +65,34 @@ public class recepcionController {
             // Añadir los documentos y los años al modelo
             model.addAttribute("unidades", unidadService.findUnidadesNoRelacionadasConUsuario(usuario.getId_usuario()));
             model.addAttribute("years", years);
-        return "busqueda/recepcion";
-    } else {
-        return "redirect:/login";
-    }
+            return "busqueda/recepcion";
+        } else {
+            return "redirect:/login";
+        }
     }
 
     @PostMapping("/formularioDocumento")
-	public ResponseEntity<?> formularioDocumento(@RequestParam(name = "nroRuta") String nroRuta,
-    @RequestParam(name = "year") String year,@RequestParam(name = "id_unidad") Integer id_unidad, Model model, HttpServletRequest request,
-			HttpServletResponse response) {
-                Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-                Documento documento = documentoService.obtener_DocumentosRutaGestionUnidad(nroRuta, id_unidad, year);
+    public ResponseEntity<?> formularioDocumento(@RequestParam(name = "nroRuta") String nroRuta,
+            @RequestParam(name = "year") String year, @RequestParam(name = "id_unidad") Integer id_unidad, Model model,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+        Documento documento = documentoService.obtener_DocumentosRutaGestionUnidad(nroRuta, id_unidad, year);
 
-                if (documento == null) {
-                    return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No se encontró documento con el número de Hoja de Ruta proporcionado.");
-                }
+        if (documento == null) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .body("No se encontró documento con el número de Hoja de Ruta proporcionado.");
+        }
 
-		model.addAttribute("documento", documento);
+        model.addAttribute("documento", documento);
         model.addAttribute("unidades", unidadService.findUnidadesNoRelacionadasConUsuario(usuario.getId_usuario()));
 
-		WebContext context = new WebContext(request, response, request.getServletContext());
-		context.setVariables(model.asMap());
+        WebContext context = new WebContext(request, response, request.getServletContext());
+        context.setVariables(model.asMap());
 
-		String htmlContent = templateEngine.process("busqueda/formulario", context);
-		return ResponseEntity.ok().body(htmlContent);
-	}
-
+        String htmlContent = templateEngine.process("busqueda/formulario", context);
+        return ResponseEntity.ok().body(htmlContent);
+    }
 
     @PostMapping("/regMovimientoDocumento")
     public ResponseEntity<String> regMovimientoDocumento(
@@ -124,6 +126,25 @@ public class recepcionController {
         }
     }
 
+    @PostMapping("/cargarFormularioBusquedaExterna")
+    public String postMethodName(HttpServletRequest request, Model model) {
+        if (request.getSession().getAttribute("usuario") != null) {
+            Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+            List<Documento> documentos = documentoService.findAll();
+            // Extraer los años y almacenarlos en un Set para evitar duplicados
+            Set<Integer> years = documentos.stream()
+                    .map(doc -> doc.getFechaCreacion().toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate().getYear())
+                    .collect(Collectors.toSet());
 
+            // Añadir los documentos y los años al modelo
+            model.addAttribute("unidades", unidadService.findUnidadesNoRelacionadasConUsuario(usuario.getId_usuario()));
+            model.addAttribute("years", years);
+            return "busqueda/formularioRecepcion";
+        } else {
+            return "redirect:/login";
+        }
+    }
 
 }

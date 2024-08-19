@@ -104,6 +104,7 @@
         contentType: false,  // No establecer el tipo de contenido aquí
         processData: false,  // No procesar los datos
         success: function (response) {
+          cargarCamposBusqueda();
           Swal.fire({
             title: 'Operación exitosa',
             text: response,
