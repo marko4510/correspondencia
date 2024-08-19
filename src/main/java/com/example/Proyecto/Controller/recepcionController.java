@@ -3,6 +3,7 @@ package com.example.Proyecto.Controller;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -10,11 +11,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,6 +38,8 @@ import com.example.Proyecto.Model.Usuario;
 import com.example.Proyecto.Service.DocumentoService;
 import com.example.Proyecto.Service.MovimientoDocumentoService;
 import com.example.Proyecto.Service.UnidadService;
+import com.example.Proyecto.Service.UsuarioService;
+
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
@@ -48,6 +57,9 @@ public class recepcionController {
     @Autowired
     private SpringTemplateEngine templateEngine;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     Config config = new Config();
 
     @RequestMapping(value = "/recepcion", method = RequestMethod.GET)
@@ -63,7 +75,8 @@ public class recepcionController {
                     .collect(Collectors.toSet());
 
             // Añadir los documentos y los años al modelo
-            model.addAttribute("unidades", unidadService.findUnidadesNoRelacionadasConUsuario(usuario.getId_usuario()));
+            //model.addAttribute("unidades", unidadService.findUnidadesNoRelacionadasConUsuario(usuario.getId_usuario()));
+            model.addAttribute("unidades", unidadService.findAll());
             model.addAttribute("years", years);
             return "busqueda/recepcion";
         } else {
@@ -152,4 +165,18 @@ public class recepcionController {
         }
     }
 
+    @PostMapping("/cargarSelectUsuarios/{idUnidad}")
+    public ResponseEntity<List<String []>> cargarSelectUsuarios(@PathVariable("idUnidad") Long id, HttpServletRequest request) {
+        Usuario userLog = (Usuario) request.getSession().getAttribute("usuario");
+        List<String[]> listaUsuarios = new ArrayList<>();
+        List<Usuario> listaUser = usuarioService.listarUsuariosPorUnidad(id, userLog.getId_usuario());
+        for (Usuario usuario : listaUser) {
+            String[] user = {usuario.getId_usuario().toString(), usuario.getPersona().getNombre()+" "+usuario.getPersona().getAp_paterno()+" "+usuario.getPersona().getAp_materno()};
+            listaUsuarios.add(user);
+        }
+        
+        return ResponseEntity.ok(listaUsuarios);
+    }
+
+        
 }

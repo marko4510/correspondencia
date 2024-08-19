@@ -43,5 +43,10 @@ public class UsuarioServiceImpl implements UsuarioService{
         // TODO Auto-generated method stub
         return usuarioDao.obtener_Usuario(usuario_nom, contrasena);
     }
+
+    @Override
+    public List<Usuario> listarUsuariosPorUnidad(Long idUnidad, Long idUsuario) {
+        return usuarioDao.listarUsuariosPorUnidad(idUnidad, idUsuario);
+    }
     
 }
