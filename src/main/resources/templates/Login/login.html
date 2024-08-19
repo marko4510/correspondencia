@@ -8,13 +8,14 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
     <title>Login || Correspondecia UAP</title>
     <!-- General CSS Files -->
-    <link rel="stylesheet" href="assets/css/app.min.css">
-    <link rel="stylesheet" href="assets/bundles/bootstrap-social/bootstrap-social.css">
+    <link rel="stylesheet" href="../../../assets/css/app.min.css">
+    <link rel="stylesheet" href="../../../assets/bundles/bootstrap-social/bootstrap-social.css">
     <!-- Template CSS -->
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="../../../assets/css/style.css">
+    <link rel="stylesheet" href="../../../assets/css/components.css">
     <!-- Custom style CSS -->
-    <link rel="stylesheet" href="assets/css/custom.css">
+    <link rel="stylesheet" href="../../../assets/css/custom.css">
+    <link rel="stylesheet" href="../../../assets/css/sweetalert2.min.css">
     <link rel='shortcut icon' type='image/x-icon' href='assets/img/favicon.ico' />
 </head>
 
@@ -40,10 +41,10 @@
                                 <h4>Inicio de Sesion</h4>
                             </div>
                             <div class="card-body">
-                                <form method="POST" th:action="@{login_form}" class="needs-validation" novalidate="">
+                                <form method="POST" th:action="@{/LoginApiAdm}" class="needs-validation" novalidate="" id="formLogin">
                                     <div class="form-group">
-                                        <label for="email">Usuario</label>
-                                        <input id="user" type="text" class="form-control" name="user" tabindex="1"
+                                        <label for="email">Código Funcionario</label>
+                                        <input id="user" type="text" class="form-control" name="codFuncionario" tabindex="1"
                                             required autofocus>
                                         <div class="invalid-feedback">
                                             por favor ingresar usuario
@@ -51,14 +52,14 @@
                                     </div>
                                     <div class="form-group">
                                         <div class="d-block">
-                                            <label for="password" class="control-label">Contraseña</label>
+                                            <label for="password" class="control-label">C.I.</label>
                                             <!-- <div class="float-right">
                                                 <a href="auth-forgot-password.html" class="text-small">
                                                     olvido su contraseña?
                                                 </a>
                                             </div> -->
                                         </div>
-                                        <input id="contrasena" type="password" class="form-control" name="contrasena"
+                                        <input id="contrasena" type="password" class="form-control" name="ci"
                                             tabindex="2" required>
                                         <div class="invalid-feedback">
                                             por favor ingresar contraseña
@@ -97,13 +98,52 @@
         </section>
     </div>
     <!-- General JS Scripts -->
-    <script src="assets/js/app.min.js"></script>
+    <script src="../../../assets/js/app.min.js"></script>
     <!-- JS Libraies -->
     <!-- Page Specific JS File -->
     <!-- Template JS File -->
-    <script src="assets/js/scripts.js"></script>
+    <script src="../../../assets/js/scripts.js"></script>
     <!-- Custom JS File -->
-    <script src="assets/js/custom.js"></script>
+    <script src="../../../assets/js/custom.js"></script>
+
+    <script src="../../../assets/js/jquery-3.7.1.min.js"></script>
+    <script src="../../../assets/js/sweetalert2.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#formLogin').submit(function (event) {
+                event.preventDefault();
+                var form = document.getElementById("formLogin");
+                var action = form.action;
+                var formData = new FormData(form);
+                //var mensajeLogin = document.getElementById('mensajeErrorLogin');
+                $.ajax({
+                    type: 'POST',
+                    url: $(this).attr('action'),
+                    data: formData,
+                    contentType: false,  // No establecer el tipo de contenido aquí
+                    processData: false,  // No procesar los datos
+                    //contentType: 'application/x-www-form-urlencoded', // Agregar esta línea
+                    success: function (response) {
+                        var acces = response;
+                        if (acces == "inicia") {
+                            window.location.href = "/";
+                        } else {
+                            Swal.fire(
+                                'Imposible Ingresar!',
+                                acces + '.',
+                                'error'
+                            );
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        //toastr.error('Ha ocurrido un error. Por favor, intenta nuevamente.');
+                        console.error(error);
+                    }
+                });
+            });
+        });
+
+    </script>
 </body>
 
 

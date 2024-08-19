@@ -16,6 +16,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,6 +47,30 @@ public class LoginController {
     @Autowired
     private UnidadService unidadService;
 
+    @GetMapping("/")
+    public String inicio() {
+
+        return "redirect:/Correspondencia";
+    }
+
+    @GetMapping("/Correspondencia")
+    public String VentanaPrincipal(HttpServletRequest request, Model model) {
+
+        if (request.getSession().getAttribute("usuario") != null) {
+            System.out.println("inicio sesion");
+            Usuario user = (Usuario) request.getSession().getAttribute("usuario");
+            Usuario usuario = usuarioService.findById(user.getId_usuario());
+            System.out.println("USUARIO ACTIVO---" + usuario.getUsuario_nom());
+            model.addAttribute("usuario", usuario);
+            HttpSession session = request.getSession(true);
+            session.setAttribute("usuario", usuario);
+            return "index";
+        } else {
+            System.out.println("No inicio sesion");
+            return "Login/login";
+        }
+    }
+
     @GetMapping("/login")
     public String login() {
 
@@ -72,26 +97,26 @@ public class LoginController {
 
     @PostMapping("/LoginApiAdm")
 public ResponseEntity<String> RegistrarPersona(@RequestParam(name = "codFuncionario") String codFuncionario,
-                                               @RequestParam(name = "Ci") String Ci, HttpServletRequest request) {
+                                               @RequestParam(name = "ci") String ci, HttpServletRequest request) {
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(new Date());
     int numeroDeMes = calendar.get(Calendar.MONTH) + 1;
     int gestion = calendar.get(Calendar.YEAR);
 
     try {
-        String url = "http://localhost:3333/api/londraPost/v1/obtenerDatos";
-		//String url = "http://virtual.uap.edu.bo:7174/api/londraPost/v1/obtenerDatos";
+        //String url = "http://localhost:3333/api/londraPost/v1/obtenerDatos";
+		String url = "http://virtual.uap.edu.bo:7174/api/londraPost/v1/obtenerDatos";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> requestEntity = new HttpEntity<>(
-                "{\"usuario\":\"" + codFuncionario + "\", \"contrasena\":\"" + Ci + "\"}", headers);
+                "{\"usuario\":\"" + codFuncionario + "\", \"contrasena\":\"" + ci + "\"}", headers);
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Map> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, Map.class);
 
         if (responseEntity.getStatusCodeValue() == 200) {
             Map<String, Object> data = responseEntity.getBody();
 
-            Persona personaExistente = personaService.obtener_persona(Ci);
+            Persona personaExistente = personaService.obtener_persona(ci);
             if (personaExistente == null) {
                 Persona nuevaPersona = new Persona();
                 nuevaPersona.setCi(data.get("per_num_doc").toString());
@@ -111,26 +136,28 @@ public ResponseEntity<String> RegistrarPersona(@RequestParam(name = "codFunciona
                 unidadService.save(unidadExiste);
             }
 
-            Usuario usuarioExiste = usuarioService.obtener_Usuario(codFuncionario, Ci);
+            Usuario usuarioExiste = usuarioService.obtener_Usuario(codFuncionario, ci);
             if (usuarioExiste == null) {
                 usuarioExiste = new Usuario();
                 usuarioExiste.setEstado("P");
                 usuarioExiste.setPersona(personaExistente);
                 usuarioExiste.setUnidad(unidadExiste);
                 usuarioExiste.setUsuario_nom(codFuncionario);
-                usuarioExiste.setContrasena(Ci);
+                usuarioExiste.setContrasena(ci);
                 usuarioService.save(usuarioExiste);
             }
             HttpSession session = request.getSession(true);
+            
             session.setAttribute("usuario", usuarioExiste);
 			session.setAttribute("persona", usuarioExiste.getPersona());
-            return ResponseEntity.ok("Se creó un nuevo registro correctamente");
+            return ResponseEntity.ok("inicia");
         } else {
-            return ResponseEntity.ok("No se pudo obtener los datos del funcionario con el código proporcionado");
+            return ResponseEntity.ok("Usuario Incorrecto o no registrado");
         }
     } catch (Exception e) {
         e.printStackTrace();
-        return ResponseEntity.ok("Error al procesar la solicitud");
+        
+        return ResponseEntity.ok("Error al procesar la solicitud: Las credenciales son incorrectas");
     }
 }
 
