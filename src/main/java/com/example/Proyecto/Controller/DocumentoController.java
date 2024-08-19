@@ -46,18 +46,19 @@ public class DocumentoController {
     @GetMapping("/inicio")
     public String inicio(HttpServletRequest request, Model model) {
         if (request.getSession().getAttribute("usuario") != null) {
-        
+
             return "documento/ventana";
-    } else {
-        return "redirect:/login";
-    }
+        } else {
+            return "redirect:/login";
+        }
     }
 
     @PostMapping("/tablaRegistros")
     public String tablaRegistros(Model model, HttpServletRequest request) {
         Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
 
-        model.addAttribute("documentos", documentoService.obtener_DocumentosUnidad(usuario.getUnidad().getId_unidad().intValue()));
+        model.addAttribute("documentos",
+                documentoService.obtener_DocumentosUnidad(usuario.getUnidad().getId_unidad().intValue()));
         return "documento/tablaRegistros";
     }
 
@@ -78,7 +79,8 @@ public class DocumentoController {
     public ResponseEntity<String> formulario(@PathVariable("nroRuta") String nroRuta, HttpServletRequest request) {
         String currentYear = Year.now().toString();
         Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-        if (documentoService.obtener_DocumentosRutaGestionUnidad(nroRuta, usuario.getUnidad().getId_unidad().intValue(), currentYear) != null) {
+        if (documentoService.obtener_DocumentosRutaGestionUnidad(nroRuta, usuario.getUnidad().getId_unidad().intValue(),
+                currentYear) != null) {
             return ResponseEntity.ok("invalido");
         }
         return ResponseEntity.ok("valido");
@@ -98,10 +100,10 @@ public class DocumentoController {
         // Configurar las cabeceras de la respuesta
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=" + documento.getCite()); // "inline"
-                                                                                                                // para
-                                                                                                                // visualizar
-                                                                                                                // en el
-                                                                                                                // navegador
+                                                                                                 // para
+                                                                                                 // visualizar
+                                                                                                 // en el
+                                                                                                 // navegador
         headers.setContentType(MediaType.APPLICATION_PDF);
 
         // Devolver la respuesta con el archivo PDF
@@ -114,7 +116,7 @@ public class DocumentoController {
     public ResponseEntity<String> registrar(@Validated Documento documento,
             @RequestParam("file") MultipartFile archivo, HttpServletRequest request) {
         try {
-            
+
             Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
             long idUsuarioLong = usuario.getId_usuario();
             Integer idUsuarioInt = (int) idUsuarioLong;
@@ -139,9 +141,10 @@ public class DocumentoController {
             if (archivo != null && !archivo.isEmpty()) {
                 String arch = config.guardarArchivo(archivo);
                 documento.setRuta(arch);
-            } else {
-                documento.setRuta(doc.getRuta());
             }
+            documento.setAsunto(doc.getAsunto());
+            documento.setCite(doc.getCite());
+            documento.setNroRuta(doc.getNroRuta());
             documentoService.save(documento);
             return ResponseEntity.ok("Modificado");
         } catch (Exception e) {
