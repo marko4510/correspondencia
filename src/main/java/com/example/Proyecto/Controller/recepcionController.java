@@ -101,22 +101,27 @@ public class recepcionController {
             @RequestParam("observacion") String observacion,
             @RequestParam("file") MultipartFile archivo, Model model, HttpServletRequest request) {
         try {
-            String arch = config.guardarArchivo((MultipartFile) archivo);
+            MovimientoDocumento movimientoDocumento = new MovimientoDocumento();
+            Documento documento = documentoService.findById(id_documento);
+            if (archivo != null && !archivo.isEmpty()) {
+                String arch = config.guardarArchivo(archivo);
+                movimientoDocumento.setRuta_movimiento(arch);
+            } 
 
             Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
             long idUsuarioLong = usuario.getId_usuario();
             Integer idUsuarioInt = (int) idUsuarioLong;
 
-            Documento documento = documentoService.findById(id_documento);
+            
             Unidad unidadDestino = unidadService.findById(id_unidad_destino);
 
-            MovimientoDocumento movimientoDocumento = new MovimientoDocumento();
+            
             movimientoDocumento.setDocumento(documento);
             movimientoDocumento.setFechaHoraRegistro(new Date());
             movimientoDocumento.setUnidadDestino(unidadDestino);
             movimientoDocumento.setUnidadOrigen(usuario.getUnidad());
             movimientoDocumento.setUsuarioRegistro(idUsuarioInt);
-            movimientoDocumento.setRuta_movimiento(arch);
+            
             movimientoDocumento.setObservaciones(observacion);
             movimientoDocumentoService.save(movimientoDocumento);
 
