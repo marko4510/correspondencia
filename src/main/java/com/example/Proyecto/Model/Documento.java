@@ -31,7 +31,7 @@ public class Documento implements Serializable{
     private String cite;
     private String nroRuta;
     private String ruta;
-    private String asunto;
+    private String ref;
     private String estado;
     private Date fechaCreacion;
     private Integer unidad_origen;

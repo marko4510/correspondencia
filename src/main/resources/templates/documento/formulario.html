@@ -14,28 +14,21 @@
         <th:block th:if="${edit != null}">
             <input type="hidden" th:field="${documento.id_documento}">
         </th:block>
-        <!-- <div class="row">
-            <div class="form-group col-md-6">
-                <label>Cite</label>
-                <input type="text" class="form-control" required="" th:field="${documento.cite}">
-                <div class="invalid-feedback">
-                    Tiene que introducir un cite valido
-                </div>
+        <div class="row">
+            <div class="col-md-12 mb-1">
+                <label>Tipo Documento</label>
+                <select class="select2" style="width: 100%;" th:field="${documento.tipoDocumento}">
+                    <option value="0" selected>Seleccionar</option>
+                    <option th:each="tipo: ${tipoDocumentos}" th:value="${tipo.id_tipo_documento}"
+                    th:text="${tipo.nombre}" th:selected="${tipo == documento.tipoDocumento}"></option>
+                </select>
             </div>
-            <div class="form-group col-md-6">
-                <label>Nro. Hoja Ruta</label>
-                <input type="text" class="form-control" required="" th:field="${documento.nroRuta}" id="nroHojaRuta">
-                <div class="invalid-feedback">
-                    Tiene que introducir un numero de hoja de ruta
-                </div>
-                <div id="alertaValidacionNroRuta"></div>
-            </div>
-        </div> -->
+        </div>
         <div class="form-group mb-0">
-            <label>Asunto</label>
-            <textarea class="form-control" required="" th:field="${documento.asunto}"></textarea>
+            <label>Referencia</label>
+            <textarea class="form-control" required="" th:field="${documento.ref}"></textarea>
             <div class="invalid-feedback">
-                Introduzca el asunto del documento
+                Introduzca el referencia del documento
             </div>
         </div>
         <br>
@@ -51,15 +44,19 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary" th:text="${edit}? 'Guardar Cambios': 'Guardar'"
-            id="botonEnviar">Guardar</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <input type="submit" class="btn btn-primary" th:value="${edit}? 'Guardar Cambios': 'Guardar'"
+        id="botonEnviar">
+        <!-- <button type="submit" class="btn btn-primary" th:text="${edit}? 'Guardar Cambios': 'Guardar'"
+            id="botonEnviar">Guardar</button> -->
+        <a type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</a>
     </div>
 </form>
 
 <script>
 
     $(document).ready(function () {
+        $('.select2').select2();
+        
         $('#formularioModalDocumento').on('submit', function (event) {
             event.preventDefault(); // Previene el envío del formulario
 
@@ -170,7 +167,7 @@
 //                     console.log('El campo tiene un valor');
 //                 }
 //             }
-//         });
+//         });  
 
     });
 

@@ -37,6 +37,7 @@ import com.example.Proyecto.Model.Documento;
 import com.example.Proyecto.Model.Unidad;
 import com.example.Proyecto.Model.Usuario;
 import com.example.Proyecto.Service.DocumentoService;
+import com.example.Proyecto.Service.TipoDocumentoService;
 import com.example.Proyecto.Service.UsuarioService;
 
 @Controller
@@ -48,6 +49,9 @@ public class DocumentoController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private TipoDocumentoService tipoDocumentoService;
 
     Config config = new Config();
 
@@ -73,12 +77,14 @@ public class DocumentoController {
     @GetMapping("/formularioM")
     public String formulario(Model model) {
         model.addAttribute("documento", new Documento());
+        model.addAttribute("tipoDocumentos", tipoDocumentoService.findAll());
         return "documento/formulario";
     }
 
     @PostMapping("/formulario/{id_documento}")
     public String formulario(Model model, @PathVariable("id_documento") Long id) {
         model.addAttribute("documento", documentoService.findById(id));
+        model.addAttribute("tipoDocumentos", tipoDocumentoService.findAll());
         model.addAttribute("edit", "true");
         return "documento/formulario";
     }
@@ -157,7 +163,7 @@ public class DocumentoController {
                 String arch = config.guardarArchivo(archivo);
                 documento.setRuta(arch);
             }
-            documento.setAsunto(doc.getAsunto());
+            documento.setRef(doc.getRef());
             documento.setCite(doc.getCite());
             documento.setNroRuta(doc.getNroRuta());
             documentoService.save(documento);

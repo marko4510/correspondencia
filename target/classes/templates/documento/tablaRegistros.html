@@ -17,8 +17,9 @@
                                     </th>
                                     <th>Cite</th>
                                     <!-- <th>Nro. Hoja Ruta</th> -->
+                                    <th>Tipo Documento</th> 
                                     <th>Fecha Registro</th>
-                                    <th>Asunto</th>
+                                    <th>Referencia</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -27,8 +28,9 @@
                                     <td th:text="${rowStat.count}"></td>
                                     <td th:text="${doc.cite}"></td>
                                     <!-- <td th:text="${doc.nroRuta}"></td> -->
+                                    <td th:text="${doc.tipoDocumento.nombre}"></td>
                                     <td th:text="${#dates.format(doc.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
-                                    <td th:text="${doc.asunto}"></td>
+                                    <td th:text="${doc.ref}"></td>
                                     <td>
                                         <a href="#" class="btn btn-icon icon-left btn-primary" 
                                         th:attr="onclick='cargarFormulario(\'' + ${doc.id_documento} + '\')'"
