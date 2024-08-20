@@ -7,9 +7,35 @@
                 </div> -->
                 <div class="card-body">
                     <div class="section-body">
-                        <h2 class="section-title">Movimientos del Documento</h2>
                         <div class="row">
                             <div class="col-12">
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-hover ">
+                                        <thead>
+                                          <tr>
+                                            <th scope="col" colspan="2" class="text-center" th:text="${'DETALLE DEL DOCUMENTO'}"></th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          <tr>
+                                            <th scope="row" style="text-align: right;">Procedencia Unidad Funcional :</th>
+                                            <td th:text="${unidad.nombre}">Mark</td>
+                                          </tr>
+                                          <tr>
+                                            <th scope="row" style="text-align: right;">Referencia :</th>
+                                            <td th:text="${documento.ref}">Jacob</td>
+                                          </tr>
+                                          <tr>
+                                            <th scope="row" style="text-align: right;">Fecha de Emisión :</th>
+                                            <td th:text="${#dates.format(documento.fechaCreacion, 'dd/MM/yyyy hh:mm a')}">Jacob</td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="col-12">
+                                <h1 class="section-title">Movimientos del Documento</h1>
                                 <div class="activities">
                                     <th:block th:each="f : ${flujo}">
                                         <div class="activity" >
@@ -45,7 +71,7 @@
                                                             <div class="card-content" >
                                                                 <h5 class="card-title">Observacion del Documento</h5>
                                                                 <p style="color: white;"><span th:text="${f.observaciones}">1,258</span></p>
-                                                                <p style="color: white;"><b>CITE: </b> <span th:text="${f.documento.cite}">1,258</span></p>
+                                                                <p style="color: rgb(238, 255, 0);"><b>Instruccion: </b> <span style="color: white;" th:text="${f.instruccion}">1,258</span></p>
 
                                                                 <p class="mb-0 text-sm" style="color: white;">
                                                                     <span class="mr-2"><i class="fas fa-file"></i> <b>Recepción:</b></span>

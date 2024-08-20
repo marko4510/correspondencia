@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.Proyecto.Model.Documento;
 import com.example.Proyecto.Model.MovimientoDocumento;
+import com.example.Proyecto.Model.Unidad;
 import com.example.Proyecto.Service.DocumentoService;
 import com.example.Proyecto.Service.MovimientoDocumentoService;
 import com.example.Proyecto.Service.UnidadService;
@@ -83,6 +84,10 @@ public class SeguimientoController {
 
             if (flujoDocumentos.size() > 0) {
                 model.addAttribute("flujo", flujoDocumentos);
+                model.addAttribute("documento", flujoDocumentos.get(0).getDocumento());
+                Integer id = flujoDocumentos.get(0).getDocumento().getUnidad_origen();
+                Unidad unidad = unidadService.findById(id.longValue());
+                model.addAttribute("unidad", unidad);
                 return "seguimiento/flujoDocumento"; // Retorna la vista si hay resultados
             } else {
                 return "seguimiento/noEncontrado"; // Retorna una vista alternativa si no hay resultados
