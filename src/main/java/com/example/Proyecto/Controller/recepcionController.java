@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Collectors;
-
+import java.time.LocalDate;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -98,7 +98,7 @@ public class recepcionController {
         }
 
         model.addAttribute("documento", documento);
-        model.addAttribute("unidades", unidadService.findUnidadesNoRelacionadasConUsuario(usuario.getId_usuario()));
+        model.addAttribute("unidades", unidadService.findAll());
 
         WebContext context = new WebContext(request, response, request.getServletContext());
         context.setVariables(model.asMap());
@@ -112,6 +112,7 @@ public class recepcionController {
             @RequestParam("id_documento") Long id_documento,
             @RequestParam("id_unidad_destino") Long id_unidad_destino,
             @RequestParam("observacion") String observacion,
+            @RequestParam("instruccion") String instruccion,
             @RequestParam("file") MultipartFile archivo, Model model, HttpServletRequest request) {
         try {
             MovimientoDocumento movimientoDocumento = new MovimientoDocumento();
@@ -120,21 +121,23 @@ public class recepcionController {
                 String arch = config.guardarArchivo(archivo);
                 movimientoDocumento.setRuta_movimiento(arch);
             } 
-
+            String gestion = String.valueOf(LocalDate.now().getYear());
             Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
             long idUsuarioLong = usuario.getId_usuario();
             Integer idUsuarioInt = (int) idUsuarioLong;
-
-            
+            Unidad unidad = usuario.getUnidad();
+            List<Documento> documentoActuales = documentoService.obtener_DocumentosPorUnidadYGestion(unidad.getId_unidad().intValue(), gestion);
+            String hojaRuta = (documentoActuales.size())+"/"+gestion;
             Unidad unidadDestino = unidadService.findById(id_unidad_destino);
 
-            
+            documento.setNroRuta(hojaRuta);
+            documentoService.save(documento);
             movimientoDocumento.setDocumento(documento);
             movimientoDocumento.setFechaHoraRegistro(new Date());
             movimientoDocumento.setUnidadDestino(unidadDestino);
             movimientoDocumento.setUnidadOrigen(usuario.getUnidad());
             movimientoDocumento.setUsuarioRegistro(idUsuarioInt);
-            
+            movimientoDocumento.setInstruccion(instruccion);
             movimientoDocumento.setObservaciones(observacion);
             movimientoDocumentoService.save(movimientoDocumento);
 
@@ -157,7 +160,7 @@ public class recepcionController {
                     .collect(Collectors.toSet());
 
             // Añadir los documentos y los años al modelo
-            model.addAttribute("unidades", unidadService.findUnidadesNoRelacionadasConUsuario(usuario.getId_usuario()));
+            model.addAttribute("unidades", unidadService.findAll());
             model.addAttribute("years", years);
             return "busqueda/formularioRecepcion";
         } else {

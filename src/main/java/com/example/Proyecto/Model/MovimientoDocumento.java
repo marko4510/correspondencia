@@ -26,6 +26,7 @@ public class MovimientoDocumento implements Serializable{
     private Long id_movimiento_documento;
     
     private String ruta_movimiento;
+    private String instruccion;
     private Integer usuarioRegistro;
 
     @ManyToOne
