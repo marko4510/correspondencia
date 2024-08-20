@@ -18,7 +18,7 @@
                                         </thead>
                                         <tbody>
                                           <tr>
-                                            <th scope="row" style="text-align: right;">Procedencia Unidad Funcional :</th>
+                                            <th scope="row"  style="text-align: right;">Procedencia Unidad Funcional :</th>
                                             <td th:text="${unidad.nombre}">Mark</td>
                                           </tr>
                                           <tr>
@@ -35,14 +35,14 @@
                             </div>
                             <br>
                             <div class="col-12">
-                                <h1 class="section-title">Movimientos del Documento</h1>
+                                <!-- <h1 class="section-title">Movimientos del Documento</h1> -->
                                 <div class="activities">
                                     <th:block th:each="f : ${flujo}">
                                         <div class="activity" >
                                             <div class="activity-icon bg-primary text-white">
                                                 <i class="far fa-file-alt" style="font-size: 20px;"></i>
                                             </div>
-                                            <div class="activity-detail" style="width: 50%;">
+                                            <div class="activity-detail" style="width: 90%;">
                                                 <div class="mb-2">
                                                     <span class="text-job" style="font-size: larger;" th:text="${#dates.format(f.fechaHoraRegistro, 'dd/MM/yyyy hh:mm a')}"></span>
                                                     <!-- <span class="bullet"></span> -->
@@ -67,11 +67,11 @@
                                                 <div class="col-12 ">
                                                     <div class="card l-bg-cyan" style="margin-bottom: 5px;">
                                                         <div class="card-statistic-3">
-                                                            <div class="card-icon card-icon-large"><i class="fas fa-file-import" style="font-size: 100px;"></i></div>
+                                                            <div class="card-icon card-icon-large"><i class="fas fa-file-import" style="font-size: 100px;" ></i></div>
                                                             <div class="card-content" >
                                                                 <h5 class="card-title">Observacion del Documento</h5>
                                                                 <p style="color: white;"><span th:text="${f.observaciones}">1,258</span></p>
-                                                                <p style="color: rgb(238, 255, 0);"><b>Instruccion: </b> <span style="color: white;" th:text="${f.instruccion}">1,258</span></p>
+                                                                <p style="color: white;"><b>Instruccion: </b> <span style="color: white;" th:text="${f.instruccion}">1,258</span></p>
 
                                                                 <p class="mb-0 text-sm" style="color: white;">
                                                                     <span class="mr-2"><i class="fas fa-file"></i> <b>Recepción:</b></span>
