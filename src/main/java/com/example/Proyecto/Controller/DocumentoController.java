@@ -61,7 +61,7 @@ public class DocumentoController {
 
             return "documento/ventana";
         } else {
-            return "redirect:/login";
+            return "redirect:/";
         }
     }
 
@@ -135,13 +135,17 @@ public class DocumentoController {
             Usuario user = usuarioService.findById(usuario.getId_usuario());
             Unidad unidad = user.getUnidad();
             
-            List<Documento> documentoActuales = documentoService.obtener_DocumentosPorUnidadYGestion(unidad.getId_unidad().intValue(), gestion);
+            List<Documento> documentoActuales = documentoService.obtener_DocumentosPorUnidadYGestionYTipoDocumento(unidad.getId_unidad().intValue(), gestion, documento.getTipoDocumento().getId_tipo_documento());
 
 
             String arch = config.guardarArchivo((MultipartFile) archivo);
             documento.setRuta(arch);
-
-            String cite = unidad.getSigla()+" N°"+documentoActuales.size()+"/"+gestion;
+            String cite = "";
+            if (documentoActuales.size()>9) {
+                cite = unidad.getSigla()+" N°"+(documentoActuales.size()+1)+"/"+gestion;   
+            } else {
+                cite = unidad.getSigla()+" N°0"+(documentoActuales.size()+1)+"/"+gestion;
+            }
             documento.setCite(cite);
             //documento.setNroRuta(cite);
             documento.setFechaCreacion(new Date());
