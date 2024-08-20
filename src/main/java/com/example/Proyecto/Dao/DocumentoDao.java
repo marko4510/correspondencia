@@ -22,5 +22,8 @@ public interface DocumentoDao extends JpaRepository<Documento, Long>{
     "WHERE  d.unidad_origen = ?1",nativeQuery = true)
     public List<Documento> obtener_DocumentosUnidad(Integer unidad_origen);
 
+    @Query(value = "SELECT * FROM documento d WHERE  d.unidad_origen = ?1 AND TO_CHAR(d.fecha_creacion, 'YYYY') = ?2",nativeQuery = true)
+    public List<Documento> obtener_DocumentosPorUnidadYGestion(Integer unidad_origen, String gestion);
+
     
 }

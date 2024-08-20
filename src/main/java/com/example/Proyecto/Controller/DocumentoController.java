@@ -5,8 +5,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.Year;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.mail.Multipart;
 import javax.servlet.http.HttpServletRequest;
@@ -31,8 +34,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.Proyecto.Config;
 import com.example.Proyecto.Model.Documento;
+import com.example.Proyecto.Model.Unidad;
 import com.example.Proyecto.Model.Usuario;
 import com.example.Proyecto.Service.DocumentoService;
+import com.example.Proyecto.Service.UsuarioService;
 
 @Controller
 @RequestMapping("/documento")
@@ -40,6 +45,9 @@ public class DocumentoController {
 
     @Autowired
     private DocumentoService documentoService;
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     Config config = new Config();
 
@@ -116,13 +124,20 @@ public class DocumentoController {
     public ResponseEntity<String> registrar(@Validated Documento documento,
             @RequestParam("file") MultipartFile archivo, HttpServletRequest request) {
         try {
-
+            String gestion = String.valueOf(LocalDate.now().getYear());
             Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-            long idUsuarioLong = usuario.getId_usuario();
-            Integer idUsuarioInt = (int) idUsuarioLong;
+            Usuario user = usuarioService.findById(usuario.getId_usuario());
+            Unidad unidad = user.getUnidad();
+            
+            List<Documento> documentoActuales = documentoService.obtener_DocumentosPorUnidadYGestion(unidad.getId_unidad().intValue(), gestion);
+
 
             String arch = config.guardarArchivo((MultipartFile) archivo);
             documento.setRuta(arch);
+
+            String cite = unidad.getSigla()+" N°"+documentoActuales.size()+"/"+gestion;
+            documento.setCite(cite);
+            //documento.setNroRuta(cite);
             documento.setFechaCreacion(new Date());
             documento.setEstado("A");
             documento.setUnidad_origen(usuario.getUnidad().getId_unidad().intValue());

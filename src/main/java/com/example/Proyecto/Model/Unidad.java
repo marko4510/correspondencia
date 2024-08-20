@@ -24,6 +24,7 @@ public class Unidad implements Serializable {
     private Long id_unidad;
 
     private String nombre;
+    private String sigla;
     private String codigo;
     private String estado;
 

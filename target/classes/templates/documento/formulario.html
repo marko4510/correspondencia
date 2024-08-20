@@ -14,7 +14,7 @@
         <th:block th:if="${edit != null}">
             <input type="hidden" th:field="${documento.id_documento}">
         </th:block>
-        <div class="row">
+        <!-- <div class="row">
             <div class="form-group col-md-6">
                 <label>Cite</label>
                 <input type="text" class="form-control" required="" th:field="${documento.cite}">
@@ -30,7 +30,7 @@
                 </div>
                 <div id="alertaValidacionNroRuta"></div>
             </div>
-        </div>
+        </div> -->
         <div class="form-group mb-0">
             <label>Asunto</label>
             <textarea class="form-control" required="" th:field="${documento.asunto}"></textarea>
@@ -120,57 +120,57 @@
             }
         });
 
-        var inputElement = document.getElementById('nroHojaRuta');
+//         var inputElement = document.getElementById('nroHojaRuta');
 
-        // Variable para verificar si el campo ya ha sido seleccionado
-        var hasBeenFocused = false;
+//         // Variable para verificar si el campo ya ha sido seleccionado
+//         var hasBeenFocused = false;
 
-        // Añade un event listener para el evento 'focus'
-        inputElement.addEventListener('focus', function () {
-            // Marca el campo como enfocado
-            hasBeenFocused = true;
-        });
+//         // Añade un event listener para el evento 'focus'
+//         inputElement.addEventListener('focus', function () {
+//             // Marca el campo como enfocado
+//             hasBeenFocused = true;
+//         });
 
-        var submitButton = document.getElementById('botonEnviar');
-        // Añade un event listener para el evento 'input'
-        inputElement.addEventListener('input', function (event) {
-            // Solo ejecuta el código si el campo ha sido enfocado previamente
-            if (hasBeenFocused) {
-                console.log('Valor actual:', event.target.value);
-                $.ajax({
-                    type: 'POST',
-                    url: "/documento/validarDocumento/" + event.target.value,  // Ruta del metodo del controlador en Spring Boot
-                    success: function (response) {
-                        if (response === "valido") {
+//         var submitButton = document.getElementById('botonEnviar');
+//         // Añade un event listener para el evento 'input'
+//         inputElement.addEventListener('input', function (event) {
+//             // Solo ejecuta el código si el campo ha sido enfocado previamente
+//             if (hasBeenFocused) {
+//                 console.log('Valor actual:', event.target.value);
+//                 $.ajax({
+//                     type: 'POST',
+//                     url: "/documento/validarDocumento/" + event.target.value,  // Ruta del metodo del controlador en Spring Boot
+//                     success: function (response) {
+//                         if (response === "valido") {
 
-                            $('#alertaValidacionNroRuta').html(`<div class="alert alert-success alert-dismissible fade show" role="alert">
-  <strong>Valido!</strong> EL numero de hoja de ruta está disponible.
-  <a type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </a>
-</div>
-`);
-                            submitButton.disabled = false;
-                        } else {
-                            $('#alertaValidacionNroRuta').html(`<div class="alert alert-danger alert-dismissible fade show" role="alert">
-  <strong>Invalido!</strong> EL numero de hoja de ruta no está disponible.
-  <a type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </a>
-</div>
-`);
-                            submitButton.disabled = true;
-                        }
-                    }
-                });
-                // Puedes realizar otras acciones aquí, como validar el input
-                if (event.target.value.trim() === '') {
-                    console.log('El campo está vacío');
-                } else {
-                    console.log('El campo tiene un valor');
-                }
-            }
-        });
+//                             $('#alertaValidacionNroRuta').html(`<div class="alert alert-success alert-dismissible fade show" role="alert">
+//   <strong>Valido!</strong> EL numero de hoja de ruta está disponible.
+//   <a type="button" class="close" data-dismiss="alert" aria-label="Close">
+//     <span aria-hidden="true">&times;</span>
+//   </a>
+// </div>
+// `);
+//                             submitButton.disabled = false;
+//                         } else {
+//                             $('#alertaValidacionNroRuta').html(`<div class="alert alert-danger alert-dismissible fade show" role="alert">
+//   <strong>Invalido!</strong> EL numero de hoja de ruta no está disponible.
+//   <a type="button" class="close" data-dismiss="alert" aria-label="Close">
+//     <span aria-hidden="true">&times;</span>
+//   </a>
+// </div>
+// `);
+//                             submitButton.disabled = true;
+//                         }
+//                     }
+//                 });
+//                 // Puedes realizar otras acciones aquí, como validar el input
+//                 if (event.target.value.trim() === '') {
+//                     console.log('El campo está vacío');
+//                 } else {
+//                     console.log('El campo tiene un valor');
+//                 }
+//             }
+//         });
 
     });
 

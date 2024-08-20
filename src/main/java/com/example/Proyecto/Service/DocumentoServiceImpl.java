@@ -50,5 +50,10 @@ public class DocumentoServiceImpl implements DocumentoService{
       return dao.obtener_DocumentosUnidad(unidad_origen);
     }
 
+    @Override
+    public List<Documento> obtener_DocumentosPorUnidadYGestion(Integer unidad_origen, String gestion) {
+        return dao.obtener_DocumentosPorUnidadYGestion(unidad_origen, gestion);
+    }
+
 
 }

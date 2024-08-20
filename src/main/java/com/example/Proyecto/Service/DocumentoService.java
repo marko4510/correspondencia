@@ -12,5 +12,6 @@ public interface DocumentoService {
     public Documento obtener_documento_hojaRuta(String nroRuta);
     public Documento obtener_DocumentosRutaGestionUnidad(String nroRuta, Integer unidad_origen, String gestion);
     public List<Documento> obtener_DocumentosUnidad(Integer unidad_origen);
-
+    public List<Documento> obtener_DocumentosPorUnidadYGestion(Integer unidad_origen, String gestion);
+    
 }

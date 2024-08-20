@@ -16,7 +16,7 @@
                                         #
                                     </th>
                                     <th>Cite</th>
-                                    <th>Nro. Hoja Ruta</th>
+                                    <!-- <th>Nro. Hoja Ruta</th> -->
                                     <th>Fecha Registro</th>
                                     <th>Asunto</th>
                                     <th>Acciones</th>
@@ -26,27 +26,10 @@
                                 <tr th:each="doc, rowStat: ${documentos}">
                                     <td th:text="${rowStat.count}"></td>
                                     <td th:text="${doc.cite}"></td>
-                                    <td th:text="${doc.nroRuta}"></td>
+                                    <!-- <td th:text="${doc.nroRuta}"></td> -->
                                     <td th:text="${#dates.format(doc.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
                                     <td th:text="${doc.asunto}"></td>
                                     <td>
-                                        <!-- <div class="dropdown dropdown-list-toggle">
-                                            <a href="#" data-toggle="dropdown" class="nav-link message-toggle">
-                                                <i class="fa fa-spin fa-cog"></i>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-list dropdown-menu-left pullDown">
-                                                <div class="dropdown-header">
-                                                    Opciones
-                                                </div>
-                                                <div class="dropdown-list-content dropdown-list-icons">
-                                                    <a href="#" class="dropdown-item">
-                                                        <span class="dropdown-item-desc">
-                                                            <i class="far fa-edit"></i>Editar
-                                                        </span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div> -->
                                         <a href="#" class="btn btn-icon icon-left btn-primary" 
                                         th:attr="onclick='cargarFormulario(\'' + ${doc.id_documento} + '\')'"
                                         data-toggle="modal" data-target=".modal-documento">
