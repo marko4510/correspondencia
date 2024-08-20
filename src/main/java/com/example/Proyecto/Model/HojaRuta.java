@@ -1,6 +1,7 @@
 package com.example.Proyecto.Model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -25,8 +26,10 @@ public class HojaRuta implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_hoja_ruta;
+    private String nroRuta;
     private String estado;
-    
+    private Integer unidad_reg;
+    private Date fechaCreacion;
     @OneToOne
     private Documento documento;
     

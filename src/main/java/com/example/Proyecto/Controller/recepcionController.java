@@ -32,10 +32,12 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.example.Proyecto.Config;
 import com.example.Proyecto.Model.Documento;
+import com.example.Proyecto.Model.HojaRuta;
 import com.example.Proyecto.Model.MovimientoDocumento;
 import com.example.Proyecto.Model.Unidad;
 import com.example.Proyecto.Model.Usuario;
 import com.example.Proyecto.Service.DocumentoService;
+import com.example.Proyecto.Service.HojaRutaService;
 import com.example.Proyecto.Service.MovimientoDocumentoService;
 import com.example.Proyecto.Service.UnidadService;
 import com.example.Proyecto.Service.UsuarioService;
@@ -59,6 +61,10 @@ public class recepcionController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+
+    @Autowired
+    private HojaRutaService hojaRutaService;
 
     Config config = new Config();
 
@@ -126,12 +132,24 @@ public class recepcionController {
             long idUsuarioLong = usuario.getId_usuario();
             Integer idUsuarioInt = (int) idUsuarioLong;
             Unidad unidad = usuario.getUnidad();
-            List<Documento> documentoActuales = documentoService.obtener_DocumentosPorUnidadYGestion(unidad.getId_unidad().intValue(), gestion);
-            String hojaRuta = (documentoActuales.size())+"/"+gestion;
+            long idUnidad = usuario.getUnidad().getId_unidad();
+            Integer idUnidadInt = (int) idUnidad;
             Unidad unidadDestino = unidadService.findById(id_unidad_destino);
 
-            documento.setNroRuta(hojaRuta);
-            documentoService.save(documento);
+
+            
+            List<HojaRuta> hojaRutaActuales = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(unidad.getId_unidad().intValue(), gestion);
+            int cantidadHojaRuta = (hojaRutaActuales.size()+1);
+            HojaRuta hojaRuta = new HojaRuta();
+            hojaRuta.setEstado("A");
+            if(hojaRutaActuales != null){
+                hojaRuta.setNroRuta((String.valueOf(cantidadHojaRuta)));
+            }
+            hojaRuta.setFechaCreacion(new Date());
+            hojaRuta.setUnidad_reg(idUnidadInt);
+            hojaRuta.setDocumento(documento);
+            hojaRutaService.save(hojaRuta);
+            
             movimientoDocumento.setDocumento(documento);
             movimientoDocumento.setFechaHoraRegistro(new Date());
             movimientoDocumento.setUnidadDestino(unidadDestino);

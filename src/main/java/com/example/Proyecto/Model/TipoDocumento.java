@@ -29,6 +29,7 @@ public class TipoDocumento implements Serializable{
     private String nombre;
     private String descripcion;
     private String estado;
+    
     @OneToMany(mappedBy = "tipoDocumento")
     private List<Documento> documentos;
 
