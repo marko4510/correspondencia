@@ -48,15 +48,14 @@ public class DocumentoServiceImpl implements DocumentoService{
     }
 
     @Override
-<<<<<<< HEAD
     public List<Documento> obtener_DocumentosPorUnidadYGestion(Integer unidad_origen, String gestion) {
         return dao.obtener_DocumentosPorUnidadYGestion(unidad_origen, gestion);
     }
 
-=======
+    @Override
     public Documento obtener_DocumentosCiteGestionUnidad(String cite, Integer unidad_origen, String gestion) {
-        return dao.obtener_DocumentosCiteGestionUnidad(cite, unidad_origen, gestion);
+      return dao.obtener_DocumentosCiteGestionUnidad(cite, unidad_origen, gestion);
     }
->>>>>>> c191f3b (asdfasf)
+
 
 }
