@@ -15,8 +15,8 @@ public interface DocumentoDao extends JpaRepository<Documento, Long>{
     public Documento obtener_documento_hojaRuta(String nroRuta);
 
     @Query(value = "SELECT d.* FROM documento d \n" + //
-                "WHERE d.nro_ruta = ?1 AND d.unidad_origen = ?2 AND TO_CHAR(d.fecha_creacion, 'YYYY') = ?3",nativeQuery = true)
-    public Documento obtener_DocumentosRutaGestionUnidad(String nroRuta, Integer unidad_origen, String gestion);
+                "WHERE d.cite = ?1 AND d.unidad_origen = ?2 AND TO_CHAR(d.fecha_creacion, 'YYYY') = ?3",nativeQuery = true)
+    public Documento obtener_DocumentosCiteGestionUnidad(String cite, Integer unidad_origen, String gestion);
 
     @Query(value = "SELECT d.* FROM documento d \n" + //
     "WHERE  d.unidad_origen = ?1",nativeQuery = true)

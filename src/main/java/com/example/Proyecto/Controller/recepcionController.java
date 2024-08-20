@@ -85,12 +85,12 @@ public class recepcionController {
     }
 
     @PostMapping("/formularioDocumento")
-    public ResponseEntity<?> formularioDocumento(@RequestParam(name = "nroRuta") String nroRuta,
+    public ResponseEntity<?> formularioDocumento(@RequestParam(name = "cite") String cite,
             @RequestParam(name = "year") String year, @RequestParam(name = "id_unidad") Integer id_unidad, Model model,
             HttpServletRequest request,
             HttpServletResponse response) {
         Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-        Documento documento = documentoService.obtener_DocumentosRutaGestionUnidad(nroRuta, id_unidad, year);
+        Documento documento = documentoService.obtener_DocumentosCiteGestionUnidad(cite, id_unidad, year);
 
         if (documento == null) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT)

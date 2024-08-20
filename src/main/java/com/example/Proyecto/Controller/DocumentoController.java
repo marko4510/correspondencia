@@ -84,10 +84,10 @@ public class DocumentoController {
     }
 
     @PostMapping("/validarDocumento/{nroRuta}")
-    public ResponseEntity<String> formulario(@PathVariable("nroRuta") String nroRuta, HttpServletRequest request) {
+    public ResponseEntity<String> formulario(@PathVariable("cite") String cite, HttpServletRequest request) {
         String currentYear = Year.now().toString();
         Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-        if (documentoService.obtener_DocumentosRutaGestionUnidad(nroRuta, usuario.getUnidad().getId_unidad().intValue(),
+        if (documentoService.obtener_DocumentosCiteGestionUnidad(cite, usuario.getUnidad().getId_unidad().intValue(),
                 currentYear) != null) {
             return ResponseEntity.ok("invalido");
         }

@@ -40,10 +40,7 @@ public class DocumentoServiceImpl implements DocumentoService{
         return dao.obtener_documento_hojaRuta(nroRuta);
     }
 
-    @Override
-    public Documento obtener_DocumentosRutaGestionUnidad(String nroRuta, Integer unidad_origen, String gestion) {
-     return dao.obtener_DocumentosRutaGestionUnidad(nroRuta, unidad_origen, gestion);
-    }
+ 
 
     @Override
     public List<Documento> obtener_DocumentosUnidad(Integer unidad_origen) {
@@ -51,9 +48,15 @@ public class DocumentoServiceImpl implements DocumentoService{
     }
 
     @Override
+<<<<<<< HEAD
     public List<Documento> obtener_DocumentosPorUnidadYGestion(Integer unidad_origen, String gestion) {
         return dao.obtener_DocumentosPorUnidadYGestion(unidad_origen, gestion);
     }
 
+=======
+    public Documento obtener_DocumentosCiteGestionUnidad(String cite, Integer unidad_origen, String gestion) {
+        return dao.obtener_DocumentosCiteGestionUnidad(cite, unidad_origen, gestion);
+    }
+>>>>>>> c191f3b (asdfasf)
 
 }
