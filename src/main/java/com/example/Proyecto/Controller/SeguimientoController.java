@@ -3,6 +3,8 @@ package com.example.Proyecto.Controller;
 import java.util.List;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.FileInputStream;
@@ -33,6 +35,10 @@ import com.example.Proyecto.Service.MovimientoDocumentoService;
 import com.example.Proyecto.Service.UnidadService;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.thymeleaf.context.WebContext;
+import org.thymeleaf.spring5.SpringTemplateEngine;
+
 
 
 @Controller
@@ -47,6 +53,9 @@ public class SeguimientoController {
 
     @Autowired
     private UnidadService unidadService;
+
+    @Autowired
+    private SpringTemplateEngine templateEngine;
 
     @GetMapping("/inicio")
     public String inicio(HttpServletRequest request, Model model) {
@@ -141,4 +150,23 @@ public class SeguimientoController {
             }
         }
     
+        @GetMapping("/hojaruta/{id_documento}")
+        public ResponseEntity<?> generarHojaRuta(@PathVariable(name = "id_documento") Long id_documento, Model model,
+                HttpServletRequest request,
+                HttpServletResponse response) {
+
+            Documento documento = documentoService.findById(id_documento);
+
+            model.addAttribute("documento", documentoService.findById(id_documento));        
+            model.addAttribute("hojaRuta", documentoService.findById(id_documento).getHojaRuta());
+            model.addAttribute("unidad", unidadService.findById(documento.getUnidad_origen().longValue()));
+            WebContext context = new WebContext(request, response, request.getServletContext());
+            context.setVariables(model.asMap());
+
+            String htmlContent = templateEngine.process("seguimiento/hojaDeRuta", context);
+
+            return ResponseEntity.ok().body(htmlContent);
+        }
+        
+        
 }

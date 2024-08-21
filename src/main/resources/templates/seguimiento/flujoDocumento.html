@@ -14,11 +14,14 @@
                                         <thead>
                                           <tr>
                                             <th scope="col" colspan="2" class="text-center" th:text="${'DETALLE DEL DOCUMENTO'}"></th>
+                                            <th scope="col" colspan="1" class="text-center" > 
+                                                <button class="btn btn-info" th:attr="onclick='generarHojaRuta(\'' + ${documento.id_documento} + '\')'">Generar</button>
+                                            </th>
                                           </tr>
                                         </thead>
                                         <tbody>
                                           <tr>
-                                            <th scope="row"  style="text-align: right;">Procedencia Unidad Funcional :</th>
+                                            <th scope="row"  style="text-align: right; width: 20%;">Procedencia Unidad Funcional :</th>
                                             <td th:text="${unidad.nombre}">Mark</td>
                                           </tr>
                                           <tr>
@@ -35,7 +38,7 @@
                             </div>
                             <br>
                             <div class="col-12">
-                                <!-- <h1 class="section-title">Movimientos del Documento</h1> -->
+                                <h1 class="section-title">Movimientos del Documento</h1>
                                 <div class="activities">
                                     <th:block th:each="f : ${flujo}">
                                         <div class="activity" >

@@ -195,6 +195,25 @@
                 });
         }
 
+        function generarHojaRuta(id_documento) {
+            $.ajax({
+                type: 'GET',
+                url: "/seguimiento/hojaruta/" + id_documento,
+                success: function(response) {
+                    var newWindow = window.open("", "_blank");
+                    newWindow.document.write(response);
+                    newWindow.document.close();  // Cierra el stream de escritura para que el navegador comience a renderizar
+                },
+                error: function(xhr) {
+                    Swal.fire(
+                        'Error',
+                        'Ocurrió un error al procesar la solicitud.',
+                        'error'
+                    );
+                }
+            });
+        }
+
     </script>
 </body>
 
