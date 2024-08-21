@@ -87,7 +87,10 @@ public class UsuarioController {
     public ResponseEntity<String> modificar(@Validated Usuario usu) {
         Usuario usuario = usuarioService.findById(usu.getId_usuario());
         try {
-         
+            usuario.setUsuario_nom(usu.getUsuario_nom());
+            usuario.setContrasena(usu.getContrasena());
+            usuario.setUnidad(usu.getUnidad());
+            usuario.setEstado(usu.getEstado());
             usuarioService.save(usuario);
             return ResponseEntity.ok("Modificado");
         } catch (Exception e) {

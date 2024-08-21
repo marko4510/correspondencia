@@ -1,7 +1,7 @@
 <!-- Modal Header -->
 <div class="modal-header">
     <h5 class="modal-title" id="myLargeModalLabel">Formulario Registro</h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="botonCerrarModalUsuario">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
@@ -109,6 +109,7 @@
                             response,
                             'success'
                         );
+                        $('#botonCerrarModalUsuario').click();
                         cargarTabla();
                     } else {
                         Swal.fire(
@@ -126,70 +127,6 @@
                     );
                 }
             });
-        });
-
-        $('#inputFile').on('change', function (event) {
-            const fileInput = event.target;
-
-            // Obtener el archivo seleccionado
-            const file = fileInput.files[0];
-
-            if (file.type != 'application/pdf') {
-                $('#formularioModalUsuario').addClass('was-validated');
-                fileInput.value = ''; // Limpiar el input si el archivo no es PDF
-            }
-        });
-
-        var inputElement = document.getElementById('nroHojaRuta');
-
-        // Variable para verificar si el campo ya ha sido seleccionado
-        var hasBeenFocused = false;
-
-        // Añade un event listener para el evento 'focus'
-        inputElement.addEventListener('focus', function () {
-            // Marca el campo como enfocado
-            hasBeenFocused = true;
-        });
-
-        var submitButton = document.getElementById('botonEnviar');
-        // Añade un event listener para el evento 'input'
-        inputElement.addEventListener('input', function (event) {
-            // Solo ejecuta el código si el campo ha sido enfocado previamente
-            if (hasBeenFocused) {
-                console.log('Valor actual:', event.target.value);
-                $.ajax({
-                    type: 'POST',
-                    url: "/documento/validarDocumento/" + event.target.value,  // Ruta del metodo del controlador en Spring Boot
-                    success: function (response) {
-                        if (response === "valido") {
-
-                            $('#alertaValidacionNroRuta').html(`<div class="alert alert-success alert-dismissible fade show" role="alert">
-  <strong>Valido!</strong> EL numero de hoja de ruta es valido.
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-`);
-                            submitButton.disabled = false;
-                        } else {
-                            $('#alertaValidacionNroRuta').html(`<div class="alert alert-danger alert-dismissible fade show" role="alert">
-  <strong>Invalido!</strong> EL numero de hoja de ruta no es valido.
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-`);
-                            submitButton.disabled = true;
-                        }
-                    }
-                });
-                // Puedes realizar otras acciones aquí, como validar el input
-                if (event.target.value.trim() === '') {
-                    console.log('El campo está vacío');
-                } else {
-                    console.log('El campo tiene un valor');
-                }
-            }
         });
 
     });
