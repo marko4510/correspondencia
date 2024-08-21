@@ -28,10 +28,10 @@
             <tbody>
                 <tr>
                     <th class="text-center" width="20%" style="vertical-align: middle;"><img src="../../../../assets/img/logoUap.png" width="90px" height="80px"></th>
-                    <th class="text-center" style="vertical-align: middle;" width="60%">
-                        <h6 style="padding-top: 5px;">UNIVERSIDAD AMAZÓNICA DE PANDO</h6>
-                        <h6 th:text="${'HOJA DE RUTA'}"></h6>
-                        <h6  th:text="${'N° : '+ hojaRuta.nroRuta +'/'+ #dates.format(hojaRuta.fechaCreacion, 'yyyy')}"></h6>
+                    <th class="text-center" style="vertical-align: middle;" width="60%" >
+                        <h6 style="padding-top: 5px; font-size: 13px;">UNIVERSIDAD AMAZÓNICA DE PANDO</h6>
+                        <h6 style="font-size: 13px;" th:text="${'HOJA DE RUTA'}"></h6>
+                        <h6 style="font-size: 13px;" th:text="${'N° : '+ hojaRuta.nroRuta +'/'+ #dates.format(hojaRuta.fechaCreacion, 'yyyy')}"></h6>
                     </th>
                     <!-- <th class="text-center" width="20%" style="vertical-align: middle;"><img src="../../../../assets/img/logo_usic.png" width="120px" height="70px"></th> -->
                     <th class="text-center" width="20%" style="vertical-align: middle;"> <div id="qrcode" style="display: flex; justify-content: center; align-items: center; height: 100%;"></div>
@@ -86,6 +86,7 @@
         document.addEventListener("DOMContentLoaded", function() {
             var textoQR = /*[[${textoQR}]]*/ 'default value';
             generarQR(textoQR);
+            window.print();
         });
 
         function generarQR(texto) {
