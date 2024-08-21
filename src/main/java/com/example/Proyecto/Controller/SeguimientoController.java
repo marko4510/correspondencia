@@ -1,16 +1,20 @@
 package com.example.Proyecto.Controller;
 
 import java.util.List;
+import java.util.Random;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.FileInputStream;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import java.time.ZoneId;
 
 import java.io.File;
@@ -152,14 +156,31 @@ public class SeguimientoController {
     
         @GetMapping("/hojaruta/{id_documento}")
         public ResponseEntity<?> generarHojaRuta(@PathVariable(name = "id_documento") Long id_documento, Model model,
-                HttpServletRequest request,
-                HttpServletResponse response) {
+                HttpServletRequest request, HttpServletResponse response) {
 
             Documento documento = documentoService.findById(id_documento);
+            String fechaCreacionStr = documento.getFechaCreacion().toString(); // Supongamos que es una cadena como
+                                                                               // '2024-08-21 16:55:29.393'
 
-            model.addAttribute("documento", documentoService.findById(id_documento));        
-            model.addAttribute("hojaRuta", documentoService.findById(id_documento).getHojaRuta());
+            // Usa LocalDateTime y ajusta el formato del DateTimeFormatter
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+            LocalDateTime fechaCreacion = LocalDateTime.parse(fechaCreacionStr, formatter);
+
+             // Formatea la fecha y hora al formato deseado
+            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm ");
+            String fechaCreacionFormatted = fechaCreacion.format(outputFormatter);
+
+            int year = fechaCreacion.getYear();
+
+            model.addAttribute("documento", documento);
+            model.addAttribute("hojaRuta", documento.getHojaRuta());
             model.addAttribute("unidad", unidadService.findById(documento.getUnidad_origen().longValue()));
+
+            String textoQR = "Hoja de Ruta: " + documento.getHojaRuta().getNroRuta() + "/" + year + "\n" +
+                    "Fecha: " + fechaCreacionFormatted + "\n" +
+                    "Identificador: " + generarAlfanumerico(documento.getId_documento().intValue() + 10);
+            model.addAttribute("textoQR", textoQR);
+
             WebContext context = new WebContext(request, response, request.getServletContext());
             context.setVariables(model.asMap());
 
@@ -169,4 +190,18 @@ public class SeguimientoController {
         }
         
         
+        public static String generarAlfanumerico(int longitud) {
+            // Definimos los caracteres alfanuméricos que se utilizarán
+            String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            StringBuilder resultado = new StringBuilder();
+            Random random = new Random();
+    
+            // Generar la cadena alfanumérica
+            for (int i = 0; i < longitud; i++) {
+                int index = random.nextInt(caracteres.length());
+                resultado.append(caracteres.charAt(index));
+            }
+    
+            return resultado.toString();
+        }
 }
