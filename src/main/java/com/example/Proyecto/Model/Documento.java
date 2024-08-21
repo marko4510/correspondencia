@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -28,13 +29,17 @@ public class Documento implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_documento;
     
-    private String cite;
+    private int cite;
     private String nroRuta;
     private String ruta;
     private String ref;
     private String estado;
     private Date fechaCreacion;
     private Integer unidad_origen;
+    
+    @Transient
+    private String citeTexto;
+
     @ManyToOne
     private TipoDocumento tipoDocumento;
     

@@ -81,7 +81,8 @@ public class recepcionController {
                     .collect(Collectors.toSet());
 
             // Añadir los documentos y los años al modelo
-            //model.addAttribute("unidades", unidadService.findUnidadesNoRelacionadasConUsuario(usuario.getId_usuario()));
+            // model.addAttribute("unidades",
+            // unidadService.findUnidadesNoRelacionadasConUsuario(usuario.getId_usuario()));
             model.addAttribute("unidades", unidadService.findAll());
             model.addAttribute("years", years);
             return "busqueda/recepcion";
@@ -91,7 +92,7 @@ public class recepcionController {
     }
 
     @PostMapping("/formularioDocumento")
-    public ResponseEntity<?> formularioDocumento(@RequestParam(name = "cite") String cite,
+    public ResponseEntity<?> formularioDocumento(@RequestParam(name = "cite") int cite,
             @RequestParam(name = "year") String year, @RequestParam(name = "id_unidad") Integer id_unidad, Model model,
             HttpServletRequest request,
             HttpServletResponse response) {
@@ -101,6 +102,13 @@ public class recepcionController {
         if (documento == null) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT)
                     .body("No se encontró documento con el número de Hoja de Ruta proporcionado.");
+        }
+        
+        Unidad unidad = unidadService.findById((long) documento.getUnidad_origen());
+        if (documento.getCite() < 10) {
+            documento.setCiteTexto(unidad.getSigla() + " N°" + "0" + documento.getCite());
+        } else {
+            documento.setCiteTexto(unidad.getSigla() + " N°" + documento.getCite());
         }
 
         model.addAttribute("documento", documento);
@@ -126,7 +134,7 @@ public class recepcionController {
             if (archivo != null && !archivo.isEmpty()) {
                 String arch = config.guardarArchivo(archivo);
                 movimientoDocumento.setRuta_movimiento(arch);
-            } 
+            }
             String gestion = String.valueOf(LocalDate.now().getYear());
             Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
             long idUsuarioLong = usuario.getId_usuario();
@@ -187,17 +195,18 @@ public class recepcionController {
     }
 
     @PostMapping("/cargarSelectUsuarios/{idUnidad}")
-    public ResponseEntity<List<String []>> cargarSelectUsuarios(@PathVariable("idUnidad") Long id, HttpServletRequest request) {
+    public ResponseEntity<List<String[]>> cargarSelectUsuarios(@PathVariable("idUnidad") Long id,
+            HttpServletRequest request) {
         Usuario userLog = (Usuario) request.getSession().getAttribute("usuario");
         List<String[]> listaUsuarios = new ArrayList<>();
         List<Usuario> listaUser = usuarioService.listarUsuariosPorUnidad(id, userLog.getId_usuario());
         for (Usuario usuario : listaUser) {
-            String[] user = {usuario.getId_usuario().toString(), usuario.getPersona().getNombre()+" "+usuario.getPersona().getAp_paterno()+" "+usuario.getPersona().getAp_materno()};
+            String[] user = { usuario.getId_usuario().toString(), usuario.getPersona().getNombre() + " "
+                    + usuario.getPersona().getAp_paterno() + " " + usuario.getPersona().getAp_materno() };
             listaUsuarios.add(user);
         }
-        
+
         return ResponseEntity.ok(listaUsuarios);
     }
 
-        
 }

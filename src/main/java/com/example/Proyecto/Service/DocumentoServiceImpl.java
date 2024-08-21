@@ -53,7 +53,7 @@ public class DocumentoServiceImpl implements DocumentoService{
     }
 
     @Override
-    public Documento obtener_DocumentosCiteGestionUnidad(String cite, Integer unidad_origen, String gestion) {
+    public Documento obtener_DocumentosCiteGestionUnidad(int cite, Integer unidad_origen, String gestion) {
       return dao.obtener_DocumentosCiteGestionUnidad(cite, unidad_origen, gestion);
     }
 

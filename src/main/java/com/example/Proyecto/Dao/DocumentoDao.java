@@ -15,7 +15,7 @@ public interface DocumentoDao extends JpaRepository<Documento, Long> {
 
     @Query(value = "SELECT d.* FROM documento d \n" + //
             "WHERE d.cite = ?1 AND d.unidad_origen = ?2 AND TO_CHAR(d.fecha_creacion, 'YYYY') = ?3", nativeQuery = true)
-    public Documento obtener_DocumentosCiteGestionUnidad(String cite, Integer unidad_origen, String gestion);
+    public Documento obtener_DocumentosCiteGestionUnidad(int cite, Integer unidad_origen, String gestion);
 
     @Query(value = "SELECT d.* FROM documento d \n" + //
             "WHERE  d.unidad_origen = ?1", nativeQuery = true)

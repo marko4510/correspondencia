@@ -38,6 +38,7 @@ import com.example.Proyecto.Model.Unidad;
 import com.example.Proyecto.Model.Usuario;
 import com.example.Proyecto.Service.DocumentoService;
 import com.example.Proyecto.Service.TipoDocumentoService;
+import com.example.Proyecto.Service.UnidadService;
 import com.example.Proyecto.Service.UsuarioService;
 
 @Controller
@@ -52,6 +53,9 @@ public class DocumentoController {
 
     @Autowired
     private TipoDocumentoService tipoDocumentoService;
+
+    @Autowired
+    private UnidadService unidadService;
 
     Config config = new Config();
 
@@ -68,9 +72,20 @@ public class DocumentoController {
     @PostMapping("/tablaRegistros")
     public String tablaRegistros(Model model, HttpServletRequest request) {
         Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+        List<Documento> lDocumentos = documentoService.obtener_DocumentosUnidad(usuario.getUnidad().getId_unidad().intValue());
 
-        model.addAttribute("documentos",
-                documentoService.obtener_DocumentosUnidad(usuario.getUnidad().getId_unidad().intValue()));
+        String cite = "";
+        for (Documento documento : lDocumentos) {
+            Unidad unidad = unidadService.findById((long)documento.getUnidad_origen());
+            if (documento.getCite() <10) {
+                cite = unidad.getSigla()+" N°"+"0"+documento.getCite();
+            } else {
+                cite = unidad.getSigla()+" N°"+documento.getCite();
+            }
+            documento.setCiteTexto(cite);
+        }
+
+        model.addAttribute("documentos",lDocumentos);
         return "documento/tablaRegistros";
     }
 
@@ -89,16 +104,16 @@ public class DocumentoController {
         return "documento/formulario";
     }
 
-    @PostMapping("/validarDocumento/{nroRuta}")
-    public ResponseEntity<String> formulario(@PathVariable("cite") String cite, HttpServletRequest request) {
-        String currentYear = Year.now().toString();
-        Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-        if (documentoService.obtener_DocumentosCiteGestionUnidad(cite, usuario.getUnidad().getId_unidad().intValue(),
-                currentYear) != null) {
-            return ResponseEntity.ok("invalido");
-        }
-        return ResponseEntity.ok("valido");
-    }
+    // @PostMapping("/validarDocumento/{nroRuta}")
+    // public ResponseEntity<String> formulario(@PathVariable("cite") String cite, HttpServletRequest request) {
+    //     String currentYear = Year.now().toString();
+    //     Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+    //     if (documentoService.obtener_DocumentosCiteGestionUnidad(cite, usuario.getUnidad().getId_unidad().intValue(),
+    //             currentYear) != null) {
+    //         return ResponseEntity.ok("invalido");
+    //     }
+    //     return ResponseEntity.ok("valido");
+    // }
 
     @GetMapping("/verDocumento/{id_documento}")
     public ResponseEntity<Resource> verDocumento(@PathVariable("id_documento") Long id) throws IOException {
@@ -140,13 +155,8 @@ public class DocumentoController {
 
             String arch = config.guardarArchivo((MultipartFile) archivo);
             documento.setRuta(arch);
-            String cite = "";
-            if (documentoActuales.size()>9) {
-                cite = unidad.getSigla()+" N°"+(documentoActuales.size()+1)+"/"+gestion;   
-            } else {
-                cite = unidad.getSigla()+" N°0"+(documentoActuales.size()+1)+"/"+gestion;
-            }
-            documento.setCite(cite);
+            
+            documento.setCite(documentoActuales.size()+1);
             //documento.setNroRuta(cite);
             documento.setFechaCreacion(new Date());
             documento.setEstado("A");

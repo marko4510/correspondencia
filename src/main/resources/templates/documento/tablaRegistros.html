@@ -3,7 +3,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
-                    <h4>Basic DataTables</h4>
+                    <h4>Lista de Documentos</h4>
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".modal-documento"
                         onclick="cargarFormulari()">Registrar Documento</button>
                 </div>
@@ -26,7 +26,7 @@
                             <tbody>
                                 <tr th:each="doc, rowStat: ${documentos}">
                                     <td th:text="${rowStat.count}"></td>
-                                    <td th:text="${doc.cite}"></td>
+                                    <td th:text="${doc.citeTexto}+'/'+${#dates.format(doc.fechaCreacion, 'yyyy')}"></td>
                                     <!-- <td th:text="${doc.nroRuta}"></td> -->
                                     <td th:text="${doc.tipoDocumento.nombre}"></td>
                                     <td th:text="${#dates.format(doc.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
