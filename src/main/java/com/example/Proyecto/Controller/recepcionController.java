@@ -143,8 +143,8 @@ public class recepcionController {
             long idUnidad = usuario.getUnidad().getId_unidad();
             Integer idUnidadInt = (int) idUnidad;
             Unidad unidadDestino = unidadService.findById(id_unidad_destino);
-
-
+            Integer idDocumentoInteger = id_documento.intValue();
+            List<HojaRuta> hojaRutaDocumentoExiste = hojaRutaService.obtenerHojasDeRutaPorDocumento(idDocumentoInteger);
             
             List<HojaRuta> hojaRutaActuales = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(unidad.getId_unidad().intValue(), gestion);
             int cantidadHojaRuta = (hojaRutaActuales.size()+1);
@@ -156,7 +156,11 @@ public class recepcionController {
             hojaRuta.setFechaCreacion(new Date());
             hojaRuta.setUnidad_reg(idUnidadInt);
             hojaRuta.setDocumento(documento);
-            hojaRutaService.save(hojaRuta);
+
+            if (hojaRutaDocumentoExiste.size() == 0) {
+                hojaRutaService.save(hojaRuta); 
+            }
+            
             
             movimientoDocumento.setDocumento(documento);
             movimientoDocumento.setFechaHoraRegistro(new Date());

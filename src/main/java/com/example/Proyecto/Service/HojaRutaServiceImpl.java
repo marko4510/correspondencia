@@ -44,6 +44,11 @@ public class HojaRutaServiceImpl implements HojaRutaService{
         return dao.obtenerHojasDeRutaPorUnidadYGestion(unidad_origen, gestion);
     }
 
+    @Override
+    public List<HojaRuta> obtenerHojasDeRutaPorDocumento(Integer id_documento) {
+        return dao.obtenerHojasDeRutaPorDocumento(id_documento);
+    }
+
    
 
 
