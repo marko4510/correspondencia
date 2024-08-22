@@ -178,7 +178,7 @@ public class SeguimientoController {
 
             String textoQR = "Hoja de Ruta: " + documento.getHojaRuta().getNroRuta() + "/" + year + "\n" +
                     "Fecha: " + fechaCreacionFormatted + "\n" +
-                    "Identificador: " + generarAlfanumerico(documento.getId_documento().intValue() + 10);
+                    "Identificador: " + generarAlfanumerico(documento.getId_documento());
             model.addAttribute("textoQR", textoQR);
 
             WebContext context = new WebContext(request, response, request.getServletContext());
@@ -190,13 +190,14 @@ public class SeguimientoController {
         }
         
         
-        public static String generarAlfanumerico(int longitud) {
-            // Definimos los caracteres alfanuméricos que se utilizarán
+        public static String generarAlfanumerico(Long valor) {
             String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             StringBuilder resultado = new StringBuilder();
-            Random random = new Random();
+            Random random = new Random(valor); // Usamos el Long como semilla para el generador de números aleatorios
     
-            // Generar la cadena alfanumérica
+            // Determinamos la longitud de la cadena basándonos en el valor de Long (por ejemplo, 8 caracteres)
+            int longitud = 8;
+    
             for (int i = 0; i < longitud; i++) {
                 int index = random.nextInt(caracteres.length());
                 resultado.append(caracteres.charAt(index));
