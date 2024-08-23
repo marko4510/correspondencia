@@ -13,8 +13,17 @@
         method="POST" novalidate>
         <div class="modal-body">
           <hr>
-
           <input type="hidden" class="form-control" th:value="${documento.id_documento}" name="id_documento">
+          <input type="hidden" name="numeroInicial" th:value="${hojasRutaUnidad}" th:if="${hojasRutaUnidad > 0}">
+        <div class="row" th:if="${hojasRutaUnidad == 0}">
+            <div class="form-group col-md-6">
+                <label>Nro. Hoja de Ruta</label>
+                <input type="number" class="form-control" name="numeroInicial" min="0" required>
+                <div class="invalid-feedback">
+                    Tiene que introducir el numero de hoja de ruta valido
+                </div>
+            </div>
+        </div>
           <div class="row">
             <div class="form-group col-md-6">
               <label>Cite</label>

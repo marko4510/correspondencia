@@ -72,47 +72,66 @@ public class DocumentoController {
     @PostMapping("/tablaRegistros")
     public String tablaRegistros(Model model, HttpServletRequest request) {
         Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-        List<Documento> lDocumentos = documentoService.obtener_DocumentosUnidad(usuario.getUnidad().getId_unidad().intValue());
+        List<Documento> lDocumentos = documentoService
+                .obtener_DocumentosUnidad(usuario.getUnidad().getId_unidad().intValue());
 
         String cite = "";
         for (Documento documento : lDocumentos) {
-            Unidad unidad = unidadService.findById((long)documento.getUnidad_origen());
-            if (documento.getCite() <10) {
-                cite = unidad.getSigla()+" N°"+"0"+documento.getCite();
+            Unidad unidad = unidadService.findById((long) documento.getUnidad_origen());
+            if (documento.getCite() < 10) {
+                cite = unidad.getSigla() + " N°" + "0" + documento.getCite();
             } else {
-                cite = unidad.getSigla()+" N°"+documento.getCite();
+                cite = unidad.getSigla() + " N°" + documento.getCite();
             }
             documento.setCiteTexto(cite);
         }
 
-        model.addAttribute("documentos",lDocumentos);
+        model.addAttribute("documentos", lDocumentos);
         return "documento/tablaRegistros";
     }
 
     @GetMapping("/formularioM")
-    public String formulario(Model model) {
-        model.addAttribute("documento", new Documento());
-        model.addAttribute("tipoDocumentos", tipoDocumentoService.findAll());
-        return "documento/formulario";
+    public String formulario(Model model, HttpServletRequest request) {
+        if (request.getSession().getAttribute("usuario") != null) {
+            String gestion = String.valueOf(LocalDate.now().getYear());
+            Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+            Usuario user = usuarioService.findById(usuario.getId_usuario());
+            model.addAttribute("documento", new Documento());
+            model.addAttribute("documentosUnidad", documentoService.obtener_DocumentosPorUnidadYGestion(user.getUnidad().getId_unidad().intValue(), gestion));
+            model.addAttribute("tipoDocumentos", tipoDocumentoService.findAll());
+            return "documento/formulario";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @PostMapping("/formulario/{id_documento}")
-    public String formulario(Model model, @PathVariable("id_documento") Long id) {
-        model.addAttribute("documento", documentoService.findById(id));
-        model.addAttribute("tipoDocumentos", tipoDocumentoService.findAll());
-        model.addAttribute("edit", "true");
-        return "documento/formulario";
+    public String formulario(Model model, @PathVariable("id_documento") Long id, HttpServletRequest request) {
+        if (request.getSession().getAttribute("usuario") != null) {
+            String gestion = String.valueOf(LocalDate.now().getYear());
+            Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+            Usuario user = usuarioService.findById(usuario.getId_usuario());
+            model.addAttribute("documento", documentoService.findById(id));
+            model.addAttribute("tipoDocumentos", tipoDocumentoService.findAll());
+            model.addAttribute("documentosUnidad", documentoService.obtener_DocumentosPorUnidadYGestion(user.getUnidad().getId_unidad().intValue(), gestion));
+            model.addAttribute("edit", "true");
+            return "documento/formulario";
+        } else {
+            return "redirect:/";
+        }
     }
 
     // @PostMapping("/validarDocumento/{nroRuta}")
-    // public ResponseEntity<String> formulario(@PathVariable("cite") String cite, HttpServletRequest request) {
-    //     String currentYear = Year.now().toString();
-    //     Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-    //     if (documentoService.obtener_DocumentosCiteGestionUnidad(cite, usuario.getUnidad().getId_unidad().intValue(),
-    //             currentYear) != null) {
-    //         return ResponseEntity.ok("invalido");
-    //     }
-    //     return ResponseEntity.ok("valido");
+    // public ResponseEntity<String> formulario(@PathVariable("cite") String cite,
+    // HttpServletRequest request) {
+    // String currentYear = Year.now().toString();
+    // Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+    // if (documentoService.obtener_DocumentosCiteGestionUnidad(cite,
+    // usuario.getUnidad().getId_unidad().intValue(),
+    // currentYear) != null) {
+    // return ResponseEntity.ok("invalido");
+    // }
+    // return ResponseEntity.ok("valido");
     // }
 
     @GetMapping("/verDocumento/{id_documento}")
@@ -143,21 +162,33 @@ public class DocumentoController {
 
     @PostMapping("/registrar")
     public ResponseEntity<String> registrar(@Validated Documento documento,
-            @RequestParam("file") MultipartFile archivo, HttpServletRequest request) {
+            @RequestParam("file") MultipartFile archivo, HttpServletRequest request,
+            @RequestParam(value = "numeroInicial", required = false) int numeroInicial) {
         try {
             String gestion = String.valueOf(LocalDate.now().getYear());
             Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
             Usuario user = usuarioService.findById(usuario.getId_usuario());
             Unidad unidad = user.getUnidad();
-            
-            List<Documento> documentoActuales = documentoService.obtener_DocumentosPorUnidadYGestionYTipoDocumento(unidad.getId_unidad().intValue(), gestion, documento.getTipoDocumento().getId_tipo_documento());
 
-
+            // List<Documento> documentoActuales =
+            // documentoService.obtener_DocumentosPorUnidadYGestionYTipoDocumento(unidad.getId_unidad().intValue(),
+            // gestion, documento.getTipoDocumento().getId_tipo_documento());
+            List<Documento> documentoActuales = documentoService
+                    .obtener_DocumentosPorUnidadYGestion(unidad.getId_unidad().intValue(), gestion);
+            if (documentoActuales.size() == 0) {
+                System.out.println("Numero Inicial: " + numeroInicial);
+                unidad.setContadorCite(numeroInicial);
+                unidadService.save(unidad);
+            } else {
+                System.out.println("Numero Inicial: " + numeroInicial);
+                int cont = unidad.getContadorCite() + 1;
+                unidad.setContadorCite(cont);
+                unidadService.save(unidad);
+            }
+            documento.setCite(unidad.getContadorCite());
             String arch = config.guardarArchivo((MultipartFile) archivo);
             documento.setRuta(arch);
-            
-            documento.setCite(documentoActuales.size()+1);
-            //documento.setNroRuta(cite);
+            // documento.setNroRuta(cite);
             documento.setFechaCreacion(new Date());
             documento.setEstado("A");
             documento.setUnidad_origen(usuario.getUnidad().getId_unidad().intValue());

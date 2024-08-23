@@ -3,6 +3,7 @@ package com.example.Proyecto.Model;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,6 +27,11 @@ public class Unidad implements Serializable {
     private String nombre;
     private String sigla;
     private String codigo;
+     @Column(name = "contador_cite")
+    private Integer contadorCite;
+
+    @Column(name = "contador_hoja_ruta")
+    private Integer contadorHojaRuta;
     private String estado;
 
     @OneToMany(mappedBy = "unidad")

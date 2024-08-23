@@ -98,6 +98,7 @@ public class recepcionController {
             HttpServletResponse response) {
         Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
         Documento documento = documentoService.obtener_DocumentosCiteGestionUnidad(cite, id_unidad, year);
+        
 
         if (documento == null) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT)
@@ -111,8 +112,17 @@ public class recepcionController {
             documento.setCiteTexto(unidad.getSigla() + " N°" + documento.getCite());
         }
 
+        List<HojaRuta> hojaRutaActuales = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(unidad.getId_unidad().intValue(), year);
+        if (hojaRutaActuales.size() == 0) {
+            model.addAttribute("hojasRutaUnidad", hojaRutaActuales.size());
+        } else {
+            model.addAttribute("hojasRutaUnidad", unidad.getContadorHojaRuta());
+        }
+        
         model.addAttribute("documento", documento);
         model.addAttribute("unidades", unidadService.findAll());
+    
+
 
         WebContext context = new WebContext(request, response, request.getServletContext());
         context.setVariables(model.asMap());
@@ -127,7 +137,8 @@ public class recepcionController {
             @RequestParam("id_unidad_destino") Long id_unidad_destino,
             @RequestParam("observacion") String observacion,
             @RequestParam("instruccion") String instruccion,
-            @RequestParam("file") MultipartFile archivo, Model model, HttpServletRequest request) {
+            @RequestParam("file") MultipartFile archivo, Model model, HttpServletRequest request,
+            @RequestParam(value = "numeroInicial", required = false) int numeroInicial) {
         try {
             MovimientoDocumento movimientoDocumento = new MovimientoDocumento();
             Documento documento = documentoService.findById(id_documento);
@@ -150,17 +161,33 @@ public class recepcionController {
             int cantidadHojaRuta = (hojaRutaActuales.size()+1);
             HojaRuta hojaRuta = new HojaRuta();
             hojaRuta.setEstado("A");
-            if(hojaRutaActuales != null){
-                hojaRuta.setNroRuta((String.valueOf(cantidadHojaRuta)));
-            }
+            // if(hojaRutaActuales != null){
+            //     hojaRuta.setNroRuta((String.valueOf(cantidadHojaRuta)));
+            // }
             hojaRuta.setFechaCreacion(new Date());
             hojaRuta.setUnidad_reg(idUnidadInt);
             hojaRuta.setDocumento(documento);
 
             if (hojaRutaDocumentoExiste.size() == 0) {
-                hojaRutaService.save(hojaRuta); 
+                
+                System.out.println("Numero Inicial: " + (numeroInicial+1));
+                unidad.setContadorHojaRuta(numeroInicial+1);
+                unidadService.save(unidad);  
+
+                hojaRuta.setNroRuta(String.valueOf(numeroInicial+1));
+                hojaRutaService.save(hojaRuta);   
             }
             
+            // if (hojaRutaActuales.size() == 0) {
+            //     System.out.println("Numero Inicial: " + numeroInicial);
+            //     unidad.setContadorHojaRuta(numeroInicial);
+            //     unidadService.save(unidad);
+            // } else {
+            //     System.out.println("Numero Inicial: " + numeroInicial);
+            //     int cont = unidad.getContadorHojaRuta() + 1;
+            //     unidad.setContadorHojaRuta(cont);
+            //     unidadService.save(unidad);
+            // }
             
             movimientoDocumento.setDocumento(documento);
             movimientoDocumento.setFechaHoraRegistro(new Date());
