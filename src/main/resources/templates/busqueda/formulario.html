@@ -99,6 +99,7 @@
               Debe adjuntar el documento escaneado en PDF o Imagen
             </div>
             <div id="alertaInputFile"></div>
+            <div id="previsualizacionDoc"></div>
           </div>
         </div>
         <div class="modal-footer">
@@ -148,6 +149,7 @@
     });
     // aplica arrastrar y soltar en el elemento :file
 
+    // Dropzone y validacion de pdf
     $('.dropzone-pdf').bs_dropzone({
       boxClass: 'alert p-5 text-center font-weight-bold',
       noneColorClass: 'alert-info border-info',
@@ -155,27 +157,67 @@
       doneColorClass: 'alert-success border-success',
       failColorClass: 'alert-danger border-danger'
     });
-    $('#inputFile').on('change', function (event) {
-      const fileInput = event.target;
 
-      // Obtener el archivo seleccionado
-      const file = fileInput.files[0];
+        $('#inputFile').on('change', function (event) {
+            const fileInput = event.target;
 
-      if (file.type != 'application/pdf') {
-        $('#alertaInputFile').html(`<div class="alert alert-danger alert-dismissible show fade">
+            // Obtener el archivo seleccionado
+            const file = fileInput.files[0];
+
+            if (file.type != 'application/pdf') {
+                $('#alertaInputFile').html(`<div class="alert alert-danger alert-dismissible show fade">
                       <div class="alert-body">
                         <button class="close" data-dismiss="alert">
                           <span>&times;</span>
                         </button>
-                        Solo se admiten archivos tipo PDF, no se guardara el archivo subido
+                        Solo se admiten archivos tipo PDF, el archivo cargado no se registrará.
                       </div>
                     </div>`);
-        fileInput.value = null;
-        dropzone.bs_dropzone('reset');
-        $('#regMovimientoFormulario').addClass('was-validated');
-        // Limpiar el input si el archivo no es PDF
-      } else {
-        $('#alertaInputFile').html(`<div class="alert alert-success alert-dismissible show fade">
+                fileInput.value = null;
+                //dropzone.bs_dropzone('reset');
+                $('#previsualizacionDoc').html("");
+                $('#regMovimientoFormulario').addClass('was-validated');
+                // Limpiar el input si el archivo no es PDF
+
+            } else {
+                $('#previsualizacionDoc').html(`
+                        <div class="row d-flex justify-content-center" >
+                            <div id="pdf-preview"></div>
+                        </div>
+                `);
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const typedarray = new Uint8Array(e.target.result);
+
+                    pdfjsLib.getDocument(typedarray).promise.then(pdf => {
+                        pdf.getPage(1).then(page => {
+                            const scale = 0.3;
+                            const viewport = page.getViewport({ scale });
+
+                            // Limpia el contenedor de la previsualización antes de añadir una nueva página
+                            $('#pdf-preview').empty();
+
+                            // Prepara el canvas usando las dimensiones de la página PDF
+                            const canvas = document.createElement('canvas');
+                            const context = canvas.getContext('2d');
+                            canvas.height = viewport.height;
+                            canvas.width = viewport.width;
+
+                            $('#pdf-preview').append(canvas);
+
+                            // Renderiza la página del PDF en el contexto del canvas
+                            const renderContext = {
+                                canvasContext: context,
+                                viewport: viewport
+                            };
+                            page.render(renderContext);
+                        });
+                    });
+                };
+
+                reader.readAsArrayBuffer(file);
+                $('#alertaInputFile').html(`<div class="alert alert-success alert-dismissible show fade">
                       <div class="alert-body">
                         <button class="close" data-dismiss="alert">
                           <span>&times;</span>
@@ -183,7 +225,14 @@
                         El archivo subido es valido.
                       </div>
                     </div>`);
-      }
-    });
+            }
+        });
   });
 </script>
+<style>
+  #pdf-preview {
+      width: 187px;
+      height: 245px;
+      border: 1px solid #ddd;
+  }
+</style>

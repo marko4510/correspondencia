@@ -48,10 +48,11 @@
                 accept="application/pdf">
             <input type="file" class=" dropzone-pdf" th:if="${edit != null}" id="inputFile" name="file"
                 accept="application/pdf">
-                <div id="alertaInputFile"></div>
+            <div id="alertaInputFile"></div>
             <div class="invalid-feedback">
                 Debe adjuntar el documento escaneado en PDF
             </div>
+            <div id="previsualizacionDoc"></div>
         </div>
     </div>
     <div class="modal-footer">
@@ -65,13 +66,6 @@
 <script>
 
     $(document).ready(function () {
-        $('.dropzone-pdf').bs_dropzone({
-            boxClass: 'alert p-5 text-center font-weight-bold',
-            noneColorClass: 'alert-info border-info',
-            dragColorClass: 'alert-warning border-warning',
-            doneColorClass: 'alert-success border-success',
-            failColorClass: 'alert-danger border-danger'
-        });
 
         $('#formularioModalDocumento').on('submit', function (event) {
             event.preventDefault(); // Previene el envío del formulario
@@ -121,6 +115,15 @@
             });
         });
 
+        // Dropzone y validacion de pdf
+        $('.dropzone-pdf').bs_dropzone({
+            boxClass: 'alert p-5 text-center font-weight-bold',
+            noneColorClass: 'alert-info border-info',
+            dragColorClass: 'alert-warning border-warning',
+            doneColorClass: 'alert-success border-success',
+            failColorClass: 'alert-danger border-danger'
+        });
+
         $('#inputFile').on('change', function (event) {
             const fileInput = event.target;
 
@@ -137,10 +140,49 @@
                       </div>
                     </div>`);
                 fileInput.value = null;
-                dropzone.bs_dropzone('reset');
+                //dropzone.bs_dropzone('reset');
+                $('#previsualizacionDoc').html("");
                 $('#formularioModalDocumento').addClass('was-validated');
                 // Limpiar el input si el archivo no es PDF
+
             } else {
+                $('#previsualizacionDoc').html(`
+                        <div class="row d-flex justify-content-center" >
+                            <div id="pdf-preview"></div>
+                        </div>
+                `);
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const typedarray = new Uint8Array(e.target.result);
+
+                    pdfjsLib.getDocument(typedarray).promise.then(pdf => {
+                        pdf.getPage(1).then(page => {
+                            const scale = 0.3;
+                            const viewport = page.getViewport({ scale });
+
+                            // Limpia el contenedor de la previsualización antes de añadir una nueva página
+                            $('#pdf-preview').empty();
+
+                            // Prepara el canvas usando las dimensiones de la página PDF
+                            const canvas = document.createElement('canvas');
+                            const context = canvas.getContext('2d');
+                            canvas.height = viewport.height;
+                            canvas.width = viewport.width;
+
+                            $('#pdf-preview').append(canvas);
+
+                            // Renderiza la página del PDF en el contexto del canvas
+                            const renderContext = {
+                                canvasContext: context,
+                                viewport: viewport
+                            };
+                            page.render(renderContext);
+                        });
+                    });
+                };
+
+                reader.readAsArrayBuffer(file);
                 $('#alertaInputFile').html(`<div class="alert alert-success alert-dismissible show fade">
                       <div class="alert-body">
                         <button class="close" data-dismiss="alert">
@@ -151,59 +193,13 @@
                     </div>`);
             }
         });
-
-        //         var inputElement = document.getElementById('nroHojaRuta');
-
-        //         // Variable para verificar si el campo ya ha sido seleccionado
-        //         var hasBeenFocused = false;
-
-        //         // Añade un event listener para el evento 'focus'
-        //         inputElement.addEventListener('focus', function () {
-        //             // Marca el campo como enfocado
-        //             hasBeenFocused = true;
-        //         });
-
-        //         var submitButton = document.getElementById('botonEnviar');
-        //         // Añade un event listener para el evento 'input'
-        //         inputElement.addEventListener('input', function (event) {
-        //             // Solo ejecuta el código si el campo ha sido enfocado previamente
-        //             if (hasBeenFocused) {
-        //                 console.log('Valor actual:', event.target.value);
-        //                 $.ajax({
-        //                     type: 'POST',
-        //                     url: "/documento/validarDocumento/" + event.target.value,  // Ruta del metodo del controlador en Spring Boot
-        //                     success: function (response) {
-        //                         if (response === "valido") {
-
-        //                             $('#alertaValidacionNroRuta').html(`<div class="alert alert-success alert-dismissible fade show" role="alert">
-        //   <strong>Valido!</strong> EL numero de hoja de ruta está disponible.
-        //   <a type="button" class="close" data-dismiss="alert" aria-label="Close">
-        //     <span aria-hidden="true">&times;</span>
-        //   </a>
-        // </div>
-        // `);
-        //                             submitButton.disabled = false;
-        //                         } else {
-        //                             $('#alertaValidacionNroRuta').html(`<div class="alert alert-danger alert-dismissible fade show" role="alert">
-        //   <strong>Invalido!</strong> EL numero de hoja de ruta no está disponible.
-        //   <a type="button" class="close" data-dismiss="alert" aria-label="Close">
-        //     <span aria-hidden="true">&times;</span>
-        //   </a>
-        // </div>
-        // `);
-        //                             submitButton.disabled = true;
-        //                         }
-        //                     }
-        //                 });
-        //                 // Puedes realizar otras acciones aquí, como validar el input
-        //                 if (event.target.value.trim() === '') {
-        //                     console.log('El campo está vacío');
-        //                 } else {
-        //                     console.log('El campo tiene un valor');
-        //                 }
-        //             }
-        //         });  
-
     });
 
 </script>
+<style>
+    #pdf-preview {
+        width: 187px;
+        height: 245px;
+        border: 1px solid #ddd;
+    }
+</style>
