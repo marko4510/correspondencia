@@ -15,19 +15,20 @@
           <hr>
           <input type="hidden" class="form-control" th:value="${documento.id_documento}" name="id_documento">
           <input type="hidden" name="numeroInicial" th:value="${hojasRutaUnidad}" th:if="${hojasRutaUnidad > 0}">
-        <div class="row" th:if="${hojasRutaUnidad == 0}">
+          <div class="row" th:if="${hojasRutaUnidad == 0}">
             <div class="form-group col-md-6">
-                <label>Nro. Hoja de Ruta</label>
-                <input type="number" class="form-control" name="numeroInicial" min="0" required>
-                <div class="invalid-feedback">
-                    Tiene que introducir el numero de hoja de ruta valido
-                </div>
+              <label>Nro. Hoja de Ruta</label>
+              <input type="number" class="form-control" name="numeroInicial" min="0" required>
+              <div class="invalid-feedback">
+                Tiene que introducir el numero de hoja de ruta valido
+              </div>
             </div>
-        </div>
+          </div>
           <div class="row">
             <div class="form-group col-md-6">
               <label>Cite</label>
-              <input type="text" class="form-control" readonly th:value="${documento.citeTexto}+'/'+${#dates.format(documento.fechaCreacion, 'yyyy')}">
+              <input type="text" class="form-control" readonly
+                th:value="${documento.citeTexto}+'/'+${#dates.format(documento.fechaCreacion, 'yyyy')}">
               <div class="invalid-feedback">
                 Tiene que introducir un cite valido
               </div>
@@ -41,7 +42,7 @@
               </div>
             </div>
           </div>
-          
+
           <br>
           <div class="form-group">
 
@@ -72,12 +73,12 @@
 
             <div class="form-group col-md-6">
               <label>Observaciones</label>
-            <textarea class="form-control" name="observacion"></textarea>
-            <div class="invalid-feedback">
+              <textarea class="form-control" name="observacion"></textarea>
+              <div class="invalid-feedback">
                 Introduzca el asunto del documento
+              </div>
             </div>
-            </div>
-           
+
 
             <div class="form-group col-md-6">
               <label>Unidad Destino</label>
@@ -90,13 +91,14 @@
             </div>
           </div>
 
-        
+
           <div class="form-group">
             <label>Adjuntar Documento</label>
-            <input type="file" class="form-control" name="file">
+            <input type="file" class="dropzone-pdf" name="file" id="inputFile" accept="application/pdf">
             <div class="invalid-feedback">
               Debe adjuntar el documento escaneado en PDF o Imagen
             </div>
+            <div id="alertaInputFile"></div>
           </div>
         </div>
         <div class="modal-footer">
@@ -143,6 +145,45 @@
           });
         }
       });
+    });
+    // aplica arrastrar y soltar en el elemento :file
+
+    $('.dropzone-pdf').bs_dropzone({
+      boxClass: 'alert p-5 text-center font-weight-bold',
+      noneColorClass: 'alert-info border-info',
+      dragColorClass: 'alert-warning border-warning',
+      doneColorClass: 'alert-success border-success',
+      failColorClass: 'alert-danger border-danger'
+    });
+    $('#inputFile').on('change', function (event) {
+      const fileInput = event.target;
+
+      // Obtener el archivo seleccionado
+      const file = fileInput.files[0];
+
+      if (file.type != 'application/pdf') {
+        $('#alertaInputFile').html(`<div class="alert alert-danger alert-dismissible show fade">
+                      <div class="alert-body">
+                        <button class="close" data-dismiss="alert">
+                          <span>&times;</span>
+                        </button>
+                        Solo se admiten archivos tipo PDF.
+                      </div>
+                    </div>`);
+        fileInput.value = null;
+        dropzone.bs_dropzone('reset');
+        $('#formularioModalDocumento').addClass('was-validated');
+        // Limpiar el input si el archivo no es PDF
+      } else {
+        $('#alertaInputFile').html(`<div class="alert alert-success alert-dismissible show fade">
+                      <div class="alert-body">
+                        <button class="close" data-dismiss="alert">
+                          <span>&times;</span>
+                        </button>
+                        El archivo subido es valido.
+                      </div>
+                    </div>`);
+      }
     });
   });
 </script>

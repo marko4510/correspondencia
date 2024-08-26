@@ -13,7 +13,8 @@
         <th:block th:if="${edit != null}">
             <input type="hidden" th:field="${documento.id_documento}">
         </th:block>
-        <input type="hidden" name="numeroInicial" th:value="${documentosUnidad.size}" th:if="${documentosUnidad.size > 0}">
+        <input type="hidden" name="numeroInicial" th:value="${documentosUnidad.size}"
+            th:if="${documentosUnidad.size > 0}">
         <div class="row" th:if="${documentosUnidad.size == 0}">
             <div class="form-group col-md-6">
                 <label>Cite</label>
@@ -27,7 +28,7 @@
             <div class="col-md-12 mb-1">
                 <label>Tipo Documento</label>
                 <select class="form-control" style="width: 100%;" th:field="${documento.tipoDocumento}">
-                    <option value="" selected>Seleccionar</option>
+                    <!-- <option value="" selected>Seleccionar</option> -->
                     <option th:each="tipo: ${tipoDocumentos}" th:value="${tipo.id_tipo_documento}"
                         th:text="${tipo.nombre}" th:selected="${tipo == documento.tipoDocumento}"></option>
                 </select>
@@ -43,10 +44,11 @@
         <br>
         <div class="form-group">
             <label>Adjuntar Documento</label>
-            <input type="file" class="form-control" th:if="${edit == null}" required="" id="inputFile" name="file"
+            <input type="file" class=" dropzone-pdf" th:if="${edit == null}" required="" id="inputFile" name="file"
                 accept="application/pdf">
-            <input type="file" class="form-control" th:if="${edit != null}" id="inputFile" name="file"
+            <input type="file" class=" dropzone-pdf" th:if="${edit != null}" id="inputFile" name="file"
                 accept="application/pdf">
+                <div id="alertaInputFile"></div>
             <div class="invalid-feedback">
                 Debe adjuntar el documento escaneado en PDF
             </div>
@@ -63,6 +65,13 @@
 <script>
 
     $(document).ready(function () {
+        $('.dropzone-pdf').bs_dropzone({
+            boxClass: 'alert p-5 text-center font-weight-bold',
+            noneColorClass: 'alert-info border-info',
+            dragColorClass: 'alert-warning border-warning',
+            doneColorClass: 'alert-success border-success',
+            failColorClass: 'alert-danger border-danger'
+        });
 
         $('#formularioModalDocumento').on('submit', function (event) {
             event.preventDefault(); // Previene el envío del formulario
@@ -119,8 +128,27 @@
             const file = fileInput.files[0];
 
             if (file.type != 'application/pdf') {
+                $('#alertaInputFile').html(`<div class="alert alert-danger alert-dismissible show fade">
+                      <div class="alert-body">
+                        <button class="close" data-dismiss="alert">
+                          <span>&times;</span>
+                        </button>
+                        Solo se admiten archivos tipo PDF.
+                      </div>
+                    </div>`);
+                fileInput.value = null;
+                dropzone.bs_dropzone('reset');
                 $('#formularioModalDocumento').addClass('was-validated');
-                fileInput.value = ''; // Limpiar el input si el archivo no es PDF
+                // Limpiar el input si el archivo no es PDF
+            } else {
+                $('#alertaInputFile').html(`<div class="alert alert-success alert-dismissible show fade">
+                      <div class="alert-body">
+                        <button class="close" data-dismiss="alert">
+                          <span>&times;</span>
+                        </button>
+                        El archivo subido es valido.
+                      </div>
+                    </div>`);
             }
         });
 
