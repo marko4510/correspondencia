@@ -17,7 +17,7 @@
         </section>
       </div>
 
-      
+
       <footer th:replace="layout/footer :: footer">
       </footer>
     </div>
@@ -50,7 +50,11 @@
         type: 'GET',
         url: "/hojaRuta/formulario",  // Ruta del metodo del controlador en Spring Boot
         success: function (response) {
-          $("#contenidoFormularioModal").html(response);  // Actualiza el contenido del div con la respuesta del servidor
+          $("#contenidoFormularioModal").html(response);
+          // Inicializar Select2 en el modal
+          $('.select2').select2({
+            dropdownParent: $('#formularioModalhojaRuta')  // Especificar el parent para el dropdown
+          }); // Actualiza el contenido del div con la respuesta del servidor
         }
       });
     }

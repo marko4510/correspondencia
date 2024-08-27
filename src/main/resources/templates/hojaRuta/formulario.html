@@ -24,45 +24,49 @@
                 </div>
             </div>
         </div>
-        <div class="form-group mb-0">
-            <label>Referencia</label>
-            <textarea class="form-control" required="" th:field="${hojaRuta.ref}"></textarea>
-            <div class="invalid-feedback">
-                Introduzca el referencia del documento
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label>Referencia</label>
+                <textarea class="form-control" required="" th:field="${hojaRuta.ref}"></textarea>
+                <div class="invalid-feedback">
+                    Introduzca el referencia del documento
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <label>Observaciones</label>
+                <textarea class="form-control" name="observacion"></textarea>
+                <div class="invalid-feedback">
+                    Introduzca el asunto del documento
+                </div>
             </div>
         </div>
-        <div class="form-group col-md-6">
-            <label>Observaciones</label>
-            <textarea class="form-control" name="observacion"></textarea>
-            <div class="invalid-feedback">
-              Introduzca el asunto del documento
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label>Instrucción</label>
+                <select class="form-control select2" style="width: 100%" name="instruccion" required>
+                    <option value="">Seleccionar una Instrucción...</option>
+                    <option value="Informar">Informar</option>
+                    <option value="Contestar">Contestar</option>
+                    <option value="Tomar nota">Tomar nota</option>
+                    <option value="Dar curso">Dar curso</option>
+                    <option value="Coordinar">Coordinar</option>
+                    <option value="Archivar">Archivar</option>
+                    <option value="Otro">Otro</option>
+                </select>
+                <div class="invalid-feedback">
+                    Tiene que seleccionar una instrucción
+                </div>
             </div>
-          </div>
-        <div class="form-group col-md-6">
-            <label>Instrucción</label>
-            <select class="form-control select2" style="width: 100%" name="instruccion" required>
-              <option value="">Seleccionar una Instrucción...</option>
-              <option value="Informar">Informar</option>
-              <option value="Contestar">Contestar</option>
-              <option value="Tomar nota">Tomar nota</option>
-              <option value="Dar curso">Dar curso</option>
-              <option value="Coordinar">Coordinar</option>
-              <option value="Archivar">Archivar</option>
-              <option value="Otro">Otro</option>
-            </select>
-            <div class="invalid-feedback">
-              Tiene que seleccionar una instrucción
+            <div class="form-group col-md-6">
+                <label>Unidad Destino</label>
+                <select class="form-control select2" style="width: 100%" name="id_unidad_destino" required>
+                    <option value="">Seleccionar una Unidad Destino...</option>
+                    <option th:each="uni : ${unidades}" th:value="${uni.id_unidad}" th:if="${uni.estado != 'X'}"
+                        th:text="${uni.nombre}">
+                    </option>
+                </select>
             </div>
-          </div>
-          <div class="form-group col-md-6">
-            <label>Unidad Destino</label>
-            <select class="select2" style="width: 100%" name="id_unidad_destino" required>
-              <option value="">Seleccionar una Unidad Destino...</option>
-              <option th:each="uni : ${unidades}" th:value="${uni.id_unidad}" th:if="${uni.estado != 'X'}"
-                th:text="${uni.nombre}">
-              </option>
-            </select>
-          </div>
+        </div>
         <br>
         <div class="form-group">
             <label>Adjuntar Documento</label>
@@ -86,16 +90,7 @@
 <script>
 
     $(document).ready(function () {
-        $('.select2').select2({
-            placeholder: 'Seleccione una opción',
-            //theme: 'bootstrap-5',
-            height: '100',
-            language: {
-                noResults: function () {
-                    return "No hay resultados de esta búsqueda";
-                }
-            }
-        });
+
         $('#formularioModalhojaRuta').on('submit', function (event) {
             event.preventDefault(); // Previene el envío del formulario
 
