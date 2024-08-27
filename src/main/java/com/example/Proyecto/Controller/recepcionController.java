@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -72,13 +76,17 @@ public class recepcionController {
     public String prueba(HttpServletRequest request, Model model) {
         if (request.getSession().getAttribute("usuario") != null) {
             Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-            List<Documento> documentos = documentoService.findAll();
+            List<HojaRuta> hojaRutas = hojaRutaService.findAll();
             // Extraer los años y almacenarlos en un Set para evitar duplicados
-            Set<Integer> years = documentos.stream()
-                    .map(doc -> doc.getFechaCreacion().toInstant()
+            Set<Integer> years = hojaRutas.stream()
+                    .map(hr -> hr.getFechaCreacion().toInstant()
                             .atZone(ZoneId.systemDefault())
                             .toLocalDate().getYear())
                     .collect(Collectors.toSet());
+
+            for (Integer integer : years) {
+                System.out.println(years);
+            }
 
             // Añadir los documentos y los años al modelo
             // model.addAttribute("unidades",
@@ -92,35 +100,35 @@ public class recepcionController {
     }
 
     @PostMapping("/formularioDocumento")
-    public ResponseEntity<?> formularioDocumento(@RequestParam(name = "nro_ruta") int nro_ruta,
+    public ResponseEntity<?> formularioDocumento(@RequestParam(name = "nro_ruta") Integer nro_ruta,
             @RequestParam(name = "year") String year, @RequestParam(name = "id_unidad") Integer id_unidad, Model model,
             HttpServletRequest request,
             HttpServletResponse response) {
         Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-        //HojaRuta hojaRuta = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(nro_ruta,id_unidad, year);
+        HojaRuta hojaRuta = hojaRutaService.obtenerHojaRutaPorGestionUnidad(nro_ruta, id_unidad, year);
       
         
 
-        // if (hojaRuta == null) {
-        //     return ResponseEntity.status(HttpStatus.NO_CONTENT)
-        //             .body("No se encontró documento con el número de Hoja de Ruta proporcionado.");
-        // }
+        if (hojaRuta == null) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .body("No se encontró documento con el número de Hoja de Ruta proporcionado.");
+        }
         
-        // Unidad unidad = unidadService.findById((long) hojaRuta.getUnidad_reg());
+        Unidad unidad = unidadService.findById((long) hojaRuta.getUnidad_reg());
         // if (hojaRuta.getNroRuta() < 10) {
         //     hojaRuta.setCiteTexto(unidad.getSigla() + " N°" + "0" + documento.getCite());
         // } else {
         //     documento.setCiteTexto(unidad.getSigla() + " N°" + documento.getCite());
         // }
 
-        //List<HojaRuta> hojaRutaActuales = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(unidad.getId_unidad().intValue(), year);
-        // if (hojaRutaActuales.size() == 0) {
-        //     model.addAttribute("hojasRutaUnidad", hojaRutaActuales.size());
-        // } else {
-        //     model.addAttribute("hojasRutaUnidad", unidad.getContadorHojaRuta());
-        // }
+        List<HojaRuta> hojaRutaActuales = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(unidad.getId_unidad().intValue(), year);
+        if (hojaRutaActuales.size() == 0) {
+            model.addAttribute("hojasRutaUnidad", hojaRutaActuales.size());
+        } else {
+            model.addAttribute("hojasRutaUnidad", unidad.getContadorHojaRuta());
+        }
         
-        //model.addAttribute("hojaRuta", hojaRuta);
+        model.addAttribute("hojaRuta", hojaRuta);
         model.addAttribute("unidades", unidadService.findAll());
     
 
@@ -134,7 +142,7 @@ public class recepcionController {
 
     @PostMapping("/regMovimientoDocumento")
     public ResponseEntity<String> regMovimientoDocumento(
-            @RequestParam("id_documento") Long id_documento,
+            @RequestParam("id_hoja_ruta") Long id_hoja_ruta,
             @RequestParam("id_unidad_destino") Long id_unidad_destino,
             @RequestParam("observacion") String observacion,
             @RequestParam("instruccion") String instruccion,
@@ -142,7 +150,7 @@ public class recepcionController {
             @RequestParam(value = "numeroInicial", required = false) int numeroInicial) {
         try {
             MovimientoDocumento movimientoDocumento = new MovimientoDocumento();
-            Documento documento = documentoService.findById(id_documento);
+            HojaRuta hojaRuta = hojaRutaService.findById(id_hoja_ruta);
             if (archivo != null && !archivo.isEmpty()) {
                 String arch = config.guardarArchivo(archivo);
                 movimientoDocumento.setRuta_movimiento(arch);
@@ -155,29 +163,27 @@ public class recepcionController {
             long idUnidad = usuario.getUnidad().getId_unidad();
             Integer idUnidadInt = (int) idUnidad;
             Unidad unidadDestino = unidadService.findById(id_unidad_destino);
-            Integer idDocumentoInteger = id_documento.intValue();
-            List<HojaRuta> hojaRutaDocumentoExiste = hojaRutaService.obtenerHojasDeRutaPorDocumento(idDocumentoInteger);
+            // Integer idDocumentoInteger = id_documento.intValue();
+            // List<HojaRuta> hojaRutaDocumentoExiste = hojaRutaService.obtenerHojasDeRutaPorDocumento(idDocumentoInteger);
             
-            List<HojaRuta> hojaRutaActuales = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(unidad.getId_unidad().intValue(), gestion);
-            int cantidadHojaRuta = (hojaRutaActuales.size()+1);
-            HojaRuta hojaRuta = new HojaRuta();
-            hojaRuta.setEstado("A");
-            // if(hojaRutaActuales != null){
-            //     hojaRuta.setNroRuta((String.valueOf(cantidadHojaRuta)));
-            // }
-            hojaRuta.setFechaCreacion(new Date());
-            hojaRuta.setUnidad_reg(idUnidadInt);
-            hojaRuta.setDocumento(documento);
+            // List<HojaRuta> hojaRutaActuales = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(unidad.getId_unidad().intValue(), gestion);
+            // int cantidadHojaRuta = (hojaRutaActuales.size()+1);
+            // HojaRuta hojaRuta = new HojaRuta();
+            // hojaRuta.setEstado("A");
+        
+            // hojaRuta.setFechaCreacion(new Date());
+            // hojaRuta.setUnidad_reg(idUnidadInt);
+            // hojaRuta.setDocumento(documento);
 
-            if (hojaRutaDocumentoExiste.size() == 0) {
+            // if (hojaRutaDocumentoExiste.size() == 0) {
                 
-                System.out.println("Numero Inicial: " + (numeroInicial+1));
-                unidad.setContadorHojaRuta(numeroInicial+1);
-                unidadService.save(unidad);  
+            //     System.out.println("Numero Inicial: " + (numeroInicial+1));
+            //     unidad.setContadorHojaRuta(numeroInicial+1);
+            //     unidadService.save(unidad);  
 
-                hojaRuta.setNroRuta(numeroInicial+1);
-                hojaRutaService.save(hojaRuta);   
-            }
+            //     hojaRuta.setNroRuta(numeroInicial+1);
+            //     hojaRutaService.save(hojaRuta);   
+            // }
             
             // if (hojaRutaActuales.size() == 0) {
             //     System.out.println("Numero Inicial: " + numeroInicial);
@@ -190,7 +196,7 @@ public class recepcionController {
             //     unidadService.save(unidad);
             // }
             
-            //movimientoDocumento.setDocumento(documento);
+            movimientoDocumento.setHojaRuta(hojaRuta);
             movimientoDocumento.setFechaHoraRegistro(new Date());
             movimientoDocumento.setUnidadDestino(unidadDestino);
             movimientoDocumento.setUnidadOrigen(usuario.getUnidad());
@@ -209,14 +215,13 @@ public class recepcionController {
     public String postMethodName(HttpServletRequest request, Model model) {
         if (request.getSession().getAttribute("usuario") != null) {
             Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-            List<Documento> documentos = documentoService.findAll();
+            List<HojaRuta> hojaRutas = hojaRutaService.findAll();
             // Extraer los años y almacenarlos en un Set para evitar duplicados
-            Set<Integer> years = documentos.stream()
-                    .map(doc -> doc.getFechaCreacion().toInstant()
+            Set<Integer> years = hojaRutas.stream()
+                    .map(hr -> hr.getFechaCreacion().toInstant()
                             .atZone(ZoneId.systemDefault())
                             .toLocalDate().getYear())
                     .collect(Collectors.toSet());
-
             // Añadir los documentos y los años al modelo
             model.addAttribute("unidades", unidadService.findAll());
             model.addAttribute("years", years);
@@ -239,6 +244,33 @@ public class recepcionController {
         }
 
         return ResponseEntity.ok(listaUsuarios);
+    }
+
+    @GetMapping("/verDocumentoHojaRuta/{id_hoja_ruta}")
+    public ResponseEntity<Resource> verDocumentoHojaRuta(@PathVariable("id_hoja_ruta") Long id) throws IOException {
+        HojaRuta hojaRuta = hojaRutaService.findById(id);
+
+
+        // Obtener la ruta completa del archivo
+        Path projectPath = Paths.get("").toAbsolutePath();
+        String ruta = projectPath + "/uploads/" + hojaRuta.getRuta();
+        System.out.println(ruta);
+        // Cargar el archivo PDF como recurso
+        Resource resource = new InputStreamResource(new FileInputStream(ruta));
+
+        // Configurar las cabeceras de la respuesta
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=" + hojaRuta.getNroRuta()); // "inline"
+                                                                                                 // para
+                                                                                                 // visualizar
+                                                                                                 // en el
+                                                                                                 // navegador
+        headers.setContentType(MediaType.APPLICATION_PDF);
+
+        // Devolver la respuesta con el archivo PDF
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(resource);
     }
 
 }

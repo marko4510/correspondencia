@@ -40,6 +40,9 @@ public class HojaRuta implements Serializable{
     private Date fechaCreacion;
     @OneToOne
     private Documento documento;
+
+    @OneToMany(mappedBy = "hojaRuta", cascade = CascadeType.ALL)
+    private List<MovimientoDocumento> movimientos;
     
     // @OneToMany(mappedBy = "hojaRuta", cascade = CascadeType.ALL, orphanRemoval = true)
     // @OrderBy("orden")

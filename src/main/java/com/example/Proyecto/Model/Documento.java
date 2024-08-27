@@ -49,6 +49,6 @@ public class Documento implements Serializable{
     @OneToOne(mappedBy = "documento", cascade = CascadeType.ALL)
     private HojaRuta hojaRuta;
     
-    @OneToMany(mappedBy = "documento", cascade = CascadeType.ALL)
-    private List<MovimientoDocumento> movimientos;
+    // @OneToMany(mappedBy = "documento", cascade = CascadeType.ALL)
+    // private List<MovimientoDocumento> movimientos;
 }

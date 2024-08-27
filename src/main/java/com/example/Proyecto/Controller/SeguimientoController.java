@@ -97,10 +97,10 @@ public class SeguimientoController {
 
             if (flujoDocumentos.size() > 0) {
                 model.addAttribute("flujo", flujoDocumentos);
-                model.addAttribute("documento", flujoDocumentos.get(0).getDocumento());
-                Integer id = flujoDocumentos.get(0).getDocumento().getUnidad_origen();
-                Unidad unidad = unidadService.findById(id.longValue());
-                model.addAttribute("unidad", unidad);
+                // model.addAttribute("documento", flujoDocumentos.get(0).getDocumento());
+                // Integer id = flujoDocumentos.get(0).getDocumento().getUnidad_origen();
+                //Unidad unidad = unidadService.findById(id.longValue());
+                //model.addAttribute("unidad", unidad);
                 return "seguimiento/flujoDocumento"; // Retorna la vista si hay resultados
             } else {
                 return "seguimiento/noEncontrado"; // Retorna una vista alternativa si no hay resultados
@@ -130,9 +130,9 @@ public class SeguimientoController {
 
                         // Configurar las cabeceras de la respuesta
                         HttpHeaders headers = new HttpHeaders();
-                        headers.add(HttpHeaders.CONTENT_DISPOSITION,
-                                "inline; filename=" + movimientoDocumento.getDocumento().getCite());
-                        headers.setContentType(MediaType.APPLICATION_PDF);
+                        // headers.add(HttpHeaders.CONTENT_DISPOSITION,
+                        //         "inline; filename=" + movimientoDocumento.getDocumento().getCite());
+                        // headers.setContentType(MediaType.APPLICATION_PDF);
 
                         // Devolver la respuesta con el archivo PDF
                         return ResponseEntity.ok()

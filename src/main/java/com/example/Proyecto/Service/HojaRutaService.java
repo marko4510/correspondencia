@@ -12,4 +12,5 @@ public interface HojaRutaService {
     void deleteById(Long id);
     public List<HojaRuta> obtenerHojasDeRutaPorUnidadYGestion(Integer unidad_origen, String gestion);
     public List<HojaRuta> obtenerHojasDeRutaPorDocumento(Integer id_documento);
+    public HojaRuta obtenerHojaRutaPorGestionUnidad(Integer nro_ruta, Integer unidad_origen, String gestion);
 }
