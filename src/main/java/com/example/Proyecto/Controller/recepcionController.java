@@ -174,7 +174,7 @@ public class recepcionController {
                 unidad.setContadorHojaRuta(numeroInicial+1);
                 unidadService.save(unidad);  
 
-                hojaRuta.setNroRuta(String.valueOf(numeroInicial+1));
+                hojaRuta.setNroRuta(numeroInicial+1);
                 hojaRutaService.save(hojaRuta);   
             }
             

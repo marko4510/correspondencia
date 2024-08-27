@@ -8,6 +8,9 @@
       <ul th:if="${session.usuario.estado != 'P'}" class="sidebar-menu">
         <li class="menu-header">---------------------------------------</li>
         <li class="dropdown ">
+          <a th:href="@{/hojaRuta/inicio}" class="nav-link"><i data-feather="file-minus"></i><span>Hoja de Ruta</span></a>
+        </li>
+        <li class="dropdown ">
           <a th:href="@{/documento/inicio}" class="nav-link"><i data-feather="file-text"></i><span>Documentos</span></a>
         </li>
         <li class="dropdown ">

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="layout/head :: head"></head>
+
+<body>
+  <div class="loader"></div>
+  <div id="app">
+    <div class="main-wrapper main-wrapper-1">
+      <nav th:replace="layout/navbar :: navbar"></nav>
+      <div th:replace="layout/sidebar :: sidebar"></div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <section class="section">
+          <div id="tablaRegistro"></div>
+        </section>
+      </div>
+
+      
+      <footer th:replace="layout/footer :: footer">
+      </footer>
+    </div>
+  </div>
+  <div th:replace="layout/script :: script">
+  </div>
+  <!-- Modal Formulario -->
+  <div class="modal fade modal-horaRuta" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+    aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg pullDown">
+      <div class="modal-content" id="contenidoFormularioModal">
+
+      </div>
+    </div>
+  </div>
+  <!-- Modal Ver Archivo -->
+  <!-- <div class="modal fade modal-ver-documento" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content" id="contenidoArchivoModal">
+
+      </div>
+    </div>
+  </div> -->
+  <script>
+    cargarTabla();
+
+    function cargarFormulari() {
+      $.ajax({
+        type: 'GET',
+        url: "/hojaRuta/formulario",  // Ruta del metodo del controlador en Spring Boot
+        success: function (response) {
+          $("#contenidoFormularioModal").html(response);  // Actualiza el contenido del div con la respuesta del servidor
+        }
+      });
+    }
+
+
+    function cargarFormulario(id) {
+      $.ajax({
+        type: 'POST',
+        url: "/hojaRuta/formulario/" + id,  // Ruta del metodo del controlador en Spring Boot
+        success: function (response) {
+          $("#contenidoFormularioModal").html(response);  // Actualiza el contenido del div con la respuesta del servidor
+        }
+      });
+    }
+
+    function cargarTabla() {
+      $.ajax({
+        type: 'POST',
+        url: "/hojaRuta/tablaRegistros",  // Ruta del metodo del controlador en Spring Boot
+        success: function (response) {
+          $("#tablaRegistro").html(response);  // Actualiza el contenido del div con la respuesta del servidor
+        }
+      });
+    }
+
+    function verDocumento(id) {
+      $('#contenidoFormularioModal').html(
+        `<!-- Modal Header -->
+<div class="modal-header">
+    <h5 class="modal-title" id="myLargeModalLabel">Visualización de Documento</h5>
+    <a type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </a>
+</div>
+<div class="modal-body">
+    <embed src="/hojaRuta/verDocumento/${id}" type="application/pdf" frameborder="0" style="height: 600px; width: 100%;"></embed>
+</div>
+`);
+    }
+
+  </script>
+</body>
+
+</html>

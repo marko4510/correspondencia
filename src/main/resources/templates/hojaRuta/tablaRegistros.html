@@ -1,0 +1,74 @@
+<div class="section-body">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <h4>Lista de registros de hojas de ruta</h4>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".modal-horaRuta"
+                        onclick="cargarFormulari()">Registrar Hoja de Ruta</button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="table-1">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">#</th>
+                                    <th>Nro. Hoja Ruta</th>
+                                    <th>Fecha Registro</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="hojaRuta, rowStat: ${hojasRutas}">
+                                    <td th:text="${rowStat.count}"></td>
+                                    <td th:text="${hojaRuta.nroRuta}"></td>
+                                    <td th:text="${#dates.format(hojaRuta.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
+                                    <td>
+                                        <a href="#" class="btn btn-icon icon-left btn-primary" 
+                                        th:attr="onclick='cargarFormulario(\'' + ${hojaRuta.id_hoja_ruta} + '\')'"
+                                        data-toggle="modal" data-target=".modal-horaRuta">
+                                            <i class="far fa-edit"></i>Editar</a>
+                                        <a href="#" class="btn btn-icon icon-left btn-success"
+                                        th:attr="onclick='verDocumento(\'' + ${hojaRuta.id_hoja_ruta} + '\')'"
+                                        data-toggle="modal" data-target=".modal-horaRuta">
+                                        <i class="far fa-file-archive"></i>Ver</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#table-1').DataTable({
+            language: {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            }
+        });
+
+    });
+</script>
