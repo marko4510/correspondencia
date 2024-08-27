@@ -198,7 +198,6 @@ public class HojaRutaController {
                 hojaRuta.setRuta(arch);
             }
             hojaRuta.setRef(hojaR.getRef());
-            hojaRuta.setNroRuta(hojaR.getNroRuta());
             hojaRutaService.save(hojaRuta);
             return ResponseEntity.ok("Modificado");
         } catch (Exception e) {
