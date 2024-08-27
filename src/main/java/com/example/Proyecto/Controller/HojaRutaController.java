@@ -34,9 +34,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.Proyecto.Config;
 import com.example.Proyecto.Model.Documento;
 import com.example.Proyecto.Model.HojaRuta;
+import com.example.Proyecto.Model.MovimientoDocumento;
 import com.example.Proyecto.Model.Unidad;
 import com.example.Proyecto.Model.Usuario;
 import com.example.Proyecto.Service.HojaRutaService;
+import com.example.Proyecto.Service.MovimientoDocumentoService;
 import com.example.Proyecto.Service.TipoDocumentoService;
 import com.example.Proyecto.Service.UnidadService;
 import com.example.Proyecto.Service.UsuarioService;
@@ -56,6 +58,9 @@ public class HojaRutaController {
 
     @Autowired
     private UnidadService unidadService;
+
+    @Autowired
+    private MovimientoDocumentoService movimientoDocumentoService;
 
     Config config = new Config();
 
@@ -91,6 +96,7 @@ public class HojaRutaController {
             model.addAttribute("hojaRuta", new HojaRuta());
             List<HojaRuta> hojasRutas = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(user.getUnidad().getId_unidad().intValue(), gestion);
             model.addAttribute("hojaRutasUnidad", hojasRutas);
+            model.addAttribute("unidades", unidadService.findAll());
 
             return "hojaRuta/formulario";
         } else {
@@ -107,6 +113,7 @@ public class HojaRutaController {
             model.addAttribute("hojaRuta", hojaRutaService.findById(id));
             List<HojaRuta> hojasRutas = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(user.getUnidad().getId_unidad().intValue(), gestion);
             model.addAttribute("hojaRutasUnidad", hojasRutas);
+            model.addAttribute("unidades", unidadService.findAll());
             model.addAttribute("edit", "true");
             return "hojaRuta/formulario";
         } else {
@@ -156,8 +163,12 @@ public class HojaRutaController {
     @PostMapping("/registrar")
     public ResponseEntity<String> registrar(@Validated HojaRuta hojaRuta,
             @RequestParam("file") MultipartFile archivo, HttpServletRequest request,
+            @RequestParam("id_unidad_destino") Long id_unidad_destino,
+            @RequestParam("observacion") String observacion,
+            @RequestParam("instruccion") String instruccion,
             @RequestParam(value = "numeroInicial", required = false) int numeroInicial) {
         try {
+            MovimientoDocumento movimientoDocumento = new MovimientoDocumento();
             String gestion = String.valueOf(LocalDate.now().getYear());
             Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
             Usuario user = usuarioService.findById(usuario.getId_usuario());
@@ -182,6 +193,18 @@ public class HojaRutaController {
             hojaRuta.setEstado("A");
             hojaRuta.setUnidad_reg(usuario.getUnidad().getId_unidad().intValue());
             hojaRutaService.save(hojaRuta);
+
+
+            Unidad unidadDestino = unidadService.findById(id_unidad_destino);
+            movimientoDocumento.setRuta_movimiento(arch);
+            movimientoDocumento.setHojaRuta(hojaRuta);
+            movimientoDocumento.setFechaHoraRegistro(new Date());
+            movimientoDocumento.setUnidadDestino(unidadDestino);
+            movimientoDocumento.setUnidadOrigen(usuario.getUnidad());
+            movimientoDocumento.setUsuarioRegistro(user.getId_usuario().intValue());
+            movimientoDocumento.setInstruccion(instruccion);
+            movimientoDocumento.setObservaciones(observacion);
+            movimientoDocumentoService.save(movimientoDocumento);
             return ResponseEntity.ok("Registrado");
         } catch (Exception e) {
             return ResponseEntity.ok("Error: " + e.getMessage());
