@@ -136,9 +136,9 @@ public class SeguimientoController {
 
                         // Configurar las cabeceras de la respuesta
                         HttpHeaders headers = new HttpHeaders();
-                        // headers.add(HttpHeaders.CONTENT_DISPOSITION,
-                        //         "inline; filename=" + movimientoDocumento.getDocumento().getCite());
-                        // headers.setContentType(MediaType.APPLICATION_PDF);
+                        headers.add(HttpHeaders.CONTENT_DISPOSITION,
+                                "inline; filename=" + movimientoDocumento.getHojaRuta().getId_hoja_ruta());
+                        headers.setContentType(MediaType.APPLICATION_PDF);
 
                         // Devolver la respuesta con el archivo PDF
                         return ResponseEntity.ok()
