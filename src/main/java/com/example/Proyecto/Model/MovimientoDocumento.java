@@ -30,8 +30,8 @@ public class MovimientoDocumento implements Serializable{
     private Integer usuarioRegistro;
 
     @ManyToOne
-    @JoinColumn(name = "id_documento")
-    private Documento documento;
+    @JoinColumn(name = "id_hoja_ruta")
+    private HojaRuta hojaRuta;
     
     @ManyToOne
     @JoinColumn(name = "id_unidad_origen")

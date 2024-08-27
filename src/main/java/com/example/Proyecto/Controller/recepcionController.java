@@ -92,34 +92,35 @@ public class recepcionController {
     }
 
     @PostMapping("/formularioDocumento")
-    public ResponseEntity<?> formularioDocumento(@RequestParam(name = "cite") int cite,
+    public ResponseEntity<?> formularioDocumento(@RequestParam(name = "nro_ruta") int nro_ruta,
             @RequestParam(name = "year") String year, @RequestParam(name = "id_unidad") Integer id_unidad, Model model,
             HttpServletRequest request,
             HttpServletResponse response) {
         Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-        Documento documento = documentoService.obtener_DocumentosCiteGestionUnidad(cite, id_unidad, year);
+        //HojaRuta hojaRuta = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(nro_ruta,id_unidad, year);
+      
         
 
-        if (documento == null) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                    .body("No se encontró documento con el número de Hoja de Ruta proporcionado.");
-        }
+        // if (hojaRuta == null) {
+        //     return ResponseEntity.status(HttpStatus.NO_CONTENT)
+        //             .body("No se encontró documento con el número de Hoja de Ruta proporcionado.");
+        // }
         
-        Unidad unidad = unidadService.findById((long) documento.getUnidad_origen());
-        if (documento.getCite() < 10) {
-            documento.setCiteTexto(unidad.getSigla() + " N°" + "0" + documento.getCite());
-        } else {
-            documento.setCiteTexto(unidad.getSigla() + " N°" + documento.getCite());
-        }
+        // Unidad unidad = unidadService.findById((long) hojaRuta.getUnidad_reg());
+        // if (hojaRuta.getNroRuta() < 10) {
+        //     hojaRuta.setCiteTexto(unidad.getSigla() + " N°" + "0" + documento.getCite());
+        // } else {
+        //     documento.setCiteTexto(unidad.getSigla() + " N°" + documento.getCite());
+        // }
 
-        List<HojaRuta> hojaRutaActuales = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(unidad.getId_unidad().intValue(), year);
-        if (hojaRutaActuales.size() == 0) {
-            model.addAttribute("hojasRutaUnidad", hojaRutaActuales.size());
-        } else {
-            model.addAttribute("hojasRutaUnidad", unidad.getContadorHojaRuta());
-        }
+        //List<HojaRuta> hojaRutaActuales = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(unidad.getId_unidad().intValue(), year);
+        // if (hojaRutaActuales.size() == 0) {
+        //     model.addAttribute("hojasRutaUnidad", hojaRutaActuales.size());
+        // } else {
+        //     model.addAttribute("hojasRutaUnidad", unidad.getContadorHojaRuta());
+        // }
         
-        model.addAttribute("documento", documento);
+        //model.addAttribute("hojaRuta", hojaRuta);
         model.addAttribute("unidades", unidadService.findAll());
     
 
@@ -189,7 +190,7 @@ public class recepcionController {
             //     unidadService.save(unidad);
             // }
             
-            movimientoDocumento.setDocumento(documento);
+            //movimientoDocumento.setDocumento(documento);
             movimientoDocumento.setFechaHoraRegistro(new Date());
             movimientoDocumento.setUnidadDestino(unidadDestino);
             movimientoDocumento.setUnidadOrigen(usuario.getUnidad());
