@@ -15,7 +15,7 @@
                                           <tr>
                                             <th scope="col" colspan="2" class="text-center" th:text="${'DETALLE DEL DOCUMENTO'}"></th>
                                             <th scope="col" colspan="1" class="text-center" > 
-                                                <button class="btn btn-info" th:attr="onclick='generarHojaRuta(\'' + ${documento.id_documento} + '\')'">Generar</button>
+                                                <button class="btn btn-info" th:attr="onclick='generarHojaRuta(\'' + ${hojaDeRuta.id_hoja_ruta} + '\')'">Generar</button>
                                             </th>
                                           </tr>
                                         </thead>
@@ -26,11 +26,11 @@
                                           </tr>
                                           <tr>
                                             <th scope="row" style="text-align: right;">Referencia :</th>
-                                            <td th:text="${documento.ref}">Jacob</td>
+                                            <td th:text="${hojaDeRuta.ref}">Jacob</td>
                                           </tr>
                                           <tr>
                                             <th scope="row" style="text-align: right;">Fecha de Emisión :</th>
-                                            <td th:text="${#dates.format(documento.fechaCreacion, 'dd/MM/yyyy hh:mm a')}">Jacob</td>
+                                            <td th:text="${#dates.format(hojaDeRuta.fechaCreacion, 'dd/MM/yyyy hh:mm a')}">Jacob</td>
                                           </tr>
                                         </tbody>
                                       </table>

@@ -45,7 +45,7 @@ public class MovimientoDocumentoServiceImpl implements MovimientoDocumentoServic
     }
 
     @Override
-    public List<MovimientoDocumento> obtener_Flujos_Documentos(String nroRuta, Integer unidad_origen, String gestion) {
+    public List<MovimientoDocumento> obtener_Flujos_Documentos(Integer nroRuta, Integer unidad_origen, String gestion) {
         // TODO Auto-generated method stub
         return movimientoDocumentoDao.obtener_Flujos_Documentos(nroRuta, unidad_origen, gestion);
     }

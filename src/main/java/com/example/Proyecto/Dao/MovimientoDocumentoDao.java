@@ -18,9 +18,14 @@ public interface MovimientoDocumentoDao extends JpaRepository<MovimientoDocument
     //             "WHERE d.nro_ruta = ?1 AND d.unidad_origen = ?2 AND TO_CHAR(d.fecha_creacion, 'YYYY') = ?3",nativeQuery = true)
     // public List<MovimientoDocumento> obtener_Flujos_Documentos(String nroRuta, Integer unidad_origen, String gestion);
     
-    @Query(value = "SELECT md.* FROM documento d \n" + //
-                "LEFT JOIN movimiento_documento md ON md.id_documento = d.id_documento \n" + //
-                "LEFT JOIN hoja_ruta hr ON hr.documento_id_documento = d.id_documento \n" + //
-                "WHERE hr.nro_ruta = ?1 AND d.unidad_origen = ?2 AND TO_CHAR(d.fecha_creacion, 'YYYY') = ?3",nativeQuery = true)
-    public List<MovimientoDocumento> obtener_Flujos_Documentos(String nroRuta, Integer unidad_origen, String gestion);
+    // @Query(value = "SELECT md.* FROM documento d \n" + //
+    //             "LEFT JOIN movimiento_documento md ON md.id_documento = d.id_documento \n" + //
+    //             "LEFT JOIN hoja_ruta hr ON hr.documento_id_documento = d.id_documento \n" + //
+    //             "WHERE hr.nro_ruta = ?1 AND d.unidad_origen = ?2 AND TO_CHAR(d.fecha_creacion, 'YYYY') = ?3",nativeQuery = true)
+    // public List<MovimientoDocumento> obtener_Flujos_Documentos(String nroRuta, Integer unidad_origen, String gestion);
+
+    @Query(value = "SELECT * FROM movimiento_documento md \n" + //
+                "LEFT JOIN hoja_ruta hr ON hr.id_hoja_ruta = md.id_hoja_ruta\n" + //
+                "WHERE hr.nro_ruta = ?1 AND hr.unidad_reg = ?2 AND TO_CHAR(hr.fecha_creacion , 'YYYY') = ?3 ",nativeQuery = true)
+    public List<MovimientoDocumento> obtener_Flujos_Documentos(Integer nroRuta, Integer unidad_origen, String gestion);
 }

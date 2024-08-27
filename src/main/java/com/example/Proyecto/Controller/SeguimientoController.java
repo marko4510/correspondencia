@@ -32,9 +32,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.Proyecto.Model.Documento;
+import com.example.Proyecto.Model.HojaRuta;
 import com.example.Proyecto.Model.MovimientoDocumento;
 import com.example.Proyecto.Model.Unidad;
 import com.example.Proyecto.Service.DocumentoService;
+import com.example.Proyecto.Service.HojaRutaService;
 import com.example.Proyecto.Service.MovimientoDocumentoService;
 import com.example.Proyecto.Service.UnidadService;
 
@@ -61,13 +63,16 @@ public class SeguimientoController {
     @Autowired
     private SpringTemplateEngine templateEngine;
 
+    @Autowired
+    private HojaRutaService hojaRutaService;
+
     @GetMapping("/inicio")
     public String inicio(HttpServletRequest request, Model model) {
 
         if (request.getSession().getAttribute("usuario") != null) {
-            List<Documento> documentos = documentoService.findAll();
+            List<HojaRuta> hojaRutas = hojaRutaService.findAll();
 
-            Set<Integer> years = documentos.stream()
+            Set<Integer> years = hojaRutas.stream()
                     .map(doc -> doc.getFechaCreacion()
                             .toInstant()
                             .atZone(ZoneId.systemDefault())
@@ -93,14 +98,15 @@ public class SeguimientoController {
         @PathVariable(name = "id_unidad")Integer id_unidad, Model model) {
 
             // List<MovimientoDocumento> flujoDocumentos = movimientoDocumentoService.obtener_Flujo_Documento(nroRuta);
-            List<MovimientoDocumento> flujoDocumentos = movimientoDocumentoService.obtener_Flujos_Documentos(nroRuta,id_unidad,year);
+            Integer num_ruta = Integer.parseInt(nroRuta);
+            List<MovimientoDocumento> flujoDocumentos = movimientoDocumentoService.obtener_Flujos_Documentos(num_ruta,id_unidad,year);
 
             if (flujoDocumentos.size() > 0) {
                 model.addAttribute("flujo", flujoDocumentos);
-                // model.addAttribute("documento", flujoDocumentos.get(0).getDocumento());
-                // Integer id = flujoDocumentos.get(0).getDocumento().getUnidad_origen();
-                //Unidad unidad = unidadService.findById(id.longValue());
-                //model.addAttribute("unidad", unidad);
+                model.addAttribute("hojaDeRuta", flujoDocumentos.get(0).getHojaRuta());
+                Integer id = flujoDocumentos.get(0).getHojaRuta().getUnidad_reg();
+                Unidad unidad = unidadService.findById(id.longValue());
+                model.addAttribute("unidad", unidad);
                 return "seguimiento/flujoDocumento"; // Retorna la vista si hay resultados
             } else {
                 return "seguimiento/noEncontrado"; // Retorna una vista alternativa si no hay resultados
@@ -154,12 +160,13 @@ public class SeguimientoController {
             }
         }
     
-        @GetMapping("/hojaruta/{id_documento}")
-        public ResponseEntity<?> generarHojaRuta(@PathVariable(name = "id_documento") Long id_documento, Model model,
+        @GetMapping("/hojaruta/{id_hoja_ruta}")
+        public ResponseEntity<?> generarHojaRuta(@PathVariable(name = "id_hoja_ruta") Long id_hoja_ruta, Model model,
                 HttpServletRequest request, HttpServletResponse response) {
 
-            Documento documento = documentoService.findById(id_documento);
-            String fechaCreacionStr = documento.getFechaCreacion().toString(); // Supongamos que es una cadena como
+            Documento documento = documentoService.findById(id_hoja_ruta);
+            HojaRuta hojaRuta = hojaRutaService.findById(id_hoja_ruta);
+            String fechaCreacionStr = hojaRuta.getFechaCreacion().toString(); // Supongamos que es una cadena como
                                                                                // '2024-08-21 16:55:29.393'
 
             // Usa LocalDateTime y ajusta el formato del DateTimeFormatter
@@ -172,13 +179,12 @@ public class SeguimientoController {
 
             int year = fechaCreacion.getYear();
 
-            model.addAttribute("documento", documento);
-            model.addAttribute("hojaRuta", documento.getHojaRuta());
-            model.addAttribute("unidad", unidadService.findById(documento.getUnidad_origen().longValue()));
+            model.addAttribute("hojaRuta", hojaRuta);
+            model.addAttribute("unidad", unidadService.findById(hojaRuta.getUnidad_reg().longValue()));
 
-            String textoQR = "Hoja de Ruta: " + documento.getHojaRuta().getNroRuta() + "/" + year + "\n" +
+            String textoQR = "Hoja de Ruta: " + hojaRuta.getNroRuta() + "/" + year + "\n" +
                     "Fecha: " + fechaCreacionFormatted + "\n" +
-                    "Identificador: " + generarAlfanumerico(documento.getId_documento());
+                    "Identificador: " + generarAlfanumerico(hojaRuta.getId_hoja_ruta());
             model.addAttribute("textoQR", textoQR);
 
             WebContext context = new WebContext(request, response, request.getServletContext());
