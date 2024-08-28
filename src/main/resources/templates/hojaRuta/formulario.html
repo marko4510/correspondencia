@@ -44,21 +44,27 @@
                             <div class="form-group">
                                 <label>Unidad</label>
                                 <select class="form-control select2" style="width: 100%;" name="id_unidad"
-                                    id="id_unidad2" onchange="cargarSelectUsuario()">
+                                    id="id_unidad2" onchange="cargarSelectUsuario()" required>
                                     <option value="" selected>Seleccione...</option>
                                     <option th:each="u : ${unidades}" th:text="${u.nombre}" th:value="${u.id_unidad}">
                                     </option>
                                 </select>
+                                <div class="invalid-feedback">
+                                    Tiene que seleccionar una unidad emisor
+                                </div>
                             </div>
                         </div>
 
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label>Persona</label>
+                                <label>Responsable</label>
                                 <select class="form-control select2" style="width: 100%;" name="userEmisor"
-                                    id="selectUsuarios">
+                                    id="selectUsuarios" required="">
                                     <option value="" selected>Seleccione una Persona...</option>
                                 </select>
+                                <div class="invalid-feedback">
+                                    Tiene que seleccionar un responsable de la unidad emisor
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -95,12 +101,15 @@
                         </div>
                         <div class="form-group col-md-12">
                             <label>Unidad Destino</label>
-                            <select class="form-control select2" style="width: 100%" name="id_unidad_destino" required>
+                            <select class="form-control select2" style="width: 100%" name="id_unidad_destino" required="">
                                 <option value="">Seleccionar una Unidad Destino...</option>
                                 <option th:each="uni : ${unidades}" th:value="${uni.id_unidad}"
                                     th:if="${uni.estado != 'X'}" th:text="${uni.nombre}">
                                 </option>
                             </select>
+                            <div class="invalid-feedback">
+                                Tiene que seleccionar una unidad destino
+                            </div>
                         </div>
                         <div class="form-group col-md-12" th:if="${edit == null}">
                             <label>Observaciones</label>

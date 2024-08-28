@@ -83,7 +83,7 @@ public class HojaRutaController {
         List<HojaRuta> hojasRutas = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(usuario.getUnidad().getId_unidad().intValue(), gestion);
         for (HojaRuta hojaRuta : hojasRutas) {
             Usuario userEmi = usuarioService.findById(hojaRuta.getUsuario_emisor().longValue());
-            hojaRuta.setHojaRutaTexto(usuario.getUnidad().getSigla()+"/"+hojaRuta.getNroRuta()+"/");
+            hojaRuta.setHojaRutaTexto(usuario.getUnidad().getSigla()+"-"+hojaRuta.getNroRuta()+"/");
             hojaRuta.setNombreEmisorText(userEmi.getPersona().getNombre()+" "+userEmi.getPersona().getAp_materno()+" "+userEmi.getPersona().getAp_materno());
         }
         model.addAttribute("hojasRutas", hojasRutas);
@@ -199,6 +199,7 @@ public class HojaRutaController {
             hojaRuta.setRuta(arch);
             hojaRuta.setUsuario_emisor(userEmisor);
             hojaRuta.setUnidad_registro(unidad.getId_unidad().intValue());
+            hojaRuta.setUsuario_registro(usuario.getId_usuario().intValue());
             // documento.setNroRuta(cite);
             hojaRuta.setFechaCreacion(new Date());
             hojaRuta.setEstado("A");
