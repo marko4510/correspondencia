@@ -10,12 +10,15 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -51,6 +54,12 @@ public class Persona implements Serializable {
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "persona", fetch = FetchType.LAZY)
     private List<Usuario> usuarios;
+
+    // Tabla Persona
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_cargo")
+    private Cargo cargo;
 
    
 }

@@ -26,9 +26,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.Proyecto.Model.Cargo;
 import com.example.Proyecto.Model.Persona;
 import com.example.Proyecto.Model.Unidad;
 import com.example.Proyecto.Model.Usuario;
+import com.example.Proyecto.Service.CargoService;
 import com.example.Proyecto.Service.PersonaService;
 import com.example.Proyecto.Service.UnidadService;
 import com.example.Proyecto.Service.UsuarioService;
@@ -46,6 +48,9 @@ public class LoginController {
 
     @Autowired
     private UnidadService unidadService;
+
+    @Autowired
+    private CargoService cargoService;
 
     @GetMapping("/")
     public String inicio() {
@@ -129,16 +134,26 @@ public class LoginController {
             if (responseEntity.getStatusCodeValue() == 200) {
                 Map<String, Object> data = responseEntity.getBody();
 
+                Cargo cargoExistente = cargoService.obtener_cargoPorNombre(data.get("p_descripcion").toString());
+                if (cargoExistente == null) {
+                    cargoExistente = new Cargo();
+                    cargoExistente.setEstado("A");
+                    cargoExistente.setNombre(data.get("p_descripcion").toString());
+                    cargoService.save(cargoExistente);
+
+                }
+
                 Persona personaExistente = personaService.obtener_persona(ci);
                 if (personaExistente == null) {
-                    Persona nuevaPersona = new Persona();
-                    nuevaPersona.setCi(data.get("per_num_doc").toString());
-                    nuevaPersona.setNombre(data.get("per_nombres").toString());
-                    nuevaPersona.setAp_paterno(data.get("per_ap_paterno").toString());
-                    nuevaPersona.setAp_materno(data.get("per_ap_materno").toString());
-                    nuevaPersona.setEstado("A");
-                    personaService.save(nuevaPersona);
-                    personaExistente = nuevaPersona; // Añadir esta línea para asignar la nueva persona creada
+                    personaExistente = new Persona();
+                    personaExistente.setCi(data.get("per_num_doc").toString());
+                    personaExistente.setNombre(data.get("per_nombres").toString());
+                    personaExistente.setAp_paterno(data.get("per_ap_paterno").toString());
+                    personaExistente.setAp_materno(data.get("per_ap_materno").toString());
+                    personaExistente.setEstado("A");
+                    personaExistente.setCargo(cargoExistente);
+                    personaService.save(personaExistente);
+                   
                 }
 
                 Unidad unidadExiste = unidadService.obtener_unidadPorNombre(data.get("eo_descripcion").toString());
