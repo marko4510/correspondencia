@@ -191,7 +191,7 @@ public class HojaRutaController {
             // documento.setNroRuta(cite);
             hojaRuta.setFechaCreacion(new Date());
             hojaRuta.setEstado("A");
-            hojaRuta.setUnidad_reg(usuario.getUnidad().getId_unidad().intValue());
+            //hojaRuta.setUnidad_reg(usuario.getUnidad().getId_unidad().intValue());
             hojaRutaService.save(hojaRuta);
 
 

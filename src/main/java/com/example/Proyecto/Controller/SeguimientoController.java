@@ -104,9 +104,9 @@ public class SeguimientoController {
             if (flujoDocumentos.size() > 0) {
                 model.addAttribute("flujo", flujoDocumentos);
                 model.addAttribute("hojaDeRuta", flujoDocumentos.get(0).getHojaRuta());
-                Integer id = flujoDocumentos.get(0).getHojaRuta().getUnidad_reg();
-                Unidad unidad = unidadService.findById(id.longValue());
-                model.addAttribute("unidad", unidad);
+                //Integer id = flujoDocumentos.get(0).getHojaRuta().getUnidad_reg();
+                // Unidad unidad = unidadService.findById(id.longValue());
+                // model.addAttribute("unidad", unidad);
                 return "seguimiento/flujoDocumento"; // Retorna la vista si hay resultados
             } else {
                 return "seguimiento/noEncontrado"; // Retorna una vista alternativa si no hay resultados
@@ -180,7 +180,7 @@ public class SeguimientoController {
             int year = fechaCreacion.getYear();
 
             model.addAttribute("hojaRuta", hojaRuta);
-            model.addAttribute("unidad", unidadService.findById(hojaRuta.getUnidad_reg().longValue()));
+            //model.addAttribute("unidad", unidadService.findById(hojaRuta.getUnidad_reg().longValue()));
 
             String textoQR = "Hoja de Ruta: " + hojaRuta.getNroRuta() + "/" + year + "\n" +
                     "Fecha: " + fechaCreacionFormatted + "\n" +

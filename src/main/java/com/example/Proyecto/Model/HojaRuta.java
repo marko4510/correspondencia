@@ -36,7 +36,8 @@ public class HojaRuta implements Serializable{
     private String ruta;
     
     private String estado;
-    private Integer unidad_reg;
+    private Integer usuario_emisor;
+    private String tipo_derivacion;
     private Date fechaCreacion;
     @OneToOne
     private Documento documento;

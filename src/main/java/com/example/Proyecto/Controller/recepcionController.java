@@ -114,19 +114,19 @@ public class recepcionController {
                     .body("No se encontró documento con el número de Hoja de Ruta proporcionado.");
         }
         
-        Unidad unidad = unidadService.findById((long) hojaRuta.getUnidad_reg());
+        //Unidad unidad = unidadService.findById((long) hojaRuta.getUnidad_reg());
         // if (hojaRuta.getNroRuta() < 10) {
         //     hojaRuta.setCiteTexto(unidad.getSigla() + " N°" + "0" + documento.getCite());
         // } else {
         //     documento.setCiteTexto(unidad.getSigla() + " N°" + documento.getCite());
         // }
 
-        List<HojaRuta> hojaRutaActuales = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(unidad.getId_unidad().intValue(), year);
-        if (hojaRutaActuales.size() == 0) {
-            model.addAttribute("hojasRutaUnidad", hojaRutaActuales.size());
-        } else {
-            model.addAttribute("hojasRutaUnidad", unidad.getContadorHojaRuta());
-        }
+        // List<HojaRuta> hojaRutaActuales = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(unidad.getId_unidad().intValue(), year);
+        // if (hojaRutaActuales.size() == 0) {
+        //     model.addAttribute("hojasRutaUnidad", hojaRutaActuales.size());
+        // } else {
+        //     model.addAttribute("hojasRutaUnidad", unidad.getContadorHojaRuta());
+        // }
         
         model.addAttribute("hojaRuta", hojaRuta);
         model.addAttribute("unidades", unidadService.findAll());
