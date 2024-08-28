@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -37,6 +38,8 @@ public class HojaRuta implements Serializable{
     
     private String estado;
     private Integer usuario_emisor;
+    private Integer unidad_registro;
+    private Integer usuario_registro;
     private String tipo_derivacion;
     private Date fechaCreacion;
     @OneToOne
@@ -44,6 +47,12 @@ public class HojaRuta implements Serializable{
 
     @OneToMany(mappedBy = "hojaRuta", cascade = CascadeType.ALL)
     private List<MovimientoDocumento> movimientos;
+
+    @Transient
+    private String hojaRutaTexto;
+
+    @Transient
+    private String nombreEmisorText;
     
     // @OneToMany(mappedBy = "hojaRuta", cascade = CascadeType.ALL, orphanRemoval = true)
     // @OrderBy("orden")

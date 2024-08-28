@@ -81,6 +81,11 @@ public class HojaRutaController {
         Usuario usuario = usuarioService.findById(user.getId_usuario());
         String gestion = String.valueOf(LocalDate.now().getYear());
         List<HojaRuta> hojasRutas = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(usuario.getUnidad().getId_unidad().intValue(), gestion);
+        for (HojaRuta hojaRuta : hojasRutas) {
+            Usuario userEmi = usuarioService.findById(hojaRuta.getUsuario_emisor().longValue());
+            hojaRuta.setHojaRutaTexto(usuario.getUnidad().getSigla()+"/"+hojaRuta.getNroRuta()+"/");
+            hojaRuta.setNombreEmisorText(userEmi.getPersona().getNombre()+" "+userEmi.getPersona().getAp_materno()+" "+userEmi.getPersona().getAp_materno());
+        }
         model.addAttribute("hojasRutas", hojasRutas);
 
         return "hojaRuta/tablaRegistros";
@@ -93,9 +98,11 @@ public class HojaRutaController {
             String gestion = String.valueOf(LocalDate.now().getYear());
             Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
             Usuario user = usuarioService.findById(usuario.getId_usuario());
+            Unidad unidad = user.getUnidad();
             model.addAttribute("hojaRuta", new HojaRuta());
-            List<HojaRuta> hojasRutas = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(user.getUnidad().getId_unidad().intValue(), gestion);
+            List<HojaRuta> hojasRutas = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(unidad.getId_unidad().intValue(), gestion);
             model.addAttribute("hojaRutasUnidad", hojasRutas);
+            model.addAttribute("nroHojaRutaSiguiente", (unidad.getContadorHojaRuta()+1));
             model.addAttribute("unidades", unidadService.findAll());
 
             return "hojaRuta/formulario";
@@ -166,6 +173,7 @@ public class HojaRutaController {
             @RequestParam("id_unidad_destino") Long id_unidad_destino,
             @RequestParam("observacion") String observacion,
             @RequestParam("instruccion") String instruccion,
+            @RequestParam("userEmisor") Integer userEmisor,
             @RequestParam(value = "numeroInicial", required = false) int numeroInicial) {
         try {
             MovimientoDocumento movimientoDocumento = new MovimientoDocumento();
@@ -185,12 +193,16 @@ public class HojaRutaController {
                 unidad.setContadorHojaRuta(cont);
                 unidadService.save(unidad);
             }
+
             hojaRuta.setNroRuta(unidad.getContadorHojaRuta());
             String arch = config.guardarArchivo((MultipartFile) archivo);
             hojaRuta.setRuta(arch);
+            hojaRuta.setUsuario_emisor(userEmisor);
+            hojaRuta.setUnidad_registro(unidad.getId_unidad().intValue());
             // documento.setNroRuta(cite);
             hojaRuta.setFechaCreacion(new Date());
             hojaRuta.setEstado("A");
+            hojaRuta.setTipo_derivacion("Interno");
             //hojaRuta.setUnidad_reg(usuario.getUnidad().getId_unidad().intValue());
             hojaRutaService.save(hojaRuta);
 

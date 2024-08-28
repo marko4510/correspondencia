@@ -12,7 +12,7 @@ import com.example.Proyecto.Model.Usuario;
 
 public interface HojaRutaDao extends JpaRepository<HojaRuta, Long> {
 
-    @Query(value = "SELECT hr.* FROM hoja_ruta hr  WHERE hr.unidad_reg = ?1 AND TO_CHAR(hr.fecha_creacion, 'YYYY') = ?2", nativeQuery = true)
+    @Query(value = "SELECT hr.* FROM hoja_ruta hr  WHERE hr.unidad_registro = ?1 AND TO_CHAR(hr.fecha_creacion, 'YYYY') = ?2", nativeQuery = true)
     public List<HojaRuta> obtenerHojasDeRutaPorUnidadYGestion(Integer unidad_origen, String gestion);
 
     @Query(value = "select hr.* from hoja_ruta hr \n" + //

@@ -14,6 +14,8 @@
                                 <tr>
                                     <th class="text-center">#</th>
                                     <th>Nro. Hoja Ruta</th>
+                                    <th>Emisor</th>
+                                    <th>Referecia</th>
                                     <th>Fecha Registro</th>
                                     <th>Acciones</th>
                                 </tr>
@@ -21,7 +23,9 @@
                             <tbody>
                                 <tr th:each="hojaRuta, rowStat: ${hojasRutas}">
                                     <td th:text="${rowStat.count}"></td>
-                                    <td th:text="${hojaRuta.nroRuta}"></td>
+                                    <td th:text="${hojaRuta.hojaRutaTexto}+${#dates.format(hojaRuta.fechaCreacion, 'yyyy')}"></td>
+                                    <td th:text="${hojaRuta.nombreEmisorText}"></td>
+                                    <td th:text="${hojaRuta.ref}"></td>
                                     <td th:text="${#dates.format(hojaRuta.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
                                     <td>
                                         <a href="#" class="btn btn-icon icon-left btn-primary" 

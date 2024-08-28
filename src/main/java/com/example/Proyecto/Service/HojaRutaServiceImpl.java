@@ -54,11 +54,5 @@ public class HojaRutaServiceImpl implements HojaRutaService{
         return dao.obtenerHojaRutaPorGestionUnidad(nro_ruta, unidad_origen, gestion);
     }
 
- 
-
-
-
-   
-
 
 }
