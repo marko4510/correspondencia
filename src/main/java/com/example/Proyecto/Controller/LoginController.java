@@ -93,6 +93,7 @@ public class LoginController {
 
             session.setAttribute("usuario", usuario);
             session.setAttribute("persona", usuario.getPersona());
+            session.setAttribute("unidad", unidadService.findById(usuario.getUnidad().getId_unidad().longValue()));
             return "redirect:/inicio";
         }else{
             return "redirect:/login";
@@ -119,6 +120,7 @@ public class LoginController {
 
                 session.setAttribute("usuario", usuario);
                 session.setAttribute("persona", usuario.getPersona());
+                session.setAttribute("unidad", unidadService.findById(usuario.getUnidad().getId_unidad().longValue()));
                 return ResponseEntity.ok("inicia");
             }
 
@@ -178,6 +180,7 @@ public class LoginController {
 
                 session.setAttribute("usuario", usuarioExiste);
                 session.setAttribute("persona", usuarioExiste.getPersona());
+                session.setAttribute("unidad", unidadService.findById(usuarioExiste.getUnidad().getId_unidad().longValue()));
                 return ResponseEntity.ok("inicia");
             } else {
                 return ResponseEntity.ok("Usuario Incorrecto o no registrado");
