@@ -18,14 +18,14 @@
         <div class="row" th:if="${hojaRutasUnidad.size > 0}">
             <div class="form-group col-md-6">
                 <label>Nro. Hoja de Ruta</label>
-                <input type="number" class="form-control" th:value="${nroHojaRutaSiguiente}" readonly>
+                <input type="number" class="form-control" th:value="${edit}? ${hojaRuta.nroRuta} : ${nroHojaRutaSiguiente}" readonly>
                 <div class="invalid-feedback">
                     Tiene que introducir el numero de una hoja de ruta
                 </div>
             </div>
         </div>
         <div class="row" th:if="${hojaRutasUnidad.size == 0}">
-            <div class="form-group col-md-6">
+            <div th:class="${edit}? 'form-group col-md-12' : 'form-group col-md-6'">
                 <label>Nro. Hoja de Ruta</label>
                 <input type="number" class="form-control" name="numeroInicial" min="0" required>
                 <div class="invalid-feedback">
@@ -34,19 +34,19 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6">
+            <div th:class="${edit}? 'form-group col-md-12' : 'form-group col-md-6'">
                 <div class="card-header">
                     <h6>Datos del Emisor</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-12 ">
                             <div class="form-group">
                                 <label>Unidad</label>
                                 <select class="form-control select2" style="width: 100%;" name="id_unidad"
                                     id="id_unidad2" onchange="cargarSelectUsuario()" required>
                                     <option value="" selected>Seleccione...</option>
-                                    <option th:each="u : ${unidades}" th:text="${u.nombre}" th:value="${u.id_unidad}">
+                                    <option th:each="u : ${unidades}" th:text="${u.nombre}" th:value="${u.id_unidad}" th:selected="${u.id_unidad == idUnidad}">
                                     </option>
                                 </select>
                                 <div class="invalid-feedback">
@@ -60,7 +60,7 @@
                                 <label>Responsable</label>
                                 <select class="form-control select2" style="width: 100%;" name="userEmisor"
                                     id="selectUsuarios" required="">
-                                    <option value="" selected>Seleccione una Persona...</option>
+                                    <option th:value="${edit}? ${idResponsable}: ''" th:text="${edit}? ${nombreResponsable}:'Seleccione una Persona...'" selected></option>
                                 </select>
                                 <div class="invalid-feedback">
                                     Tiene que seleccionar un responsable de la unidad emisor
@@ -101,7 +101,8 @@
                         </div>
                         <div class="form-group col-md-12">
                             <label>Unidad Destino</label>
-                            <select class="form-control select2" style="width: 100%" name="id_unidad_destino" required="">
+                            <select class="form-control select2" style="width: 100%" name="id_unidad_destino"
+                                required="">
                                 <option value="">Seleccionar una Unidad Destino...</option>
                                 <option th:each="uni : ${unidades}" th:value="${uni.id_unidad}"
                                     th:if="${uni.estado != 'X'}" th:text="${uni.nombre}">
@@ -145,6 +146,19 @@
 <script>
 
     $(document).ready(function () {
+
+        // var input = document.querySelector('input[name="input-custom-dropdown"]'),
+        //     // init Tagify script on the above inputs
+        //     tagify = new Tagify(input, {
+        //         whitelist: ["A# .NET", "A# (Axiom)", "A-0 System", "A+", "A++", "ABAP", "ABC"],
+        //         maxTags: 1,
+        //         dropdown: {
+        //             maxItems: Infinity,           // <- mixumum allowed rendered suggestions
+        //             classname: 'tags-look', // <- custom classname for this dropdown, so it could be targeted
+        //             enabled: 0,             // <- show suggestions on focus
+        //             closeOnSelect: false    // <- do not hide the suggestions dropdown once an item has been selected
+        //         }
+        //     })
 
         $('#formularioModalhojaRuta').on('submit', function (event) {
             event.preventDefault(); // Previene el envío del formulario

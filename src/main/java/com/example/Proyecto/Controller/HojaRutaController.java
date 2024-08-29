@@ -152,9 +152,15 @@ public class HojaRutaController {
             String gestion = String.valueOf(LocalDate.now().getYear());
             Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
             Usuario user = usuarioService.findById(usuario.getId_usuario());
-            model.addAttribute("hojaRuta", hojaRutaService.findById(id));
+            HojaRuta hojaRuta = hojaRutaService.findById(id);
+            Usuario userEmi = usuarioService.findById(hojaRuta.getUsuario_emisor().longValue());
+            model.addAttribute("idResponsable", userEmi.getId_usuario());
+            model.addAttribute("nombreResponsable", userEmi.getPersona().getNombre()+" "+userEmi.getPersona().getAp_materno()+" "+userEmi.getPersona().getAp_materno());
+            model.addAttribute("idUnidad", userEmi.getUnidad().getId_unidad());
+            model.addAttribute("hojaRuta", hojaRuta);
             List<HojaRuta> hojasRutas = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(user.getUnidad().getId_unidad().intValue(), gestion);
             model.addAttribute("hojaRutasUnidad", hojasRutas);
+            
             model.addAttribute("unidades", unidadService.findAll());
             model.addAttribute("edit", "true");
             return "hojaRuta/formulario";
@@ -162,6 +168,7 @@ public class HojaRutaController {
             return "redirect:/";
         }
     }
+    
 
     // @PostMapping("/validarDocumento/{nroRuta}")
     // public ResponseEntity<String> formulario(@PathVariable("cite") String cite,
@@ -260,7 +267,8 @@ public class HojaRutaController {
     }
 
     @PostMapping("/modificar")
-    public ResponseEntity<String> modificar(@Validated HojaRuta hojaR,
+    public ResponseEntity<String> modificar(@Validated HojaRuta hojaR, HttpServletRequest request,
+            @RequestParam("userEmisor") Integer userEmisor,
             @RequestParam(value = "file", required = false) MultipartFile archivo) {
                 HojaRuta hojaRuta = hojaRutaService.findById(hojaR.getId_hoja_ruta());
         try {
@@ -269,6 +277,7 @@ public class HojaRutaController {
                 hojaRuta.setRuta(arch);
             }
             hojaRuta.setRef(hojaR.getRef());
+            hojaRuta.setUsuario_emisor(userEmisor);
             hojaRutaService.save(hojaRuta);
             return ResponseEntity.ok("Modificado");
         } catch (Exception e) {
