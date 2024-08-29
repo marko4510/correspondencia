@@ -105,8 +105,9 @@ public class SeguimientoController {
             // List<MovimientoDocumento> flujoDocumentos = movimientoDocumentoService.obtener_Flujo_Documento(nroRuta);
             Integer num_ruta = Integer.parseInt(nroRuta);
             List<MovimientoDocumento> flujoDocumentos = movimientoDocumentoService.obtener_Flujos_Documentos(num_ruta,id_unidad,year);
-            HojaRuta hojaRuta = flujoDocumentos.get(0).getHojaRuta();
+            
             if (flujoDocumentos.size() > 0) {
+                HojaRuta hojaRuta = flujoDocumentos.get(0).getHojaRuta();
                 model.addAttribute("flujo", flujoDocumentos);
                 model.addAttribute("hojaDeRuta", hojaRuta);
 
