@@ -24,4 +24,7 @@ public interface HojaRutaDao extends JpaRepository<HojaRuta, Long> {
             "WHERE hr.nro_ruta = ?1 AND hr.unidad_reg = ?2 AND TO_CHAR(hr.fecha_creacion, 'YYYY') = ?3", nativeQuery = true)
     public HojaRuta obtenerHojaRutaPorGestionUnidad(Integer nro_ruta, Integer unidad_origen, String gestion);
 
+    @Query(value = "SELECT hr.* FROM hoja_ruta hr  WHERE hr.unidad_registro = ?1 AND TO_CHAR(hr.fecha_creacion, 'YYYY') = ?2 AND hr.tipo_derivacion = ?3", nativeQuery = true)
+    public List<HojaRuta> obtenerHojasDeRutaPorUnidadYGestionYTipoDerivacion(Integer unidad_origen, String gestion, String derivacion);
+
 }

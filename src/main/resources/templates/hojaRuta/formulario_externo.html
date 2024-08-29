@@ -7,7 +7,7 @@
 </div>
 
 <!-- Formulario -->
-<form th:action="${edit}? @{/hojaRuta/modificar}: @{/hojaRuta/registrar}" id="formularioModalhojaRutaExterna"
+<form th:action="${edit}? @{/hojaRuta/modificarExterno}: @{/hojaRuta/registrarExterno}" id="formularioModalhojaRutaExterna"
     enctype="multipart/form-data" method="POST" novalidate>
     <div class="modal-body">
         <th:block th:if="${edit != null}">
@@ -156,7 +156,7 @@
 
         //cargarEntidadExternos();
 
-        $('#formularioModalhojaRuta').on('submit', function (event) {
+        $('#formularioModalhojaRutaExterna').on('submit', function (event) {
             event.preventDefault(); // Previene el envío del formulario
 
             //Verifica la validez del formulario
@@ -184,7 +184,7 @@
                             response,
                             'success'
                         );
-                        cargarFormulari();
+                        cargarFormulariExterno();
                         cargarTabla();
                     } else {
                         Swal.fire(

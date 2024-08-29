@@ -5,12 +5,22 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDate;
 
 import com.example.Proyecto.Model.EntidadExterna;
+import com.example.Proyecto.Model.HojaRuta;
+import com.example.Proyecto.Model.MovimientoDocumento;
+import com.example.Proyecto.Model.Unidad;
 import com.example.Proyecto.Model.Usuario;
 import com.example.Proyecto.Service.EntidadExternaService;
+import com.example.Proyecto.Service.MovimientoDocumentoService;
+import com.example.Proyecto.Service.UnidadService;
+import com.example.Proyecto.Service.UsuarioService;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;

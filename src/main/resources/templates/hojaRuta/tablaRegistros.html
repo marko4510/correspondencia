@@ -12,39 +12,89 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover" id="table-1">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">#</th>
-                                    <th>Nro. Hoja Ruta</th>
-                                    <th>Emisor</th>
-                                    <th>Referecia</th>
-                                    <th>Fecha Registro</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="hojaRuta, rowStat: ${hojasRutas}">
-                                    <td th:text="${rowStat.count}"></td>
-                                    <td th:text="${hojaRuta.hojaRutaTexto}+${#dates.format(hojaRuta.fechaCreacion, 'yyyy')}"></td>
-                                    <td th:text="${hojaRuta.nombreEmisorText}"></td>
-                                    <td th:text="${hojaRuta.ref}"></td>
-                                    <td th:text="${#dates.format(hojaRuta.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
-                                    <td>
-                                        <a href="#" class="btn btn-icon icon-left btn-primary" 
-                                        th:attr="onclick='cargarFormulario(\'' + ${hojaRuta.id_hoja_ruta} + '\')'"
-                                        data-toggle="modal" data-target=".modal-horaRutaEdit">
-                                            <i class="far fa-edit"></i>Editar</a>
-                                        <a href="#" class="btn btn-icon icon-left btn-success"
-                                        th:attr="onclick='verDocumento(\'' + ${hojaRuta.id_hoja_ruta} + '\')'"
-                                        data-toggle="modal" data-target=".modal-horaRuta">
-                                        <i class="far fa-file-archive"></i>Ver</a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <ul class="nav nav-tabs" id="myTab2" role="tablist">
+                        <li class="nav-item">
+                          <a class="nav-link active" id="home-tab2" data-toggle="tab" href="#tabInterno" role="tab"
+                            aria-controls="home" aria-selected="true">Interno</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" id="profile-tab2" data-toggle="tab" href="#tabExterno" role="tab"
+                            aria-controls="profile" aria-selected="false">Externo</a>
+                        </li>
+                      </ul>
+                      <div class="tab-content tab-bordered" id="myTab3Content">
+                        <div class="tab-pane fade show active" id="tabInterno" role="tabpanel" aria-labelledby="home-tab2">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="table-1">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">#</th>
+                                            <th>Nro. Hoja Ruta</th>
+                                            <th>Emisor</th>
+                                            <th>Referecia</th>
+                                            <th>Fecha Registro</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="hojaRuta, rowStat: ${hojasRutasInterno}">
+                                            <td th:text="${rowStat.count}"></td>
+                                            <td th:text="${hojaRuta.hojaRutaTexto}+${#dates.format(hojaRuta.fechaCreacion, 'yyyy')}"></td>
+                                            <td th:text="${hojaRuta.nombreEmisorText}"></td>
+                                            <td th:text="${hojaRuta.ref}"></td>
+                                            <td th:text="${#dates.format(hojaRuta.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
+                                            <td>
+                                                <a href="#" class="btn btn-icon icon-left btn-primary" 
+                                                th:attr="onclick='cargarFormulario(\'' + ${hojaRuta.id_hoja_ruta} + '\')'"
+                                                data-toggle="modal" data-target=".modal-horaRutaEdit">
+                                                    <i class="far fa-edit"></i>Editar</a>
+                                                <a href="#" class="btn btn-icon icon-left btn-success"
+                                                th:attr="onclick='verDocumento(\'' + ${hojaRuta.id_hoja_ruta} + '\')'"
+                                                data-toggle="modal" data-target=".modal-horaRuta">
+                                                <i class="far fa-file-archive"></i>Ver</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tabExterno" role="tabpanel" aria-labelledby="profile-tab2">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="table-2">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">#</th>
+                                            <th>Nro. Hoja Ruta</th>
+                                            <th>Emisor</th>
+                                            <th>Referecia</th>
+                                            <th>Fecha Registro</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="hojaRuta, rowStat: ${hojasRutasExterno}">
+                                            <td th:text="${rowStat.count}"></td>
+                                            <td th:text="${hojaRuta.hojaRutaTexto}+${#dates.format(hojaRuta.fechaCreacion, 'yyyy')}"></td>
+                                            <td th:text="${hojaRuta.nombreEmisorText}"></td>
+                                            <td th:text="${hojaRuta.ref}"></td>
+                                            <td th:text="${#dates.format(hojaRuta.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
+                                            <td>
+                                                <a href="#" class="btn btn-icon icon-left btn-primary" 
+                                                th:attr="onclick='cargarFormulario(\'' + ${hojaRuta.id_hoja_ruta} + '\')'"
+                                                data-toggle="modal" data-target=".modal-horaRutaEdit">
+                                                    <i class="far fa-edit"></i>Editar</a>
+                                                <a href="#" class="btn btn-icon icon-left btn-success"
+                                                th:attr="onclick='verDocumento(\'' + ${hojaRuta.id_hoja_ruta} + '\')'"
+                                                data-toggle="modal" data-target=".modal-horaRuta">
+                                                <i class="far fa-file-archive"></i>Ver</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                      </div>
+                    
                 </div>
             </div>
         </div>
@@ -53,6 +103,34 @@
 <script>
     $(document).ready(function () {
         $('#table-1').DataTable({
+            language: {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            }
+        });
+
+    });
+    $(document).ready(function () {
+        $('#table-2').DataTable({
             language: {
                 "sProcessing": "Procesando...",
                 "sLengthMenu": "Mostrar _MENU_ registros",

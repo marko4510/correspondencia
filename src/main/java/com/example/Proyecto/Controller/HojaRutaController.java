@@ -86,13 +86,20 @@ public class HojaRutaController {
         Usuario user = (Usuario) request.getSession().getAttribute("usuario");
         Usuario usuario = usuarioService.findById(user.getId_usuario());
         String gestion = String.valueOf(LocalDate.now().getYear());
-        List<HojaRuta> hojasRutas = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(usuario.getUnidad().getId_unidad().intValue(), gestion);
-        for (HojaRuta hojaRuta : hojasRutas) {
+        List<HojaRuta> hojasRutasInterno = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestionYTipoDerivacion(usuario.getUnidad().getId_unidad().intValue(), gestion, "Interno");
+        for (HojaRuta hojaRuta : hojasRutasInterno) {
             Usuario userEmi = usuarioService.findById(hojaRuta.getUsuario_emisor().longValue());
             hojaRuta.setHojaRutaTexto(usuario.getUnidad().getSigla()+"-"+hojaRuta.getNroRuta()+"/");
             hojaRuta.setNombreEmisorText(userEmi.getPersona().getNombre()+" "+userEmi.getPersona().getAp_materno()+" "+userEmi.getPersona().getAp_materno());
         }
-        model.addAttribute("hojasRutas", hojasRutas);
+        model.addAttribute("hojasRutasInterno", hojasRutasInterno);
+
+        List<HojaRuta> hojasRutasExterno = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestionYTipoDerivacion(usuario.getUnidad().getId_unidad().intValue(), gestion, "Externo");
+        for (HojaRuta hojaRuta : hojasRutasExterno) {
+            hojaRuta.setHojaRutaTexto(usuario.getUnidad().getSigla()+"-"+hojaRuta.getNroRuta()+"/");
+            hojaRuta.setNombreEmisorText(hojaRuta.getEntidadExterna().getNombre());
+        }
+        model.addAttribute("hojasRutasExterno", hojasRutasExterno);
 
         return "hojaRuta/tablaRegistros";
     }
@@ -286,48 +293,61 @@ public class HojaRutaController {
         }
     }
 
-    // @GetMapping("/verIcoDocumento/{id_hojaRuta}")
-    // public ResponseEntity<Resource> verIcoDocumento(@PathVariable("id_hojaRuta") Long id) throws IOException {
-    //     HojaRuta hojaRuta = hojaRutaService.findById(id);
+    // ========= registrar hoja de ruta con entidad externa
+    @PostMapping("/registrarExterno")
+    public ResponseEntity<String> registrarExterna(@Validated HojaRuta hojaRuta,
+            @RequestParam("file") MultipartFile archivo, HttpServletRequest request,
+            @RequestParam("id_unidad_destino") Long id_unidad_destino,
+            @RequestParam("observacion") String observacion,
+            @RequestParam("instruccion") String instruccion,
+            // @RequestParam("entidadEmisor") Long entidadEmisor,
+            @RequestParam(value = "numeroInicial", required = false) int numeroInicial) {
+        try {
+            MovimientoDocumento movimientoDocumento = new MovimientoDocumento();
+            String gestion = String.valueOf(LocalDate.now().getYear());
+            Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+            Usuario user = usuarioService.findById(usuario.getId_usuario());
+            Unidad unidad = user.getUnidad();
 
-    //     // Obtener la ruta completa del archivo
-    //     Path projectPath = Paths.get("").toAbsolutePath();
-    //     String ruta = projectPath + "/uploads/" + hojaRuta.getRuta();
-    //     System.out.println(ruta);
+            List<HojaRuta> hojasRutas = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(user.getUnidad().getId_unidad().intValue(), gestion);
+            if (hojasRutas.size() == 0) {
+                System.out.println("Numero Inicial: " + numeroInicial);
+                unidad.setContadorHojaRuta(numeroInicial);
+                unidadService.save(unidad);
+            } else {
+                System.out.println("Numero Inicial: " + numeroInicial);
+                int cont = unidad.getContadorHojaRuta() + 1;
+                unidad.setContadorHojaRuta(cont);
+                unidadService.save(unidad);
+            }
 
-    //     // Cargar el archivo PDF
-    //     try (PDDocument document = PDDocument.load(new File(ruta))) {
-    //         PDFRenderer pdfRenderer = new PDFRenderer(document);
+            hojaRuta.setNroRuta(unidad.getContadorHojaRuta());
+            String arch = config.guardarArchivo((MultipartFile) archivo);
+            hojaRuta.setRuta(arch);
+            //hojaRuta.setEntidadExterna(entidadExternaService.findById(entidadEmisor.longValue()));
+            hojaRuta.setUnidad_registro(unidad.getId_unidad().intValue());
+            hojaRuta.setUsuario_registro(usuario.getId_usuario().intValue());
+            // documento.setNroRuta(cite);
+            hojaRuta.setFechaCreacion(new Date());
+            hojaRuta.setEstado("A");
+            hojaRuta.setTipo_derivacion("Externo");
+            //hojaRuta.setUnidad_reg(usuario.getUnidad().getId_unidad().intValue());
+            hojaRutaService.save(hojaRuta);
 
-    //         // Renderizar la primera página del PDF como una imagen
-    //         BufferedImage bufferedImage = pdfRenderer.renderImageWithDPI(0, 300); // 300 DPI para mejor calidad
 
-    //         // Redimensionar la imagen
-    //         BufferedImage resizedImage = resizeImage(bufferedImage, 187, 245);
-
-    //         // Convertir la imagen a un flujo de bytes
-    //         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    //         ImageIO.write(resizedImage, "png", baos);
-    //         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-
-    //         // Configurar las cabeceras de la respuesta
-    //         HttpHeaders headers = new HttpHeaders();
-    //         headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=" + hojaRuta.getNroRuta() + ".png");
-    //         headers.setContentType(MediaType.IMAGE_PNG);
-
-    //         // Devolver la respuesta con la imagen
-    //         Resource resource = new InputStreamResource(bais);
-    //         return ResponseEntity.ok()
-    //                 .headers(headers)
-    //                 .body(resource);
-    //     }
-    // }
-
-    // private BufferedImage resizeImage(BufferedImage originalImage, int width, int height) {
-    //     BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-    //     java.awt.Graphics2D g = resizedImage.createGraphics();
-    //     g.drawImage(originalImage, 0, 0, width, height, null);
-    //     g.dispose();
-    //     return resizedImage;
-    // }
+            Unidad unidadDestino = unidadService.findById(id_unidad_destino);
+            movimientoDocumento.setRuta_movimiento(arch);
+            movimientoDocumento.setHojaRuta(hojaRuta);
+            movimientoDocumento.setFechaHoraRegistro(new Date());
+            movimientoDocumento.setUnidadDestino(unidadDestino);
+            movimientoDocumento.setUnidadOrigen(usuario.getUnidad());
+            movimientoDocumento.setUsuarioRegistro(user.getId_usuario().intValue());
+            movimientoDocumento.setInstruccion(instruccion);
+            movimientoDocumento.setObservaciones(observacion);
+            movimientoDocumentoService.save(movimientoDocumento);
+            return ResponseEntity.ok("Registrado");
+        } catch (Exception e) {
+            return ResponseEntity.ok("Error: " + e.getMessage());
+        }
+    }
 }
