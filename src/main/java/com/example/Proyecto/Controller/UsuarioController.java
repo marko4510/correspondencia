@@ -39,7 +39,7 @@ public class UsuarioController {
      @GetMapping("/inicio")
     public String inicioUsuario(HttpServletRequest request, Model model) {
         if (request.getSession().getAttribute("usuario") != null) {
-        
+            model.addAttribute("opcion", "administrar usuario");
             return "usuario/ventana";
     } else {
         return "redirect:/login";

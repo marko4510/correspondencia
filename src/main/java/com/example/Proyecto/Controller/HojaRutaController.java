@@ -72,7 +72,7 @@ public class HojaRutaController {
     @GetMapping("/inicio")
     public String inicio(HttpServletRequest request, Model model) {
         if (request.getSession().getAttribute("usuario") != null) {
-
+            model.addAttribute("opcion", "administrar hoja ruta");
             return "hojaRuta/ventana";
         } else {
             return "redirect:/";

@@ -93,6 +93,7 @@ public class recepcionController {
             // unidadService.findUnidadesNoRelacionadasConUsuario(usuario.getId_usuario()));
             model.addAttribute("unidades", unidadService.findAll());
             model.addAttribute("years", years);
+            model.addAttribute("opcion", "administrar recepcion");
             return "busqueda/recepcion";
         } else {
             return "redirect:/login";

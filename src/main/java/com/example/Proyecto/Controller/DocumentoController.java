@@ -62,7 +62,7 @@ public class DocumentoController {
     @GetMapping("/inicio")
     public String inicio(HttpServletRequest request, Model model) {
         if (request.getSession().getAttribute("usuario") != null) {
-
+            model.addAttribute("opcion", "administrar cite");
             return "documento/ventana";
         } else {
             return "redirect:/";

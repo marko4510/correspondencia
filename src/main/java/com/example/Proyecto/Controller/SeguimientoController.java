@@ -89,7 +89,7 @@ public class SeguimientoController {
     
             model.addAttribute("unidades", unidadService.findAll());
             model.addAttribute("years", years);
-           
+            model.addAttribute("opcion", "administrar seguimiento");
             return "seguimiento/ventana";
         } else {
             return "redirect:/login";

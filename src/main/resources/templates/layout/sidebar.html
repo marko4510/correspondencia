@@ -7,20 +7,20 @@
       </div>
       <ul th:if="${session.usuario.estado != 'P'}" class="sidebar-menu">
         <li class="menu-header">---------------------------------------</li>
-        <li class="dropdown ">
+        <li th:class="${opcion == 'administrar hoja ruta'}? 'dropdown active': 'dropdown'">
           <a th:href="@{/hojaRuta/inicio}" class="nav-link"><i data-feather="file-minus"></i><span>Gestionar Hojas de Ruta</span></a>
         </li>
-        <li class="dropdown ">
+        <li th:class="${opcion == 'administrar cite'}? 'dropdown active': 'dropdown'">
           <a th:href="@{/documento/inicio}" class="nav-link"><i data-feather="file-text"></i><span>Gestionar Cites</span></a>
         </li>
-        <li class="dropdown ">
+        <li th:class="${opcion == 'administrar recepcion'}? 'dropdown active': 'dropdown'">
           <a th:href="@{/recepcion}" class="nav-link"><i data-feather="folder"></i><span>Recepción</span></a>
         </li>
-        <li class="dropdown ">
+        <li th:class="${opcion == 'administrar seguimiento'}? 'dropdown active': 'dropdown'">
           <a th:href="@{/seguimiento/inicio}" class="nav-link"><i data-feather="eye"></i><span>Seguimiento</span></a>
         </li>
 
-        <li class="dropdown " th:if="${session.usuario.estado == 'S'}">
+        <li th:class="${opcion == 'administrar usuario'}? 'dropdown active': 'dropdown'" th:if="${session.usuario.estado == 'S'}">
           <a th:href="@{/usuario/inicio}" class="nav-link"><i data-feather="monitor"></i><span>Usuario</span></a>
         </li>
         
