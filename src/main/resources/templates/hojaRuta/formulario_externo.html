@@ -41,8 +41,28 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-12 col-md-12">
-                            <div id="entidadExterna">
+                            <!-- <div id="entidadExterna">
                                 
+                            </div> -->
+                            <div class="form-group">
+                                <label>Entidad o Persona Externa</label>
+                                <div class="input-group">
+                                    <select class="form-control select2" th:field="${hojaRuta.entidadExterna}"
+                                        id="selectEntidadExterna" style="width: 80%;" required>
+                                        <option value="" selected>Seleccione...</option>
+                                        <option th:each="e : ${externos}" th:text="${e.nombre}"
+                                            th:value="${e.id_entidad_externa}"></option>
+                                    </select>
+                                    <div class="input-group-append" style="width: 20%;">
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            id="openSecondModal">
+                                            Agregar
+                                        </button>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Tiene que seleccionar una unidad emisor
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -80,7 +100,8 @@
                         </div>
                         <div class="form-group col-md-12">
                             <label>Unidad Destino</label>
-                            <select class="form-control select2" style="width: 100%" name="id_unidad_destino" required="">
+                            <select class="form-control select2" style="width: 100%" name="id_unidad_destino"
+                                required="">
                                 <option value="">Seleccionar una Unidad Destino...</option>
                                 <option th:each="uni : ${unidades}" th:value="${uni.id_unidad}"
                                     th:if="${uni.estado != 'X'}" th:text="${uni.nombre}">
@@ -125,8 +146,15 @@
 <script>
 
     $(document).ready(function () {
+        $('#openSecondModal').on('click', function () {
+            $('#exampleModalCenter').modal('show');
+            // Aumentar el z-index del segundo modal para que se superponga al primero
+            $('#exampleModalCenter').css('z-index', parseInt($('#firstModal').css('z-index')) + 10);
+            // Aumentar el z-index del backdrop del segundo modal
+            $('.modal-backdrop').last().css('z-index', parseInt($('#firstModal').css('z-index')) + 5);
+        });
 
-        cargarEntidadExternos();
+        //cargarEntidadExternos();
 
         $('#formularioModalhojaRuta').on('submit', function (event) {
             event.preventDefault(); // Previene el envío del formulario
@@ -255,12 +283,12 @@
             }
         });
 
-        $('#nom_externo').on('input', function() {
+        $('#nom_externo').on('input', function () {
             // Convertir el texto a mayúsculas en tiempo real
             $(this).val($(this).val().toUpperCase());
         });
 
-        
+
     });
     function cargarSelectUsuario() {
         $.ajax({
@@ -291,13 +319,34 @@
         });
     }
 
-    function cargarEntidadExternos(){
+    // function cargarEntidadExternos() {
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: "/hojaRuta/persona_externa",  // Ruta del método del controlador en Spring Boot
+    //         success: function (response) {
+
+    //             $('#entidadExterna').html(response);
+
+    //         },
+    //         error: function (xhr, status, error) {
+    //             console.error('Hubo un problema con la solicitud AJAX:', status, error);
+    //         }
+    //     });
+    // }
+    function cargarEntidadExternos(nombre) {
         $.ajax({
             type: 'POST',
-            url: "/hojaRuta/persona_externa",  // Ruta del método del controlador en Spring Boot
+            url: "/entidadExterna/añadirOpcionSelectEntidadExterna/" + nombre,  // Ruta del método del controlador en Spring Boot
             success: function (response) {
-                
-                $('#entidadExterna').html(response);
+
+                const selectEntidadExterna = $('#selectEntidadExterna');
+                const option = $('<option></option>')
+                    .val(response[0])  // El valor del option es el ID del usuario
+                    .text(response[1])  // El texto del option es el nombre completo del usuario
+                    .prop('selected', true);  // Marcar esta opción como seleccionada
+
+                // Agregar la opción al <select>
+                selectEntidadExterna.append(option);
 
             },
             error: function (xhr, status, error) {

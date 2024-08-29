@@ -43,8 +43,8 @@
   </div>
 
   <!-- Modal Formulario -->
-  <div class="modal fade modal-horaRutaExterno" id="firstModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-    aria-hidden="true" data-backdrop="static">
+  <div class="modal fade modal-horaRutaExterno" id="firstModal" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-lg pullDown" style="max-width: 85%; width: 150%;">
       <div class="modal-content" id="contenidoFormularioExternoModal">
 
@@ -57,31 +57,31 @@
   <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalCenterTitle">Ingrese Nombre Responsable Externo</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form th:action="@{/entidadExterna/entidadExternaForm}" id="formEntidadExterna" method="post">
-              <div class="modal-body">
-                <div class="form-group col-md-12">
-                  <input type="hidden" name="id_entidad_externa" id="id_entidad_externa">
-                  <input type="text" class="form-control" id="nom_externo" name="nom_externo" required>
-                  <div class="invalid-feedback">
-                    Tiene que introducir el numero de una hoja de ruta
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer bg-whitesmoke br">
-                <button type="submit" class="btn btn-primary">GUARDAR</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">CERRAR</button>
-              </div>
-            </form>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalCenterTitle">Ingrese Nombre Responsable Externo</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
+        <form th:action="@{/entidadExterna/entidadExternaForm}" id="formEntidadExterna" method="post">
+          <div class="modal-body">
+            <div class="form-group col-md-12">
+              <input type="hidden" name="id_entidad_externa" id="id_entidad_externa">
+              <input type="text" class="form-control" id="nom_externo" name="nom_externo" required>
+              <div class="invalid-feedback">
+                Tiene que introducir el numero de una hoja de ruta
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer bg-whitesmoke br">
+            <button type="submit" class="btn btn-primary">GUARDAR</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">CERRAR</button>
+          </div>
+        </form>
+      </div>
     </div>
-</div>
+  </div>
   <!-- Modal Ver Archivo -->
   <!-- <div class="modal fade modal-ver-documento" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
     aria-hidden="true">
@@ -91,10 +91,10 @@
       </div>
     </div>
   </div> -->
-  
-  
+
+
   <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
       cargarTabla();
 
       $('#formEntidadExterna').on('submit', function (event) {
@@ -102,48 +102,54 @@
 
         //Verifica la validez del formulario
         if (this.checkValidity() === false) {
-            $(this).addClass('was-validated');
-            return;
+          $(this).addClass('was-validated');
+          return;
         }
 
         var form = $(this)[0];
         var formData = new FormData(form);
 
         $.ajax({
-            type: 'POST',
-            url: $(this).attr('action'),
-            data: formData,
-            contentType: false,  // No establecer el tipo de contenido aquí
-            processData: false,  // No procesar los datos
-            success: function (response) {
-                if (response === "ok") {
-                    
-                    Swal.fire(
-                        'Exito!',
-                        'Entidad Externa Registrado con Exito!',
-                        'success'
-                    );
-                    cargarEntidadExternos();
-                    cargarTabla();
-                    $('#nom_externo').val('');
-                    $('#exampleModalCenter').modal('hide');
-                } else {
-                    Swal.fire(
-                        'Imposible Registrar!',
-                        response,
-                        'error'
-                    );
-                }
-            },
-            error: function (xhr, status, error) {
-                Swal.fire(
-                    'Error!',
-                    'Ocurrió un error al registrar: ' + xhr.responseText,
-                    'error'
-                );
+          type: 'POST',
+          url: $(this).attr('action'),
+          data: formData,
+          contentType: false,  // No establecer el tipo de contenido aquí
+          processData: false,  // No procesar los datos
+          success: function (response) {
+            if (response === "ok") {
+
+              Swal.fire(
+                'Exito!',
+                'Entidad Externa Registrado con Exito!',
+                'success'
+              );
+              cargarEntidadExternos($('#nom_externo').val());
+              cargarTabla();
+              $('#nom_externo').val('');
+              $('#exampleModalCenter').modal('hide');
+            } else if (response === "invalido") {
+              Swal.fire(
+                'Imposible Registrar!',
+                'Ya existe un registro con este nombre.',
+                'error'
+              );
+            } else {
+              Swal.fire(
+                'Imposible Registrar!',
+                response,
+                'error'
+              );
             }
+          },
+          error: function (xhr, status, error) {
+            Swal.fire(
+              'Error!',
+              'Ocurrió un error al registrar: ' + xhr.responseText,
+              'error'
+            );
+          }
         });
-    });
+      });
     });
 
     function cargarFormulari() {
@@ -151,6 +157,8 @@
         type: 'GET',
         url: "/hojaRuta/formulario",  // Ruta del metodo del controlador en Spring Boot
         success: function (response) {
+          $("#contenidoFormularioModalEdit").html("");
+          $("#contenidoFormularioExternoModal").html("");
           $("#contenidoFormularioModal").html(response);
           // Inicializar Select2 en el modal
           $('.select2').select2({
@@ -164,6 +172,8 @@
         type: 'GET',
         url: "/hojaRuta/formulario_externo",  // Ruta del metodo del controlador en Spring Boot
         success: function (response) {
+          $("#contenidoFormularioModal").html(""); 
+          $("#contenidoFormularioModalEdit").html("");
           $("#contenidoFormularioExternoModal").html(response);
           // Inicializar Select2 en el modal
           $('.select2').select2({
@@ -179,7 +189,12 @@
         type: 'POST',
         url: "/hojaRuta/formulario/" + id,  // Ruta del metodo del controlador en Spring Boot
         success: function (response) {
-          $("#contenidoFormularioModal").html(response);  // Actualiza el contenido del div con la respuesta del servidor
+          $("#contenidoFormularioModal").html(""); 
+          $("#contenidoFormularioExternoModal").html(""); // Actualiza el contenido del div con la respuesta del servidor
+          $("#contenidoFormularioModalEdit").html(response);
+          $('.select2').select2({
+            dropdownParent: $('#formularioModalhojaRuta')  // Especificar el parent para el dropdown
+          }); // Actualiza el contenido del div con la respuesta del servidor
         }
       });
     }

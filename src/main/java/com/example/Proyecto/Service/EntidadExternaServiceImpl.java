@@ -41,8 +41,9 @@ public class EntidadExternaServiceImpl implements EntidadExternaService{
         entidadExternaDao.save(entidadExterna);
     }
 
- 
-
-  
+    @Override
+    public EntidadExterna buscarPorNombre(String nombre) {
+        return entidadExternaDao.buscarPorNombre(nombre);
+    }
     
 }

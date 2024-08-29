@@ -11,5 +11,6 @@ public interface EntidadExternaService {
     EntidadExterna findById(Long id);
     void save(EntidadExterna entidadExterna);
     void deleteById(Long id);
+    public EntidadExterna buscarPorNombre(String nombre);
    
 }

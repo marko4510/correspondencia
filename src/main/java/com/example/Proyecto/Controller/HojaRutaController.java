@@ -129,8 +129,9 @@ public class HojaRutaController {
             List<HojaRuta> hojasRutas = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(unidad.getId_unidad().intValue(), gestion);
             model.addAttribute("hojaRutasUnidad", hojasRutas);
             model.addAttribute("nroHojaRutaSiguiente", (unidad.getContadorHojaRuta()+1));
-            model.addAttribute("unidades", unidadService.findAll());
-
+            model.addAttribute("externos", entidadExternaService.findAll());
+            model.addAttribute("unidades", unidadService.findAll());    
+            
             return "hojaRuta/formulario_externo";
         } else {
             return "redirect:/";
