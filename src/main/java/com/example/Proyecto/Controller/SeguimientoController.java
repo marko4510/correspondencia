@@ -196,7 +196,17 @@ public class SeguimientoController {
             int year = fechaCreacion.getYear();
 
             model.addAttribute("hojaRuta", hojaRuta);
-            //model.addAttribute("unidad", unidadService.findById(hojaRuta.getUnidad_reg().longValue()));
+            if (hojaRuta.getTipo_derivacion().equals("Interno")) {
+                Integer id_usuario_emisor = hojaRuta.getUsuario_emisor();
+                Long id_usuario_emisor_long = id_usuario_emisor.longValue();
+                Usuario usuario_emisor = usuarioService.findById(id_usuario_emisor_long); 
+                model.addAttribute("usuario_emisor", usuario_emisor);
+                model.addAttribute("interno", true);
+                }
+                if (hojaRuta.getTipo_derivacion().equals("Externo")) {
+                    model.addAttribute("usuario_emisor", hojaRuta.getEntidadExterna().getNombre());
+                    model.addAttribute("externo", true);
+                }
 
             String textoQR = "Hoja de Ruta: " + hojaRuta.getNroRuta() + "/" + year + "\n" +
                     "Fecha: " + fechaCreacionFormatted + "\n" +

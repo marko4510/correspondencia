@@ -64,9 +64,17 @@
                     <th class="text-center" width="20%" style="vertical-align: middle;"> <div id="qrcode" style="display: flex; justify-content: center; align-items: center; height: 100%;"></div>
                     </th>
                 </tr>
-                <tr>
+                <tr th:if="${interno}">
                     <th class="text-end" style="font-size: 10px;">Procedencia Unidad Funcional : </th>
-                    <td style="font-size: 10px;" colspan="2" th:text="${unidad.nombre}"></td>
+                    <td style="font-size: 10px;" colspan="2" th:text="${usuario_emisor.persona.nombre}+ ' '+${usuario_emisor.persona.ap_paterno}+ ' '+${usuario_emisor.persona.ap_materno}"></td>
+                </tr>
+                <tr th:if="${interno}">
+                    <th class="text-end" style="font-size: 10px;">Cargo del Emisor : </th>
+                    <td style="font-size: 10px;" colspan="2" th:text="${usuario_emisor.persona.cargo.nombre}"></td>
+                </tr>
+                <tr th:if="${externo}">
+                    <th class="text-end" style="font-size: 10px;">Procedencia Unidad Funcional : </th>
+                    <td style="font-size: 10px;" colspan="2" th:text="${usuario_emisor}"></td>
                 </tr>
                 <tr>
                     <th class="text-end" style="font-size: 10px;">Referencia : </th>
