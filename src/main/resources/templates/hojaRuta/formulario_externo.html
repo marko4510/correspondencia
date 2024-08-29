@@ -1,0 +1,315 @@
+<!-- Modal Header -->
+<div class="modal-header">
+    <h5 class="modal-title" id="myLargeModalLabel">Formulario Registro Externo</h5>
+    <a type="button" class="close" data-dismiss="modal" aria-label="Close" id="botonCerrarModal">
+        <span aria-hidden="true">&times;</span>
+    </a>
+</div>
+
+<!-- Formulario -->
+<form th:action="${edit}? @{/hojaRuta/modificar}: @{/hojaRuta/registrar}" id="formularioModalhojaRutaExterna"
+    enctype="multipart/form-data" method="POST" novalidate>
+    <div class="modal-body">
+        <th:block th:if="${edit != null}">
+            <input type="hidden" th:field="${hojaRuta.id_hoja_ruta}">
+        </th:block>
+        <input type="hidden" name="numeroInicial" th:value="${hojaRutasUnidad.size}" th:if="${hojaRutasUnidad.size > 0}"
+            readonly>
+        <div class="row" th:if="${hojaRutasUnidad.size > 0}">
+            <div class="form-group col-md-6">
+                <label>Nro. Hoja de Ruta</label>
+                <input type="number" class="form-control" th:value="${nroHojaRutaSiguiente}" readonly>
+                <div class="invalid-feedback">
+                    Tiene que introducir el numero de una hoja de ruta
+                </div>
+            </div>
+        </div>
+        <div class="row" th:if="${hojaRutasUnidad.size == 0}">
+            <div class="form-group col-md-6">
+                <label>Nro. Hoja de Ruta</label>
+                <input type="number" class="form-control" name="numeroInicial" min="0" required>
+                <div class="invalid-feedback">
+                    Tiene que introducir el numero de una hoja de ruta
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card-header">
+                    <h6>Datos del Emisor</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-md-12">
+                            <div id="entidadExterna">
+                                
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label>Referencia</label>
+                            <textarea class="form-control" required="" th:field="${hojaRuta.ref}"></textarea>
+                            <div class="invalid-feedback">
+                                Introduzca el referencia del documento
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" th:if="${edit == null}">
+                <div class="card-header">
+                    <h6>Datos de la derivación</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label>Instrucción</label>
+                            <select class="form-control select2" style="width: 100%" name="instruccion" required>
+                                <option value="">Seleccionar una Instrucción...</option>
+                                <option value="Informar">Informar</option>
+                                <option value="Contestar">Contestar</option>
+                                <option value="Tomar nota">Tomar nota</option>
+                                <option value="Dar curso">Dar curso</option>
+                                <option value="Coordinar">Coordinar</option>
+                                <option value="Archivar">Archivar</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Tiene que seleccionar una instrucción
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label>Unidad Destino</label>
+                            <select class="form-control select2" style="width: 100%" name="id_unidad_destino" required="">
+                                <option value="">Seleccionar una Unidad Destino...</option>
+                                <option th:each="uni : ${unidades}" th:value="${uni.id_unidad}"
+                                    th:if="${uni.estado != 'X'}" th:text="${uni.nombre}">
+                                </option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Tiene que seleccionar una unidad destino
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12" th:if="${edit == null}">
+                            <label>Observaciones</label>
+                            <textarea class="form-control" name="observacion"></textarea>
+                            <div class="invalid-feedback">
+                                Introduzca el asunto del documento
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="form-group">
+            <label>Adjuntar Documento</label>
+            <input type="file" class=" dropzone-pdf" th:if="${edit == null}" required="" id="inputFile" name="file"
+                accept="application/pdf">
+            <input type="file" class=" dropzone-pdf" th:if="${edit != null}" id="inputFile" name="file"
+                accept="application/pdf">
+            <div id="alertaInputFile"></div>
+            <div class="invalid-feedback">
+                Debe adjuntar el documento escaneado en PDF
+            </div>
+            <div id="previsualizacionDoc"></div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input type="submit" class="btn btn-primary" th:value="${edit}? 'Guardar Cambios': 'Guardar'" id="botonEnviar">
+        <a type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</a>
+    </div>
+</form>
+
+
+<script>
+
+    $(document).ready(function () {
+
+        cargarEntidadExternos();
+
+        $('#formularioModalhojaRuta').on('submit', function (event) {
+            event.preventDefault(); // Previene el envío del formulario
+
+            //Verifica la validez del formulario
+            if (this.checkValidity() === false) {
+                $(this).addClass('was-validated');
+                return;
+            }
+
+            var form = $(this)[0];
+            var formData = new FormData(form);
+
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: formData,
+                contentType: false,  // No establecer el tipo de contenido aquí
+                processData: false,  // No procesar los datos
+                success: function (response) {
+                    if (response === "Registrado" || response === "Modificado") {
+                        if (response === "Modificado") {
+                            $('#botonCerrarModal').click();
+                        }
+                        Swal.fire(
+                            'Registrado!',
+                            response,
+                            'success'
+                        );
+                        cargarFormulari();
+                        cargarTabla();
+                    } else {
+                        Swal.fire(
+                            'Imposible Registrar!',
+                            response,
+                            'error'
+                        );
+                    }
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire(
+                        'Error!',
+                        'Ocurrió un error al registrar: ' + xhr.responseText,
+                        'error'
+                    );
+                }
+            });
+        });
+
+        // Dropzone y validacion de pdf
+        $('.dropzone-pdf').bs_dropzone({
+            boxClass: 'alert p-5 text-center font-weight-bold',
+            noneColorClass: 'alert-info border-info',
+            dragColorClass: 'alert-warning border-warning',
+            doneColorClass: 'alert-success border-success',
+            failColorClass: 'alert-danger border-danger'
+        });
+
+        $('#inputFile').on('change', function (event) {
+            const fileInput = event.target;
+
+            // Obtener el archivo seleccionado
+            const file = fileInput.files[0];
+
+            if (file.type != 'application/pdf') {
+                $('#alertaInputFile').html(`<div class="alert alert-danger alert-dismissible show fade">
+                      <div class="alert-body">
+                        <button class="close" data-dismiss="alert">
+                          <span>&times;</span>
+                        </button>
+                        Solo se admiten archivos tipo PDF.
+                      </div>
+                    </div>`);
+                fileInput.value = null;
+                //dropzone.bs_dropzone('reset');
+                $('#previsualizacionDoc').html("");
+                $('#formularioModalhojaRuta').addClass('was-validated');
+                // Limpiar el input si el archivo no es PDF
+
+            } else {
+                $('#previsualizacionDoc').html(`
+                        <div class="row d-flex justify-content-center pullDown" >
+                            <div id="pdf-preview"></div>
+                        </div>
+                `);
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const typedarray = new Uint8Array(e.target.result);
+
+                    pdfjsLib.getDocument(typedarray).promise.then(pdf => {
+                        pdf.getPage(1).then(page => {
+                            const scale = 0.3;
+                            const viewport = page.getViewport({ scale });
+
+                            // Limpia el contenedor de la previsualización antes de añadir una nueva página
+                            $('#pdf-preview').empty();
+
+                            // Prepara el canvas usando las dimensiones de la página PDF
+                            const canvas = document.createElement('canvas');
+                            const context = canvas.getContext('2d');
+                            canvas.height = viewport.height;
+                            canvas.width = viewport.width;
+
+                            $('#pdf-preview').append(canvas);
+
+                            // Renderiza la página del PDF en el contexto del canvas
+                            const renderContext = {
+                                canvasContext: context,
+                                viewport: viewport
+                            };
+                            page.render(renderContext);
+                        });
+                    });
+                };
+
+                reader.readAsArrayBuffer(file);
+                $('#alertaInputFile').html(`<div class="alert alert-success alert-dismissible show fade">
+                      <div class="alert-body">
+                        <button class="close" data-dismiss="alert">
+                          <span>&times;</span>
+                        </button>
+                        El archivo subido es valido.
+                      </div>
+                    </div>`);
+            }
+        });
+
+        $('#nom_externo').on('input', function() {
+            // Convertir el texto a mayúsculas en tiempo real
+            $(this).val($(this).val().toUpperCase());
+        });
+
+        
+    });
+    function cargarSelectUsuario() {
+        $.ajax({
+            type: 'POST',
+            url: "/cargarSelectUsuarios/" + $('#id_unidad2').val(),  // Ruta del método del controlador en Spring Boot
+            success: function (response) {
+                // 'response' es una lista de arrays de cadenas
+                //console.log('Lista de usuarios:', response);
+
+                // Obtener el elemento <select> con id "selectUsuarios"
+                const selectUsuarios = $('#selectUsuarios');
+                selectUsuarios.empty();  // Limpiar las opciones existentes
+
+                // Iterar sobre cada array en la respuesta
+                response.forEach(user => {
+                    // user es un array de dos elementos: [id, nombreCompleto]
+                    const option = $('<option></option>')
+                        .val(user[0])  // El valor del option es el ID del usuario
+                        .text(user[1]);  // El texto del option es el nombre completo del usuario
+
+                    // Agregar la opción al <select>
+                    selectUsuarios.append(option);
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Hubo un problema con la solicitud AJAX:', status, error);
+            }
+        });
+    }
+
+    function cargarEntidadExternos(){
+        $.ajax({
+            type: 'POST',
+            url: "/hojaRuta/persona_externa",  // Ruta del método del controlador en Spring Boot
+            success: function (response) {
+                
+                $('#entidadExterna').html(response);
+
+            },
+            error: function (xhr, status, error) {
+                console.error('Hubo un problema con la solicitud AJAX:', status, error);
+            }
+        });
+    }
+</script>
+<style>
+    #pdf-preview {
+        width: 187px;
+        height: 245px;
+        border: 1px solid #ddd;
+    }
+</style>

@@ -3,9 +3,13 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
-                    <h4>Lista de registros de hojas de ruta</h4>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".modal-horaRuta"
-                        onclick="cargarFormulari()">Registrar Hoja de Ruta</button>
+                    <h4 class="d-flex justify-content-start">Lista de registros de hojas de ruta</h4>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".modal-horaRuta"
+                            onclick="cargarFormulari()">Registrar Hoja de Ruta Interna</button>
+                        <button type="button" class="btn btn-warning" data-toggle="modal" data-target=".modal-horaRutaExterno"
+                            onclick="cargarFormulariExterno()">Registrar Hoja de Ruta Externa</button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

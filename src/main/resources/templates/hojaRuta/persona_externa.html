@@ -1,0 +1,41 @@
+<div class="form-group">
+    <label>Entidad o Persona Externa</label>
+    <div class="input-group">
+        <select class="form-control select2" th:field="${hojaRuta.entidadExterna}" style="width: 80%;"  required>
+            <option value="" selected>Seleccione...</option>
+            <option th:each="e : ${externos}" th:text="${e.nombre}" th:value="${e.id_entidad_externa}"></option>
+        </select>
+        <div class="input-group-append">
+            <button type="button" class="btn btn-primary" id="openSecondModal" >
+                Agregar
+            </button>
+        </div>
+        <div class="invalid-feedback">
+            Tiene que seleccionar una unidad emisor
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('.select2').select2({
+            dropdownParent: $('.input-group') // Asegúrate de que '.input-group' sea el contenedor adecuado
+        });
+
+        $('#openSecondModal').on('click', function() {
+            $('#exampleModalCenter').modal('show');
+            // Aumentar el z-index del segundo modal para que se superponga al primero
+            $('#exampleModalCenter').css('z-index', parseInt($('#firstModal').css('z-index')) + 10);
+            // Aumentar el z-index del backdrop del segundo modal
+            $('.modal-backdrop').last().css('z-index', parseInt($('#firstModal').css('z-index')) + 5);
+        });
+
+        // Restablecer el z-index al cerrar el segundo modal
+        $('#exampleModalCenter').on('hidden.bs.modal', function () {
+            $('#exampleModalCenter').css('z-index', '');
+            $('.modal-backdrop').last().css('z-index', '');
+        });
+    });
+
+
+</script>

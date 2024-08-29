@@ -37,11 +37,14 @@ import com.example.Proyecto.Model.HojaRuta;
 import com.example.Proyecto.Model.MovimientoDocumento;
 import com.example.Proyecto.Model.Unidad;
 import com.example.Proyecto.Model.Usuario;
+import com.example.Proyecto.Service.EntidadExternaService;
 import com.example.Proyecto.Service.HojaRutaService;
 import com.example.Proyecto.Service.MovimientoDocumentoService;
 import com.example.Proyecto.Service.TipoDocumentoService;
 import com.example.Proyecto.Service.UnidadService;
 import com.example.Proyecto.Service.UsuarioService;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @Controller
 @RequestMapping("/hojaRuta")
@@ -61,6 +64,9 @@ public class HojaRutaController {
 
     @Autowired
     private MovimientoDocumentoService movimientoDocumentoService;
+
+    @Autowired
+    private EntidadExternaService entidadExternaService;
 
     Config config = new Config();
 
@@ -110,6 +116,35 @@ public class HojaRutaController {
             return "redirect:/";
         }
     }
+
+    @GetMapping("/formulario_externo")
+    public String formulario_externo(Model model, HttpServletRequest request) {
+
+        if (request.getSession().getAttribute("usuario") != null) {
+            String gestion = String.valueOf(LocalDate.now().getYear());
+            Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+            Usuario user = usuarioService.findById(usuario.getId_usuario());
+            Unidad unidad = user.getUnidad();
+            model.addAttribute("hojaRuta", new HojaRuta());
+            List<HojaRuta> hojasRutas = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(unidad.getId_unidad().intValue(), gestion);
+            model.addAttribute("hojaRutasUnidad", hojasRutas);
+            model.addAttribute("nroHojaRutaSiguiente", (unidad.getContadorHojaRuta()+1));
+            model.addAttribute("unidades", unidadService.findAll());
+
+            return "hojaRuta/formulario_externo";
+        } else {
+            return "redirect:/";
+        }
+    }
+
+    @PostMapping("/persona_externa")
+    public String persona_externa(Model model) {
+        model.addAttribute("hojaRuta", new HojaRuta());
+        model.addAttribute("externos", entidadExternaService.findAll());
+        
+        return "hojaRuta/persona_externa";
+    }
+    
 
     @PostMapping("/formulario/{id_hojaRuta}")
     public String formulario(Model model, @PathVariable("id_hojaRuta") Long id, HttpServletRequest request) {
