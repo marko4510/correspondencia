@@ -45,7 +45,7 @@
                                             <td th:text="${#dates.format(hojaRuta.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
                                             <td>
                                                 <a href="#" class="btn btn-icon icon-left btn-primary" 
-                                                th:attr="onclick='cargarFormulario(\'' + ${hojaRuta.id_hoja_ruta} + '\')'"
+                                                th:attr="onclick='cargarFormulario(\'' + ${hojaRuta.id_hoja_ruta} + '\', \'' + ${hojaRuta.tipo_derivacion} + '\')'"
                                                 data-toggle="modal" data-target=".modal-horaRutaEdit">
                                                     <i class="far fa-edit"></i>Editar</a>
                                                 <a href="#" class="btn btn-icon icon-left btn-success"
@@ -80,7 +80,7 @@
                                             <td th:text="${#dates.format(hojaRuta.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
                                             <td>
                                                 <a href="#" class="btn btn-icon icon-left btn-primary" 
-                                                th:attr="onclick='cargarFormulario(\'' + ${hojaRuta.id_hoja_ruta} + '\')'"
+                                                th:attr="onclick='cargarFormulario(\'' + ${hojaRuta.id_hoja_ruta} + '\', \'' + ${hojaRuta.tipo_derivacion} + '\')'"
                                                 data-toggle="modal" data-target=".modal-horaRutaEdit">
                                                     <i class="far fa-edit"></i>Editar</a>
                                                 <a href="#" class="btn btn-icon icon-left btn-success"

@@ -45,7 +45,6 @@ import com.example.Proyecto.Service.UnidadService;
 import com.example.Proyecto.Service.UsuarioService;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
 @Controller
 @RequestMapping("/hojaRuta")
 public class HojaRutaController {
@@ -82,21 +81,24 @@ public class HojaRutaController {
 
     @PostMapping("/tablaRegistros")
     public String tablaRegistros(Model model, HttpServletRequest request) {
-        
+
         Usuario user = (Usuario) request.getSession().getAttribute("usuario");
         Usuario usuario = usuarioService.findById(user.getId_usuario());
         String gestion = String.valueOf(LocalDate.now().getYear());
-        List<HojaRuta> hojasRutasInterno = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestionYTipoDerivacion(usuario.getUnidad().getId_unidad().intValue(), gestion, "Interno");
+        List<HojaRuta> hojasRutasInterno = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestionYTipoDerivacion(
+                usuario.getUnidad().getId_unidad().intValue(), gestion, "Interno");
         for (HojaRuta hojaRuta : hojasRutasInterno) {
             Usuario userEmi = usuarioService.findById(hojaRuta.getUsuario_emisor().longValue());
-            hojaRuta.setHojaRutaTexto(usuario.getUnidad().getSigla()+"-"+hojaRuta.getNroRuta()+"/");
-            hojaRuta.setNombreEmisorText(userEmi.getPersona().getNombre()+" "+userEmi.getPersona().getAp_materno()+" "+userEmi.getPersona().getAp_materno());
+            hojaRuta.setHojaRutaTexto(usuario.getUnidad().getSigla() + "-" + hojaRuta.getNroRuta() + "/");
+            hojaRuta.setNombreEmisorText(userEmi.getPersona().getNombre() + " " + userEmi.getPersona().getAp_materno()
+                    + " " + userEmi.getPersona().getAp_materno());
         }
         model.addAttribute("hojasRutasInterno", hojasRutasInterno);
 
-        List<HojaRuta> hojasRutasExterno = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestionYTipoDerivacion(usuario.getUnidad().getId_unidad().intValue(), gestion, "Externo");
+        List<HojaRuta> hojasRutasExterno = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestionYTipoDerivacion(
+                usuario.getUnidad().getId_unidad().intValue(), gestion, "Externo");
         for (HojaRuta hojaRuta : hojasRutasExterno) {
-            hojaRuta.setHojaRutaTexto(usuario.getUnidad().getSigla()+"-"+hojaRuta.getNroRuta()+"/");
+            hojaRuta.setHojaRutaTexto(usuario.getUnidad().getSigla() + "-" + hojaRuta.getNroRuta() + "/");
             hojaRuta.setNombreEmisorText(hojaRuta.getEntidadExterna().getNombre());
         }
         model.addAttribute("hojasRutasExterno", hojasRutasExterno);
@@ -113,9 +115,10 @@ public class HojaRutaController {
             Usuario user = usuarioService.findById(usuario.getId_usuario());
             Unidad unidad = user.getUnidad();
             model.addAttribute("hojaRuta", new HojaRuta());
-            List<HojaRuta> hojasRutas = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(unidad.getId_unidad().intValue(), gestion);
+            List<HojaRuta> hojasRutas = hojaRutaService
+                    .obtenerHojasDeRutaPorUnidadYGestion(unidad.getId_unidad().intValue(), gestion);
             model.addAttribute("hojaRutasUnidad", hojasRutas);
-            model.addAttribute("nroHojaRutaSiguiente", (unidad.getContadorHojaRuta()+1));
+            model.addAttribute("nroHojaRutaSiguiente", (unidad.getContadorHojaRuta() + 1));
             model.addAttribute("unidades", unidadService.findAll());
 
             return "hojaRuta/formulario";
@@ -133,12 +136,13 @@ public class HojaRutaController {
             Usuario user = usuarioService.findById(usuario.getId_usuario());
             Unidad unidad = user.getUnidad();
             model.addAttribute("hojaRuta", new HojaRuta());
-            List<HojaRuta> hojasRutas = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(unidad.getId_unidad().intValue(), gestion);
+            List<HojaRuta> hojasRutas = hojaRutaService
+                    .obtenerHojasDeRutaPorUnidadYGestion(unidad.getId_unidad().intValue(), gestion);
             model.addAttribute("hojaRutasUnidad", hojasRutas);
-            model.addAttribute("nroHojaRutaSiguiente", (unidad.getContadorHojaRuta()+1));
+            model.addAttribute("nroHojaRutaSiguiente", (unidad.getContadorHojaRuta() + 1));
             model.addAttribute("externos", entidadExternaService.findAll());
-            model.addAttribute("unidades", unidadService.findAll());    
-            
+            model.addAttribute("unidades", unidadService.findAll());
+
             return "hojaRuta/formulario_externo";
         } else {
             return "redirect:/";
@@ -149,34 +153,63 @@ public class HojaRutaController {
     public String persona_externa(Model model) {
         model.addAttribute("hojaRuta", new HojaRuta());
         model.addAttribute("externos", entidadExternaService.findAll());
-        
+
         return "hojaRuta/persona_externa";
     }
-    
 
-    @PostMapping("/formulario/{id_hojaRuta}")
-    public String formulario(Model model, @PathVariable("id_hojaRuta") Long id, HttpServletRequest request) {
+    @PostMapping("/formulario/{id_hojaRuta}/{tipoDerivacion}")
+    public String formulario(Model model, @PathVariable("id_hojaRuta") Long id,
+            @PathVariable("tipoDerivacion") String derivacion,
+            HttpServletRequest request) {
+                //System.out.println("derivacion: " + derivacion);
+        String url = "login";
+
         if (request.getSession().getAttribute("usuario") != null) {
-            String gestion = String.valueOf(LocalDate.now().getYear());
-            Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-            Usuario user = usuarioService.findById(usuario.getId_usuario());
-            HojaRuta hojaRuta = hojaRutaService.findById(id);
-            Usuario userEmi = usuarioService.findById(hojaRuta.getUsuario_emisor().longValue());
-            model.addAttribute("idResponsable", userEmi.getId_usuario());
-            model.addAttribute("nombreResponsable", userEmi.getPersona().getNombre()+" "+userEmi.getPersona().getAp_materno()+" "+userEmi.getPersona().getAp_materno());
-            model.addAttribute("idUnidad", userEmi.getUnidad().getId_unidad());
-            model.addAttribute("hojaRuta", hojaRuta);
-            List<HojaRuta> hojasRutas = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(user.getUnidad().getId_unidad().intValue(), gestion);
-            model.addAttribute("hojaRutasUnidad", hojasRutas);
-            
+
+            if (derivacion.equals("Interno")) {
+
+                String gestion = String.valueOf(LocalDate.now().getYear());
+                Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+                Usuario user = usuarioService.findById(usuario.getId_usuario());
+                HojaRuta hojaRuta = hojaRutaService.findById(id);
+                Usuario userEmi = usuarioService.findById(hojaRuta.getUsuario_emisor().longValue());
+                model.addAttribute("idResponsable", userEmi.getId_usuario());
+                model.addAttribute("nombreResponsable", userEmi.getPersona().getNombre() + " "
+                        + userEmi.getPersona().getAp_materno() + " " + userEmi.getPersona().getAp_materno());
+                model.addAttribute("idUnidad", userEmi.getUnidad().getId_unidad());
+                model.addAttribute("hojaRuta", hojaRuta);
+                List<HojaRuta> hojasRutas = hojaRutaService
+                        .obtenerHojasDeRutaPorUnidadYGestion(user.getUnidad().getId_unidad().intValue(), gestion);
+                model.addAttribute("hojaRutasUnidad", hojasRutas);
+
+                url = "hojaRuta/formulario";
+
+            } else if (derivacion.equals("Externo")) {
+
+                String gestion = String.valueOf(LocalDate.now().getYear());
+                Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+                Usuario user = usuarioService.findById(usuario.getId_usuario());
+                Unidad unidad = user.getUnidad();
+                HojaRuta hojaRuta = hojaRutaService.findById(id);
+                model.addAttribute("hojaRuta", hojaRuta);
+                List<HojaRuta> hojasRutas = hojaRutaService
+                        .obtenerHojasDeRutaPorUnidadYGestion(unidad.getId_unidad().intValue(), gestion);
+                model.addAttribute("hojaRutasUnidad", hojasRutas);
+                model.addAttribute("nroHojaRutaSiguiente", (unidad.getContadorHojaRuta() + 1));
+                model.addAttribute("externos", entidadExternaService.findAll());
+
+                url = "hojaRuta/formulario_externo";
+
+            }
+
             model.addAttribute("unidades", unidadService.findAll());
             model.addAttribute("edit", "true");
-            return "hojaRuta/formulario";
+
+            return url;
         } else {
             return "redirect:/";
         }
     }
-    
 
     // @PostMapping("/validarDocumento/{nroRuta}")
     // public ResponseEntity<String> formulario(@PathVariable("cite") String cite,
@@ -205,10 +238,10 @@ public class HojaRutaController {
         // Configurar las cabeceras de la respuesta
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=" + hojaRuta.getNroRuta()); // "inline"
-                                                                                                 // para
-                                                                                                 // visualizar
-                                                                                                 // en el
-                                                                                                 // navegador
+                                                                                                   // para
+                                                                                                   // visualizar
+                                                                                                   // en el
+                                                                                                   // navegador
         headers.setContentType(MediaType.APPLICATION_PDF);
 
         // Devolver la respuesta con el archivo PDF
@@ -232,7 +265,8 @@ public class HojaRutaController {
             Usuario user = usuarioService.findById(usuario.getId_usuario());
             Unidad unidad = user.getUnidad();
 
-            List<HojaRuta> hojasRutas = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(user.getUnidad().getId_unidad().intValue(), gestion);
+            List<HojaRuta> hojasRutas = hojaRutaService
+                    .obtenerHojasDeRutaPorUnidadYGestion(user.getUnidad().getId_unidad().intValue(), gestion);
             if (hojasRutas.size() == 0) {
                 System.out.println("Numero Inicial: " + numeroInicial);
                 unidad.setContadorHojaRuta(numeroInicial);
@@ -254,9 +288,8 @@ public class HojaRutaController {
             hojaRuta.setFechaCreacion(new Date());
             hojaRuta.setEstado("A");
             hojaRuta.setTipo_derivacion("Interno");
-            //hojaRuta.setUnidad_reg(usuario.getUnidad().getId_unidad().intValue());
+            // hojaRuta.setUnidad_reg(usuario.getUnidad().getId_unidad().intValue());
             hojaRutaService.save(hojaRuta);
-
 
             Unidad unidadDestino = unidadService.findById(id_unidad_destino);
             movimientoDocumento.setRuta_movimiento(arch);
@@ -278,7 +311,7 @@ public class HojaRutaController {
     public ResponseEntity<String> modificar(@Validated HojaRuta hojaR, HttpServletRequest request,
             @RequestParam("userEmisor") Integer userEmisor,
             @RequestParam(value = "file", required = false) MultipartFile archivo) {
-                HojaRuta hojaRuta = hojaRutaService.findById(hojaR.getId_hoja_ruta());
+        HojaRuta hojaRuta = hojaRutaService.findById(hojaR.getId_hoja_ruta());
         try {
             if (archivo != null && !archivo.isEmpty()) {
                 String arch = config.guardarArchivo(archivo);
@@ -309,7 +342,8 @@ public class HojaRutaController {
             Usuario user = usuarioService.findById(usuario.getId_usuario());
             Unidad unidad = user.getUnidad();
 
-            List<HojaRuta> hojasRutas = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(user.getUnidad().getId_unidad().intValue(), gestion);
+            List<HojaRuta> hojasRutas = hojaRutaService
+                    .obtenerHojasDeRutaPorUnidadYGestion(user.getUnidad().getId_unidad().intValue(), gestion);
             if (hojasRutas.size() == 0) {
                 System.out.println("Numero Inicial: " + numeroInicial);
                 unidad.setContadorHojaRuta(numeroInicial);
@@ -324,16 +358,15 @@ public class HojaRutaController {
             hojaRuta.setNroRuta(unidad.getContadorHojaRuta());
             String arch = config.guardarArchivo((MultipartFile) archivo);
             hojaRuta.setRuta(arch);
-            //hojaRuta.setEntidadExterna(entidadExternaService.findById(entidadEmisor.longValue()));
+            // hojaRuta.setEntidadExterna(entidadExternaService.findById(entidadEmisor.longValue()));
             hojaRuta.setUnidad_registro(unidad.getId_unidad().intValue());
             hojaRuta.setUsuario_registro(usuario.getId_usuario().intValue());
             // documento.setNroRuta(cite);
             hojaRuta.setFechaCreacion(new Date());
             hojaRuta.setEstado("A");
             hojaRuta.setTipo_derivacion("Externo");
-            //hojaRuta.setUnidad_reg(usuario.getUnidad().getId_unidad().intValue());
+            // hojaRuta.setUnidad_reg(usuario.getUnidad().getId_unidad().intValue());
             hojaRutaService.save(hojaRuta);
-
 
             Unidad unidadDestino = unidadService.findById(id_unidad_destino);
             movimientoDocumento.setRuta_movimiento(arch);
@@ -346,6 +379,25 @@ public class HojaRutaController {
             movimientoDocumento.setObservaciones(observacion);
             movimientoDocumentoService.save(movimientoDocumento);
             return ResponseEntity.ok("Registrado");
+        } catch (Exception e) {
+            return ResponseEntity.ok("Error: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/modificarExterno")
+    public ResponseEntity<String> modificarExterno(@Validated HojaRuta hojaR,
+            @RequestParam(value = "file", required = false) MultipartFile archivo, HttpServletRequest request) {
+        try {
+            HojaRuta hojaRuta = hojaRutaService.findById(hojaR.getId_hoja_ruta());
+            if (archivo != null && !archivo.isEmpty()) {
+                String arch = config.guardarArchivo(archivo);
+                hojaRuta.setRuta(arch);
+            };
+            hojaRuta.setEntidadExterna(hojaR.getEntidadExterna());
+            hojaRuta.setRef(hojaR.getRef());
+            hojaRutaService.save(hojaRuta);
+
+            return ResponseEntity.ok("Modificado");
         } catch (Exception e) {
             return ResponseEntity.ok("Error: " + e.getMessage());
         }
