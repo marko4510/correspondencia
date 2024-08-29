@@ -35,10 +35,12 @@ import com.example.Proyecto.Model.Documento;
 import com.example.Proyecto.Model.HojaRuta;
 import com.example.Proyecto.Model.MovimientoDocumento;
 import com.example.Proyecto.Model.Unidad;
+import com.example.Proyecto.Model.Usuario;
 import com.example.Proyecto.Service.DocumentoService;
 import com.example.Proyecto.Service.HojaRutaService;
 import com.example.Proyecto.Service.MovimientoDocumentoService;
 import com.example.Proyecto.Service.UnidadService;
+import com.example.Proyecto.Service.UsuarioService;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -65,6 +67,9 @@ public class SeguimientoController {
 
     @Autowired
     private HojaRutaService hojaRutaService;
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     @GetMapping("/inicio")
     public String inicio(HttpServletRequest request, Model model) {
@@ -100,13 +105,23 @@ public class SeguimientoController {
             // List<MovimientoDocumento> flujoDocumentos = movimientoDocumentoService.obtener_Flujo_Documento(nroRuta);
             Integer num_ruta = Integer.parseInt(nroRuta);
             List<MovimientoDocumento> flujoDocumentos = movimientoDocumentoService.obtener_Flujos_Documentos(num_ruta,id_unidad,year);
-
+            HojaRuta hojaRuta = flujoDocumentos.get(0).getHojaRuta();
             if (flujoDocumentos.size() > 0) {
                 model.addAttribute("flujo", flujoDocumentos);
-                model.addAttribute("hojaDeRuta", flujoDocumentos.get(0).getHojaRuta());
-                //Integer id = flujoDocumentos.get(0).getHojaRuta().getUnidad_reg();
-                // Unidad unidad = unidadService.findById(id.longValue());
-                // model.addAttribute("unidad", unidad);
+                model.addAttribute("hojaDeRuta", hojaRuta);
+
+                if (hojaRuta.getTipo_derivacion().equals("Interno")) {
+                Integer id_usuario_emisor = flujoDocumentos.get(0).getHojaRuta().getUsuario_emisor();
+                Long id_usuario_emisor_long = id_usuario_emisor.longValue();
+                Usuario usuario_emisor = usuarioService.findById(id_usuario_emisor_long); 
+                model.addAttribute("usuario_emisor", usuario_emisor);
+                model.addAttribute("interno", true);
+                }
+                if (hojaRuta.getTipo_derivacion().equals("Externo")) {
+                    model.addAttribute("usuario_emisor", hojaRuta.getEntidadExterna().getNombre());
+                    model.addAttribute("externo", true);
+                }
+               
                 return "seguimiento/flujoDocumento"; // Retorna la vista si hay resultados
             } else {
                 return "seguimiento/noEncontrado"; // Retorna una vista alternativa si no hay resultados

@@ -20,9 +20,17 @@
                                           </tr>
                                         </thead>
                                         <tbody>
-                                          <tr>
+                                          <tr th:if="${interno}">
                                             <th scope="row"  style="text-align: right; width: 20%;">Procedencia Unidad Funcional :</th>
-                                            <td th:text="${unidad.nombre}">Mark</td>
+                                            <td th:text="${usuario_emisor.persona.nombre}+ ' '+${usuario_emisor.persona.ap_paterno}+ ' '+${usuario_emisor.persona.ap_materno}">Mark</td>
+                                          </tr>
+                                          <tr th:if="${externo}">
+                                            <th scope="row"  style="text-align: right; width: 20%;">Procedencia Unidad Funcional :</th>
+                                            <td th:text="${usuario_emisor}">Mark</td>
+                                          </tr>
+                                          <tr th:if="${interno}">
+                                            <th scope="row"  style="text-align: right; width: 20%;">Cargo del emisor :</th>
+                                            <td th:text="${usuario_emisor.persona.cargo.nombre}">Mark</td>
                                           </tr>
                                           <tr>
                                             <th scope="row" style="text-align: right;">Referencia :</th>
