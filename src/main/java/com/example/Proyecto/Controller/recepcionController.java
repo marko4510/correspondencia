@@ -147,8 +147,8 @@ public class recepcionController {
             @RequestParam("id_unidad_destino") Long id_unidad_destino,
             @RequestParam("observacion") String observacion,
             @RequestParam("instruccion") String instruccion,
-            @RequestParam("file") MultipartFile archivo, Model model, HttpServletRequest request,
-            @RequestParam(value = "numeroInicial", required = false) int numeroInicial) {
+            @RequestParam("file") MultipartFile archivo, Model model, HttpServletRequest request
+            ) {
         try {
             MovimientoDocumento movimientoDocumento = new MovimientoDocumento();
             HojaRuta hojaRuta = hojaRutaService.findById(id_hoja_ruta);
@@ -164,38 +164,7 @@ public class recepcionController {
             long idUnidad = usuario.getUnidad().getId_unidad();
             Integer idUnidadInt = (int) idUnidad;
             Unidad unidadDestino = unidadService.findById(id_unidad_destino);
-            // Integer idDocumentoInteger = id_documento.intValue();
-            // List<HojaRuta> hojaRutaDocumentoExiste = hojaRutaService.obtenerHojasDeRutaPorDocumento(idDocumentoInteger);
-            
-            // List<HojaRuta> hojaRutaActuales = hojaRutaService.obtenerHojasDeRutaPorUnidadYGestion(unidad.getId_unidad().intValue(), gestion);
-            // int cantidadHojaRuta = (hojaRutaActuales.size()+1);
-            // HojaRuta hojaRuta = new HojaRuta();
-            // hojaRuta.setEstado("A");
-        
-            // hojaRuta.setFechaCreacion(new Date());
-            // hojaRuta.setUnidad_reg(idUnidadInt);
-            // hojaRuta.setDocumento(documento);
-
-            // if (hojaRutaDocumentoExiste.size() == 0) {
-                
-            //     System.out.println("Numero Inicial: " + (numeroInicial+1));
-            //     unidad.setContadorHojaRuta(numeroInicial+1);
-            //     unidadService.save(unidad);  
-
-            //     hojaRuta.setNroRuta(numeroInicial+1);
-            //     hojaRutaService.save(hojaRuta);   
-            // }
-            
-            // if (hojaRutaActuales.size() == 0) {
-            //     System.out.println("Numero Inicial: " + numeroInicial);
-            //     unidad.setContadorHojaRuta(numeroInicial);
-            //     unidadService.save(unidad);
-            // } else {
-            //     System.out.println("Numero Inicial: " + numeroInicial);
-            //     int cont = unidad.getContadorHojaRuta() + 1;
-            //     unidad.setContadorHojaRuta(cont);
-            //     unidadService.save(unidad);
-            // }
+           
             
             movimientoDocumento.setHojaRuta(hojaRuta);
             movimientoDocumento.setFechaHoraRegistro(new Date());
