@@ -145,6 +145,7 @@ public class recepcionController {
     public ResponseEntity<String> regMovimientoDocumento(
             @RequestParam("id_hoja_ruta") Long id_hoja_ruta,
             @RequestParam("id_unidad_destino") Long id_unidad_destino,
+            @RequestParam("userDestino") Integer id_user_destino,
             @RequestParam("observacion") String observacion,
             @RequestParam("instruccion") String instruccion,
             @RequestParam("file") MultipartFile archivo, Model model, HttpServletRequest request
@@ -173,6 +174,7 @@ public class recepcionController {
             movimientoDocumento.setUsuarioRegistro(idUsuarioInt);
             movimientoDocumento.setInstruccion(instruccion);
             movimientoDocumento.setObservaciones(observacion);
+            movimientoDocumento.setUsuarioDestino(id_user_destino);
             movimientoDocumentoService.save(movimientoDocumento);
 
             return ResponseEntity.ok("Registrado");
@@ -210,6 +212,7 @@ public class recepcionController {
         for (Usuario usuario : listaUser) {
             String[] user = { usuario.getId_usuario().toString(), usuario.getPersona().getNombre() + " "
                     + usuario.getPersona().getAp_paterno() + " " + usuario.getPersona().getAp_materno() };
+          
             listaUsuarios.add(user);
         }
 
