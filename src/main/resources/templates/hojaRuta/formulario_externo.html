@@ -18,7 +18,7 @@
         <div class="row" th:if="${hojaRutasUnidad.size > 0}">
             <div class="form-group col-md-6">
                 <label>Nro. Hoja de Ruta</label>
-                <input type="number" class="form-control" th:value="${nroHojaRutaSiguiente}" readonly>
+                <input type="number" class="form-control" th:value="${nroHojaRutaSiguiente}" id="nroHojaRuta" readonly>
                 <div class="invalid-feedback">
                     Tiene que introducir el numero de una hoja de ruta
                 </div>
@@ -27,7 +27,7 @@
         <div class="row" th:if="${hojaRutasUnidad.size == 0}">
             <div class="form-group col-md-6">
                 <label>Nro. Hoja de Ruta</label>
-                <input type="number" class="form-control" name="numeroInicial" min="0" required>
+                <input type="number" class="form-control" name="numeroInicial" id="nroHojaRuta" min="0" required>
                 <div class="invalid-feedback">
                     Tiene que introducir el numero de una hoja de ruta
                 </div>
@@ -112,7 +112,7 @@
                             </div>
                         </div>
                         <div class="form-group col-md-12" th:if="${edit == null}">
-                            <label>Proveido</label>
+                            <label>Proveído</label>
                             <textarea class="form-control" name="observacion"></textarea>
                             <div class="invalid-feedback">
                                 Introduzca el asunto del documento
@@ -159,6 +159,8 @@
         $('#formularioModalhojaRutaExterna').on('submit', function (event) {
             event.preventDefault(); // Previene el envío del formulario
 
+            var nroRuta = $('#nroHojaRuta').val();
+
             //Verifica la validez del formulario
             if (this.checkValidity() === false) {
                 $(this).addClass('was-validated');
@@ -179,11 +181,42 @@
                         if (response === "Modificado") {
                             $('#botonCerrarModal').click();
                         }
-                        Swal.fire(
-                            'Registrado!',
-                            response,
-                            'success'
-                        );
+                        Swal.fire({
+                            icon: "success",
+                            title: "Registrado!",
+                            text: "Se ha registrado la hoja de ruta correctamente, ¿desea imprimir la hoja de ruta?",
+                            showDenyButton: true,
+                            confirmButtonText: "Continuar",
+                            denyButtonText: `Imprimir`
+                        }).then((result) => {
+                            /* Read more about isConfirmed, isDenied below */
+                            if (result.isConfirmed) {
+                                Swal.fire().close();
+                            } else if (result.isDenied) {
+                                fetch("/seguimiento/buscar_documentoInicial/" + nroRuta)
+                                            .then(response => {
+                                                if (!response.ok) {
+                                                    throw new Error('Error en la solicitud: ' + response.statusText);
+                                                }
+                                                return response.text();
+                                            })
+                                            .then(htmlContent => {
+                                                const newWindow = window.open("", "_blank");
+                                                newWindow.document.write(htmlContent);
+                                                newWindow.document.close();  // Cierra el stream de escritura para que el navegador comience a renderizar
+                                            })
+                                            .catch(error => {
+                                                Swal.fire(
+                                                    'Error',
+                                                    'Ocurrió un error al procesar la solicitud.',
+                                                    'error'
+                                                );
+                                                console.error('Error:', error);
+                                            });
+
+
+                            }
+                        });
                         cargarFormulariExterno();
                         cargarTabla();
                     } else {
