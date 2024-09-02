@@ -11,5 +11,6 @@ public interface UsuarioService {
     void deleteById(Long id);
     public Usuario obtener_Usuario(String usuario_nom, String contrasena);
     public List<Usuario> listarUsuariosPorUnidad(Long idUnidad, Long idUsuario);
+    public Usuario obtener_Usuario_CiPersona(String ci);
     
 }

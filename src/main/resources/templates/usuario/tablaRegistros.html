@@ -4,8 +4,12 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <h4>Gestión de Usuarios</h4>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".modal-usuario"
-                        onclick="cargarFormulari()">Registrar Usuario</button>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-warning" onclick="actualizarPersonas()"
+                            >Actualizar Usuarios</button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".modal-usuario"
+                            onclick="cargarFormulari()">Registrar Usuario</button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

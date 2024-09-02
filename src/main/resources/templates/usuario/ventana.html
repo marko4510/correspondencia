@@ -75,7 +75,44 @@
       });
     }
 
- 
+    function actualizarPersonas() {
+      // Mostrar el Swal de "actualizando"
+      Swal.fire({
+          title: 'Actualizando...',
+          text: 'Por favor, espere mientras se actualizan los datos.',
+          allowOutsideClick: false,
+          didOpen: () => {
+              Swal.showLoading();  // Muestra un spinner de carga
+          }
+      });
+  
+      $.ajax({
+          type: 'POST',
+          url: "/actualizarPersonas",  // Ruta del método del controlador en Spring Boot
+          success: function (response) {
+              // Cerrar el Swal de "actualizando"
+              Swal.close();
+  
+              // Mostrar Swal de "actualización exitosa"
+              Swal.fire({
+                  icon: 'success',
+                  title: 'Actualización exitosa',
+                  text: 'Los datos han sido actualizados correctamente.'
+              });
+          },
+          error: function (error) {
+              // Cerrar el Swal de "actualizando"
+              Swal.close();
+  
+              // Mostrar Swal de "error"
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'Ocurrió un error al intentar actualizar los datos.'
+              });
+          }
+      });
+  }
 
   </script>
 </body>
