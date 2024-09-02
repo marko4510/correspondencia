@@ -124,6 +124,7 @@ public class InicioController {
                 if (persona == null) {
                     persona = new Persona();
                     persona.setNombre(nombres);
+                    persona.setEstado("P");
                     persona.setAp_paterno(apPaterno);
                     persona.setAp_materno(apMaterno);
                     persona.setCi(ciPersona);
