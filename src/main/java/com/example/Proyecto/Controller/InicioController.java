@@ -37,6 +37,10 @@ import java.util.Map;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 @Controller
 public class InicioController {
@@ -72,7 +76,7 @@ public class InicioController {
     // }
 
     @PostMapping("/actualizarPersonas")
-    public ResponseEntity< ?> actualizarPersonas() throws IOException, InterruptedException {
+    public ResponseEntity< ?> actualizarPersonas() throws IOException, InterruptedException, ParseException {
       
         String url = "http://192.168.10.93:3333/api/londraPost/v1/personasLondra/obtenerDatos";
 
@@ -94,6 +98,7 @@ public class InicioController {
 
         if (datos != null && datos.length > 0) {
             for (Map<String, Object> data : datos) {
+
                 // Acceder a los datos específicos
                 String Per_id = data.get("Per_id").toString();
                 String nombres = data.get("nombres").toString();
@@ -103,11 +108,25 @@ public class InicioController {
                 String direccion = data.get("direccion").toString();
                 String puesto = data.get("puesto").toString();
 
+                String url2 = "http://virtual.uap.edu.bo:7174/api/londraPost/v1/personaLondra/obtenerDatos";
+                HttpHeaders headers2 = new HttpHeaders();
+                headers2.setContentType(MediaType.APPLICATION_JSON);
+                HttpEntity<String> requestEntity2 = new HttpEntity<>(
+                        "{\"usuario\":\"" + Per_id + "\"}", headers);
+                RestTemplate restTemplate2 = new RestTemplate();
+                ResponseEntity<Map> responseEntity2 = restTemplate2.exchange(url2, HttpMethod.POST, requestEntity2, Map.class);
+
+                if (responseEntity2.getStatusCodeValue() == 200) {
+                    Map<String, Object> data2 = responseEntity2.getBody();
+
                 
                 Cargo cargo = cargoService.obtener_cargoPorNombre(data.get("puesto").toString());
                 if (cargo == null) {
                     cargo = new Cargo();
                     cargo.setEstado("A");
+                    cargo.setNombre(data.get("puesto").toString());
+                    cargoService.save(cargo);
+                }else{
                     cargo.setNombre(data.get("puesto").toString());
                     cargoService.save(cargo);
                 }
@@ -116,6 +135,11 @@ public class InicioController {
                 if (unidad == null) {
                     unidad = new Unidad();
                     unidad.setEstado("A");
+                    unidad.setNombre(data.get("direccion").toString());
+                    unidad.setContadorCite(0);
+                    unidad.setContadorHojaRuta(0);
+                    unidadService.save(unidad);
+                }else{
                     unidad.setNombre(data.get("direccion").toString());
                     unidadService.save(unidad);
                 }
@@ -129,6 +153,27 @@ public class InicioController {
                     persona.setAp_materno(apMaterno);
                     persona.setCi(ciPersona);
                     persona.setCargo(cargo);
+                    persona.setCorreo(data2.get("perd_email_personal").toString());
+                    persona.setNumero_contacto(data2.get("perd_celular").toString());
+                    persona.setSexo(data2.get("per_sexo").toString());
+             
+                    String fechaNacStr = data2.get("fecha_nac").toString();  // Fecha en formato recibido
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                    Date fechaNac = formatter.parse(fechaNacStr);
+                    persona.setFecha_nacimiento(fechaNac);
+                    personaService.save(persona);
+                }else{
+                    persona.setNombre(nombres);
+                    persona.setAp_paterno(apPaterno);
+                    persona.setAp_materno(apMaterno);
+                    persona.setCargo(cargo);
+                    persona.setCorreo(data2.get("perd_email_personal").toString());
+                    persona.setNumero_contacto(data2.get("perd_celular").toString());
+                    persona.setSexo(data2.get("per_sexo").toString());
+                    String fechaNacStr = data2.get("fecha_nac").toString();  // Fecha en formato recibido
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                    Date fechaNac = formatter.parse(fechaNacStr);
+                    persona.setFecha_nacimiento(fechaNac);
                     personaService.save(persona);
                 }
 
@@ -141,8 +186,12 @@ public class InicioController {
                     usuario.setUsuario_nom(data.get("Per_id").toString());
                     usuario.setContrasena(persona.getCi());
                     usuarioService.save(usuario);
+                }else{
+                    usuario.setUnidad(unidad);
+                    usuario.setPersona(persona);
+                    usuarioService.save(usuario);
                 }
-                
+            }
             }
             System.out.println(datos.length);
         }
