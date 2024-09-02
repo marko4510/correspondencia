@@ -7,8 +7,8 @@
 </div>
 
 <!-- Formulario -->
-<form th:action="${edit}? @{/hojaRuta/modificarExterno}: @{/hojaRuta/registrarExterno}" id="formularioModalhojaRutaExterna"
-    enctype="multipart/form-data" method="POST" novalidate>
+<form th:action="${edit}? @{/hojaRuta/modificarExterno}: @{/hojaRuta/registrarExterno}"
+    id="formularioModalhojaRutaExterna" enctype="multipart/form-data" method="POST" novalidate>
     <div class="modal-body">
         <th:block th:if="${edit != null}">
             <input type="hidden" th:field="${hojaRuta.id_hoja_ruta}">
@@ -178,45 +178,53 @@
                 processData: false,  // No procesar los datos
                 success: function (response) {
                     if (response === "Registrado" || response === "Modificado") {
+                        if (response === "Registrado") {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Registrado!",
+                                text: "Se ha registrado la hoja de ruta correctamente, ¿desea imprimir la hoja de ruta?",
+                                showDenyButton: true,
+                                confirmButtonText: "Continuar",
+                                denyButtonText: `Imprimir`
+                            }).then((result) => {
+                                /* Read more about isConfirmed, isDenied below */
+                                if (result.isConfirmed) {
+                                    Swal.fire().close();
+                                } else if (result.isDenied) {
+                                    fetch("/seguimiento/buscar_documentoInicial/" + nroRuta)
+                                        .then(response => {
+                                            if (!response.ok) {
+                                                throw new Error('Error en la solicitud: ' + response.statusText);
+                                            }
+                                            return response.text();
+                                        })
+                                        .then(htmlContent => {
+                                            const newWindow = window.open("", "_blank");
+                                            newWindow.document.write(htmlContent);
+                                            newWindow.document.close();  // Cierra el stream de escritura para que el navegador comience a renderizar
+                                        })
+                                        .catch(error => {
+                                            Swal.fire(
+                                                'Error',
+                                                'Ocurrió un error al procesar la solicitud.',
+                                                'error'
+                                            );
+                                            console.error('Error:', error);
+                                        });
+
+
+                                }
+                            });
+                        }
                         if (response === "Modificado") {
+                            Swal.fire(
+                                'Registrado!',
+                                response,
+                                'success'
+                            );
                             $('#botonCerrarModal').click();
                         }
-                        Swal.fire({
-                            icon: "success",
-                            title: "Registrado!",
-                            text: "Se ha registrado la hoja de ruta correctamente, ¿desea imprimir la hoja de ruta?",
-                            showDenyButton: true,
-                            confirmButtonText: "Continuar",
-                            denyButtonText: `Imprimir`
-                        }).then((result) => {
-                            /* Read more about isConfirmed, isDenied below */
-                            if (result.isConfirmed) {
-                                Swal.fire().close();
-                            } else if (result.isDenied) {
-                                fetch("/seguimiento/buscar_documentoInicial/" + nroRuta)
-                                            .then(response => {
-                                                if (!response.ok) {
-                                                    throw new Error('Error en la solicitud: ' + response.statusText);
-                                                }
-                                                return response.text();
-                                            })
-                                            .then(htmlContent => {
-                                                const newWindow = window.open("", "_blank");
-                                                newWindow.document.write(htmlContent);
-                                                newWindow.document.close();  // Cierra el stream de escritura para que el navegador comience a renderizar
-                                            })
-                                            .catch(error => {
-                                                Swal.fire(
-                                                    'Error',
-                                                    'Ocurrió un error al procesar la solicitud.',
-                                                    'error'
-                                                );
-                                                console.error('Error:', error);
-                                            });
 
-
-                            }
-                        });
                         cargarFormulariExterno();
                         cargarTabla();
                     } else {
