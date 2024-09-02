@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="row">
-            <div th:class="${edit}? 'col-md-12' : 'col-md-6'">
+            <div th:class="${edit}? 'col-md-6' : 'col-md-4'">
                 <div class="card-header">
                     <h6>Datos del Emisor</h6>
                 </div>
@@ -76,7 +76,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6" th:if="${edit == null}">
+            <div class="col-md-4" th:if="${edit == null}">
                 <div class="card-header">
                     <h6>Datos de la derivación</h6>
                 </div>
@@ -121,20 +121,22 @@
                     </div>
                 </div>
             </div>
+            <div th:class="${edit}? 'form-group col-md-6' : 'form-group col-md-4'">
+                <div class="form-group">
+                    <label>Adjuntar Documento</label>
+                    <input type="file" class=" dropzone-pdf" th:if="${edit == null}" required="" id="inputFile" name="file"
+                        accept="application/pdf">
+                    <input type="file" class=" dropzone-pdf" th:if="${edit != null}" id="inputFile" name="file"
+                        accept="application/pdf">
+                    <div id="alertaInputFile"></div>
+                    <div class="invalid-feedback">
+                        Debe adjuntar el documento escaneado en PDF
+                    </div>
+                    <div id="previsualizacionDoc"></div>
+                </div>
+            </div>
         </div>
         <br>
-        <div class="form-group">
-            <label>Adjuntar Documento</label>
-            <input type="file" class=" dropzone-pdf" th:if="${edit == null}" required="" id="inputFile" name="file"
-                accept="application/pdf">
-            <input type="file" class=" dropzone-pdf" th:if="${edit != null}" id="inputFile" name="file"
-                accept="application/pdf">
-            <div id="alertaInputFile"></div>
-            <div class="invalid-feedback">
-                Debe adjuntar el documento escaneado en PDF
-            </div>
-            <div id="previsualizacionDoc"></div>
-        </div>
     </div>
     <div class="modal-footer">
         <input type="submit" class="btn btn-primary" th:value="${edit}? 'Guardar Cambios': 'Guardar'" id="botonEnviar">
