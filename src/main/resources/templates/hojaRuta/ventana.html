@@ -123,6 +123,7 @@
                 'Entidad Externa Registrado con Exito!',
                 'success'
               );
+<<<<<<< HEAD
               cargarEntidadExternos($('#nom_externo').val());
               cargarTabla();
               $('#nom_externo').val('');
@@ -133,6 +134,12 @@
                 'Ya existe un registro con este nombre.',
                 'error'
               );
+=======
+              cargarEntidadExternos();
+              cargarTabla();
+              $('#nom_externo').val('');
+              $('#exampleModalCenter').modal('hide');
+>>>>>>> d575e87 (UPDATE)
             } else {
               Swal.fire(
                 'Imposible Registrar!',
