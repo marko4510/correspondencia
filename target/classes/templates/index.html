@@ -9,9 +9,9 @@
   <div class="loader"></div>
   <div id="app">
     <div class="main-wrapper main-wrapper-1">
-     
+
       <nav th:replace="layout/navbar :: navbar">
-       
+
       </nav>
 
 
@@ -19,14 +19,35 @@
       <!-- sadsaadd -->
 
       <div th:replace="layout/sidebar :: sidebar">
-     
+
       </div>
 
       <!-- Main Content -->
       <div th:replace="layout/content :: content">
-     
-     
+
+    
       </div>
+
+      <div class="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color: #007bff; color: white;">
+            <h5 class="modal-title" id="exampleModalCenterTitle">Lista de solicitudes de Recepción de Hoja de Ruta</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="card">
+            
+            <div class="card-body">
+              TABLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+     
 
       <footer th:replace="layout/footer :: footer">
       </footer>
@@ -34,7 +55,7 @@
 
     </div>
   </div>
- 
+
 
   <div th:replace="layout/script :: script">
   </div>
