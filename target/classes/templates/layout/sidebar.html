@@ -7,6 +7,11 @@
       </div>
       <ul th:if="${session.usuario.estado != 'P'}" class="sidebar-menu">
         <li class="menu-header">---------------------------------------</li>
+        <button type="button" class="btn btn-danger btn-icon icon-left " style="width: 250px;" >
+          <i class="fas fa-envelope"></i> Solicitudes de Hoja de Ruta<span class="badge badge-transparent">4</span>
+        </button>
+        
+
         <li th:class="${opcion == 'administrar hoja ruta'}? 'dropdown active': 'dropdown'">
           <a th:href="@{/hojaRuta/inicio}" class="nav-link"><i data-feather="file-minus"></i><span>Gestionar Hojas de Ruta</span></a>
         </li>
