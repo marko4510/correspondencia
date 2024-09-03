@@ -53,7 +53,8 @@
                                                 data-toggle="modal" data-target=".modal-horaRuta">
                                                 <i class="far fa-file-archive"></i>Ver</a>
                                                 <a class="btn btn-icon icon-left btn-success" style="color:white;"
-                                                th:attr="onclick='generarHojaRuta(\'' + ${hojaRuta.id_hoja_ruta} + '\')'">
+                                                data-toggle="modal" data-target=".modal-horaRuta"
+                                                th:attr="onclick='generarHojaRuta(\'' + ${hojaRuta.id_hoja_ruta} + '\', \'' + ${hojaRuta.tipo_derivacion} + '\')'">
                                                 <i class="fa fa-print"></i>Imprimir</a>
                                             </td>
                                         </tr>
@@ -90,8 +91,12 @@
                                                 th:attr="onclick='verDocumento(\'' + ${hojaRuta.id_hoja_ruta} + '\')'"
                                                 data-toggle="modal" data-target=".modal-horaRuta">
                                                 <i class="far fa-file-archive"></i>Ver</a>
-                                                <a class="btn btn-icon icon-left btn-success" style="color:white;"
+                                                <!-- <a class="btn btn-icon icon-left btn-success" style="color:white;"
                                                 th:attr="onclick='generarHojaRuta(\'' + ${hojaRuta.id_hoja_ruta} + '\')'">
+                                                <i class="fa fa-print"></i>Imprimir</a> -->
+                                                <a class="btn btn-icon icon-left btn-success" style="color:white;"
+                                                data-toggle="modal" data-target=".modal-horaRuta"
+                                                th:attr="onclick='generarHojaRuta(\'' + ${hojaRuta.id_hoja_ruta} + '\', \'' + ${hojaRuta.tipo_derivacion} + '\')'">
                                                 <i class="fa fa-print"></i>Imprimir</a>
                                             </td>
                                         </tr>
@@ -164,26 +169,42 @@
 
     });
 
-    function generarHojaRuta(id_documento) {
-            fetch("/seguimiento/hojaruta/" + id_documento)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error en la solicitud: ' + response.statusText);
-                    }
-                    return response.text();
-                })
-                .then(htmlContent => {
-                    const newWindow = window.open("", "_blank");
-                    newWindow.document.write(htmlContent);
-                    newWindow.document.close();  // Cierra el stream de escritura para que el navegador comience a renderizar
-                })
-                .catch(error => {
-                    Swal.fire(
-                        'Error',
-                        'Ocurrió un error al procesar la solicitud.',
-                        'error'
-                    );
-                    console.error('Error:', error);
-                });
-        }
+    function generarHojaRuta(id_documento, tipo_derivacion) {
+      $('#contenidoFormularioModal').html(
+        `<!-- Modal Header -->
+<div class="modal-header">
+    <h5 class="modal-title" id="myLargeModalLabel">Visualización de la hoja de ruta</h5>
+    <a type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </a>
+</div>
+<div class="modal-body">
+    <embed src="/hojaRuta/GenerarHojaRuta/${id_documento}/${tipo_derivacion}" type="application/pdf" frameborder="0" style="height: 600px; width: 100%;"></embed>
+</div>
+`);
+    }
+
+    // function generarHojaRuta(id_documento) {
+    //         fetch("/seguimiento/hojaruta/" + id_documento)
+    //             .then(response => {
+    //                 if (!response.ok) {
+    //                     throw new Error('Error en la solicitud: ' + response.statusText);
+    //                 }
+    //                 return response.text();
+    //             })
+    //             .then(htmlContent => {
+    //                 const newWindow = window.open("", "_blank");
+    //                 newWindow.document.write(htmlContent);
+    //                 //newWindow.document.close();  // Cierra el stream de escritura para que el navegador comience a renderizar
+    //             })
+    //             .catch(error => {
+    //                 Swal.fire(
+    //                     'Error',
+    //                     'Ocurrió un error al procesar la solicitud.',
+    //                     'error'
+    //                 );
+    //                 console.error('Error:', error);
+    //             });
+    //     }
+
 </script>

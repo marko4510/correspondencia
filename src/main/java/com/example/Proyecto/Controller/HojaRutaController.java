@@ -9,16 +9,23 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
+import java.sql.SQLException;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -43,6 +50,10 @@ import com.example.Proyecto.Service.MovimientoDocumentoService;
 import com.example.Proyecto.Service.TipoDocumentoService;
 import com.example.Proyecto.Service.UnidadService;
 import com.example.Proyecto.Service.UsuarioService;
+import com.example.Proyecto.Service.UtilidadService;
+
+import net.sf.jasperreports.engine.JRException;
+
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
@@ -66,6 +77,9 @@ public class HojaRutaController {
 
     @Autowired
     private EntidadExternaService entidadExternaService;
+
+    @Autowired
+    private UtilidadService utilidadService;
 
     Config config = new Config();
 
@@ -402,4 +416,54 @@ public class HojaRutaController {
             return ResponseEntity.ok("Error: " + e.getMessage());
         }
     }
+
+    @GetMapping("/GenerarHojaRuta/{idHojaRuta}/{tipo}")
+   public ResponseEntity<ByteArrayResource> GenerarHojaRuta(Model model, HttpServletRequest request,
+         @PathVariable("idHojaRuta") Long idHojaRuta, @PathVariable("tipo") String tipo) throws SQLException {
+      // byte[] bytes = generarPdf(id_formularioTransferencia);
+      HojaRuta hojaRuta = hojaRutaService.findById(idHojaRuta);
+      String nombreArchivo = "hojaRutaInterna.jrxml";
+      if (tipo.equals("Externo")) {
+        nombreArchivo = "hojaRutaExterna.jrxml";
+      }
+      Path projectPath = Paths.get("").toAbsolutePath();
+
+      Path logoUAPPath = Paths.get(projectPath.toString(), "src", "main", "resources", "static", "assets", "img",
+            "logoUap.png");
+      String logoUAP = logoUAPPath.toString();
+
+      Path casillaMarcadaPath = Paths.get(projectPath.toString(), "src", "main", "resources", "static", "assets", "img",
+      "casilla-marcada.png");
+      String casillaMarcada = casillaMarcadaPath.toString();
+
+      Path casillaSinMarcarPath = Paths.get(projectPath.toString(), "src", "main", "resources", "static", "assets", "img",
+      "casilla-sin-marcar.png");
+      String casillaSinMarcar = casillaSinMarcarPath.toString();
+      // System.out.println(imagen);
+      Map<String, Object> parametros = new HashMap<>();
+      parametros.put("idHojaRuta", idHojaRuta);
+      parametros.put("logoUAP", logoUAP);
+      parametros.put("casillaMarcada", casillaMarcada);
+      parametros.put("casillaSinMarcar", casillaSinMarcar);
+      
+
+      ByteArrayOutputStream stream;
+      try {
+         stream = utilidadService.compilarAndExportarReporte(nombreArchivo, parametros);
+         byte[] bytes = stream.toByteArray();
+         ByteArrayResource resource = new ByteArrayResource(bytes);
+
+         return ResponseEntity.ok()
+               .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + "Hoja_Ruta_"+hojaRuta.getNroRuta()+"_"+hojaRuta.getFechaCreacion()+".pdf")
+               .contentType(MediaType.APPLICATION_PDF)
+               .contentLength(bytes.length)
+               .body(resource);
+      } catch (IOException | JRException e) {
+         // Manejo de excepciones comunes
+         System.out.println("ERROR: " + e.getMessage());
+         e.printStackTrace();
+         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // Devolver un estado de error
+      }
+
+   }
 }
