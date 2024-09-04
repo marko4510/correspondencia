@@ -25,9 +25,10 @@
       <!-- Main Content -->
       <div th:replace="layout/content :: content">
 
-    
+
       </div>
 
+<<<<<<< HEAD
       <div class="modal fade " id="exampleModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
       aria-hidden="true">
       <div class="modal-dialog " role="document" style="max-width: 80%; width: 1200px;">
@@ -43,17 +44,36 @@
             <div class="card-body">
               <div class="table-responsive">
                 <table class="table table-hover" id="table-1">
+=======
+      <div class="modal fade " id="exampleModalCenter2" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog " role="document" style="max-width: 80%; width: 1200px;">
+          <div class="modal-content">
+            <div class="modal-header" style="background-color: #007bff; color: white;">
+              <h5 class="modal-title" id="exampleModalCenterTitle">Lista de solicitudes de Recepción de Hoja de Ruta
+              </h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="card">
+
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover" id="table-1">
+>>>>>>> 1c20f98 (Componentes Notificacion)
                     <thead>
-                        <tr>
-                            <th class="text-center">#</th>
-                            <th>Nro. Hoja Ruta</th>
-                            <th>Emisor</th>
-                            <th>Referecia</th>
-                            <th>Fecha Registro</th>
-                            <th>Acciones</th>
-                        </tr>
+                      <tr>
+                        <th class="text-center">#</th>
+                        <th>Nro. Hoja Ruta</th>
+                        <th>Emisor</th>
+                        <th>Referecia</th>
+                        <th>Fecha Registro</th>
+                        <th>Acciones</th>
+                      </tr>
                     </thead>
                     <tbody>
+<<<<<<< HEAD
                         <tr th:each="mds, rowStat: ${movimientoDocumentosSolicitados}">
                             <td th:text="${rowStat.count}"></td>
                             <td th:text="${mds.unidadOrigen.sigla}+'-'+${mds.hojaRuta.nroRuta}+'/'+${#dates.format(mds.hojaRuta.fechaCreacion, 'yyyy')}"></td>
@@ -71,24 +91,66 @@
                                 
                             </td>
                         </tr>
+=======
+                      <tr th:each="mds, rowStat: ${movimientoDocumentosSolicitados}">
+                        <td th:text="${rowStat.count}"></td>
+                        <td
+                          th:text="${mds.unidadOrigen.sigla}+'-'+${mds.hojaRuta.nroRuta}+'/'+${#dates.format(mds.hojaRuta.fechaCreacion, 'yyyy')}">
+                        </td>
+                        <td th:text="${mds.unidadDestino.nombre}"></td>
+                        <td th:text="${mds.hojaRuta.ref}"></td>
+                        <td th:text="${#dates.format(mds.hojaRuta.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
+                        <td>
+                          <center>
+                            <a href="#" class="btn btn-icon icon-left btn-success" data-toggle="modal"
+                              data-target="#resultadoModal" th:data-id-hoja-ruta="${mds.hojaRuta.id_hoja_ruta}"
+                              th:data-id-movimiento-documento="${mds.id_movimiento_documento}">
+                              <i class="far fa-share-square"></i>Recepcionar
+                            </a>
+                          </center>
+
+
+                        </td>
+                      </tr>
+>>>>>>> 1c20f98 (Componentes Notificacion)
                     </tbody>
-                </table>
-            </div>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <div th:replace="notificacion/modal-solicitudes-form :: recepcionModal">
+
+        <footer th:replace="layout/footer :: footer">
+        </footer>
+
+
+      </div>
     </div>
+<<<<<<< HEAD
     <div th:replace="notificacion/modal-solicitudes-form :: recepcionModal">
 
       <footer th:replace="layout/footer :: footer">
       </footer>
+=======
+>>>>>>> 1c20f98 (Componentes Notificacion)
 
 
+    <div th:replace="layout/script :: script">
     </div>
-  </div>
+    <script>
+      $(document).ready(function () {
+        // Manejar la apertura del modal de recepción
+        $('#exampleModalCenter2').on('click', 'a[data-target="#resultadoModal"]', function (e) {
+          var idHojaRuta = $(this).data('id-hoja-ruta');
+          var idMovimientoDocumento = $(this).data('id-movimiento-documento');
 
+          console.log("ID Hoja Ruta:", idHojaRuta);
+          console.log("ID Movimiento Documento:", idMovimientoDocumento);
 
+<<<<<<< HEAD
   <div th:replace="layout/script :: script">
   </div>
 
@@ -102,6 +164,76 @@
   });
     // Dropzone y validacion de pdf
     $('.dropzone-pdf').bs_dropzone({
+=======
+          $('#resultadoModal #id_hoja_ruta').val(idHojaRuta);
+          $('#resultadoModal #id_movimiento_documento').val(idMovimientoDocumento);
+        });
+
+        $('#regMovimientoFormulario2').submit(function (event) {
+          event.preventDefault();
+          var form = $(this)[0];
+          var formData = new FormData(form);
+
+          // Asegurarse de que id_movimiento_documento se está incluyendo
+          var idMovimientoDocumento = $('#id_movimiento_documento').val();
+          if (!idMovimientoDocumento) {
+            console.error("id_movimiento_documento no está definido");
+            Swal.fire({
+              title: 'Error',
+              text: 'Falta el ID de movimiento documento',
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+            return;
+          }
+          formData.append('id_movimiento_documento', idMovimientoDocumento);
+
+          // Log de los datos del formulario antes de enviar
+          for (var pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+          }
+
+          $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+              console.log("Respuesta del servidor:", response);
+              // Cerrar los modales existentes
+              $('#resultadoModal').modal('hide');
+              $('#exampleModalCenter2').modal('hide');
+
+              // Mostrar modal de éxito
+              Swal.fire({
+                title: 'Operación exitosa',
+                text: response,
+                icon: 'success',
+                confirmButtonText: 'OK'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  // Redirigir a la ruta /Correspondencia
+                  window.location.href = '/Correspondencia';
+                }
+              });
+            },
+            error: function (xhr, status, error) {
+              console.error("Error en la solicitud:", status, error);
+              console.log("Respuesta del servidor:", xhr.responseText);
+              Swal.fire({
+                title: 'Error',
+                text: 'Hubo un problema al procesar la solicitud: ' + xhr.responseText,
+                icon: 'error',
+                confirmButtonText: 'OK'
+              });
+            }
+          });
+        });
+
+        // Dropzone y validacion de pdf
+        $('.dropzone-pdf').bs_dropzone({
+>>>>>>> 1c20f98 (Componentes Notificacion)
           boxClass: 'alert p-5 text-center font-weight-bold',
           noneColorClass: 'alert-info border-info',
           dragColorClass: 'alert-warning border-warning',
@@ -111,6 +243,7 @@
 
         $('#inputFile').on('change', function (event) {
           const fileInput = event.target;
+<<<<<<< HEAD
 
           // Obtener el archivo seleccionado
           const file = fileInput.files[0];
@@ -136,6 +269,30 @@
                             <div id="pdf-preview"></div>
                         </div>
                 `);
+=======
+          const file = fileInput.files[0];
+
+          if (file.type != 'application/pdf') {
+            $('#alertaInputFile').html(`
+            <div class="alert alert-danger alert-dismissible show fade">
+              <div class="alert-body">
+                <button class="close" data-dismiss="alert">
+                  <span>&times;</span>
+                </button>
+                Solo se admiten archivos tipo PDF, el archivo cargado no se registrará.
+              </div>
+            </div>
+          `);
+            fileInput.value = null;
+            $('#previsualizacionDoc').html("");
+            $('#regMovimientoFormulario').addClass('was-validated');
+          } else {
+            $('#previsualizacionDoc').html(`
+            <div class="row d-flex justify-content-center">
+              <div id="pdf-preview"></div>
+            </div>
+          `);
+>>>>>>> 1c20f98 (Componentes Notificacion)
             const reader = new FileReader();
 
             reader.onload = function (e) {
@@ -146,10 +303,15 @@
                   const scale = 0.3;
                   const viewport = page.getViewport({ scale });
 
+<<<<<<< HEAD
                   // Limpia el contenedor de la previsualización antes de añadir una nueva página
                   $('#pdf-preview').empty();
 
                   // Prepara el canvas usando las dimensiones de la página PDF
+=======
+                  $('#pdf-preview').empty();
+
+>>>>>>> 1c20f98 (Componentes Notificacion)
                   const canvas = document.createElement('canvas');
                   const context = canvas.getContext('2d');
                   canvas.height = viewport.height;
@@ -157,7 +319,10 @@
 
                   $('#pdf-preview').append(canvas);
 
+<<<<<<< HEAD
                   // Renderiza la página del PDF en el contexto del canvas
+=======
+>>>>>>> 1c20f98 (Componentes Notificacion)
                   const renderContext = {
                     canvasContext: context,
                     viewport: viewport
@@ -168,6 +333,7 @@
             };
 
             reader.readAsArrayBuffer(file);
+<<<<<<< HEAD
             $('#alertaInputFile').html(`<div class="alert alert-success alert-dismissible show fade">
                       <div class="alert-body">
                         <button class="close" data-dismiss="alert">
@@ -186,6 +352,59 @@
       border: 1px solid #ddd;
     }
   </style>
+=======
+            $('#alertaInputFile').html(`
+            <div class="alert alert-success alert-dismissible show fade">
+              <div class="alert-body">
+                <button class="close" data-dismiss="alert">
+                  <span>&times;</span>
+                </button>
+                El archivo subido es valido.
+              </div>
+            </div>
+          `);
+          }
+        });
+      });
+    </script>
+    <script>
+      function cargarSelectUsuario() {
+        $.ajax({
+          type: 'POST',
+          url: "/cargarSelectUsuarios/" + $('#idUnidadDestino').val(),  // Ruta del método del controlador en Spring Boot
+          success: function (response) {
+            // 'response' es una lista de arrays de cadenas
+            //console.log('Lista de usuarios:', response);
+
+            // Obtener el elemento <select> con id "selectUsuarios"
+            const selectUsuarios = $('#selectUsuarios3');
+            selectUsuarios.empty();  // Limpiar las opciones existentes
+
+            // Iterar sobre cada array en la respuesta
+            response.forEach(user => {
+              // user es un array de dos elementos: [id, nombreCompleto]
+              const option = $('<option></option>')
+                .val(user[0])  // El valor del option es el ID del usuario
+                .text(user[1]);  // El texto del option es el nombre completo del usuario
+
+              // Agregar la opción al <select>
+              selectUsuarios.append(option);
+            });
+          },
+          error: function (xhr, status, error) {
+            console.error('Hubo un problema con la solicitud AJAX:', status, error);
+          }
+        });
+      }
+    </script>
+    <style>
+      #pdf-preview {
+        width: 187px;
+        height: 245px;
+        border: 1px solid #ddd;
+      }
+    </style>
+>>>>>>> 1c20f98 (Componentes Notificacion)
 </body>
 
 

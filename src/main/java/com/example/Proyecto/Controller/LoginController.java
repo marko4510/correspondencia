@@ -80,6 +80,10 @@ public class LoginController {
         
             model.addAttribute("movimientoDocumentosSolicitados", movimientoDocumentosSolicitados);
             model.addAttribute("numSolicitud", movimientoDocumentosSolicitados.size());
+<<<<<<< HEAD
+=======
+            model.addAttribute("unidades", unidadService.findAll());
+>>>>>>> 1c20f98 (Componentes Notificacion)
             return "index";
         } else {
             System.out.println("No inicio sesion");

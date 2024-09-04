@@ -89,9 +89,7 @@ public class recepcionController {
                             .toLocalDate().getYear())
                     .collect(Collectors.toSet());
 
-            for (Integer integer : years) {
-                System.out.println(years);
-            }
+        
 
             // Añadir los documentos y los años al modelo
             // model.addAttribute("unidades",
