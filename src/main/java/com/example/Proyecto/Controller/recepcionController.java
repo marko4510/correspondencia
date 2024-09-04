@@ -168,6 +168,7 @@ public class recepcionController {
            
             
             movimientoDocumento.setHojaRuta(hojaRuta);
+            movimientoDocumento.setEstado_movimiento("P");
             movimientoDocumento.setFechaHoraRegistro(new Date());
             movimientoDocumento.setUnidadDestino(unidadDestino);
             movimientoDocumento.setUnidadOrigen(usuario.getUnidad());

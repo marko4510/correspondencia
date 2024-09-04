@@ -28,7 +28,7 @@
     
       </div>
 
-      <div class="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+      <div class="modal fade bd-example-modal-lg" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
       aria-hidden="true">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -41,7 +41,44 @@
           <div class="card">
             
             <div class="card-body">
-              TABLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+              <div class="table-responsive">
+                <table class="table table-hover" id="table-1">
+                    <thead>
+                        <tr>
+                            <th class="text-center">#</th>
+                            <th>Nro. Hoja Ruta</th>
+                            <th>Emisor</th>
+                            <th>Referecia</th>
+                            <th>Fecha Registro</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="hojaRuta, rowStat: ${hojasRutasInterno}">
+                            <td th:text="${rowStat.count}"></td>
+                            <td th:text="${hojaRuta.hojaRutaTexto}+${#dates.format(hojaRuta.fechaCreacion, 'yyyy')}"></td>
+                            <td th:text="${hojaRuta.nombreEmisorText}"></td>
+                            <td th:text="${hojaRuta.ref}"></td>
+                            <td th:text="${#dates.format(hojaRuta.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
+                            <td>
+                              AAAAAAAA
+                                <!-- <a href="#" class="btn btn-icon icon-left btn-primary" 
+                                th:attr="onclick='cargarFormulario(\'' + ${hojaRuta.id_hoja_ruta} + '\', \'' + ${hojaRuta.tipo_derivacion} + '\')'"
+                                data-toggle="modal" data-target=".modal-horaRutaEdit">
+                                    <i class="far fa-edit"></i>Editar</a>
+                                <a href="#" class="btn btn-icon icon-left btn-success"
+                                th:attr="onclick='verDocumento(\'' + ${hojaRuta.id_hoja_ruta} + '\')'"
+                                data-toggle="modal" data-target=".modal-horaRuta">
+                                <i class="far fa-file-archive"></i>Ver</a>
+                                <a class="btn btn-icon icon-left btn-success" style="color:white;"
+                                data-toggle="modal" data-target=".modal-horaRuta"
+                                th:attr="onclick='generarHojaRuta(\'' + ${hojaRuta.id_hoja_ruta} + '\', \'' + ${hojaRuta.tipo_derivacion} + '\')'">
+                                <i class="fa fa-print"></i>Imprimir</a> -->
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             </div>
           </div>
         </div>

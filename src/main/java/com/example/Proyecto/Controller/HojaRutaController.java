@@ -306,6 +306,7 @@ public class HojaRutaController {
             hojaRutaService.save(hojaRuta);
 
             Unidad unidadDestino = unidadService.findById(id_unidad_destino);
+            movimientoDocumento.setEstado_movimiento("P");
             movimientoDocumento.setRuta_movimiento(arch);
             movimientoDocumento.setHojaRuta(hojaRuta);
             movimientoDocumento.setFechaHoraRegistro(new Date());
@@ -383,6 +384,7 @@ public class HojaRutaController {
             hojaRutaService.save(hojaRuta);
 
             Unidad unidadDestino = unidadService.findById(id_unidad_destino);
+            movimientoDocumento.setEstado_movimiento("P");
             movimientoDocumento.setRuta_movimiento(arch);
             movimientoDocumento.setHojaRuta(hojaRuta);
             movimientoDocumento.setFechaHoraRegistro(new Date());

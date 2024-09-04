@@ -30,6 +30,8 @@ public class MovimientoDocumento implements Serializable{
     private Integer usuarioRegistro;
     private Integer usuarioDestino;
 
+    private String estado_movimiento;
+
     @ManyToOne
     @JoinColumn(name = "id_hoja_ruta")
     private HojaRuta hojaRuta;
