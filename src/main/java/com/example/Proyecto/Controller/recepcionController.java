@@ -5,14 +5,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import javax.persistence.EntityNotFoundException;
+import java.util.HashMap;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -245,6 +250,34 @@ public class recepcionController {
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(resource);
+    }
+
+
+    @PostMapping("/aceptar-recepcion")
+    @Transactional
+    public ResponseEntity<Map<String, Boolean>> aceptarRecepcion(@RequestBody Map<String, Long> payload) {
+        Long id = payload.get("id");
+        Map<String, Boolean> response = new HashMap<>();
+        
+        try {
+            MovimientoDocumento movimiento = movimientoDocumentoService.findById(id);
+            if (movimiento == null) {
+                throw new EntityNotFoundException("Movimiento no encontrado con id: " + id);
+            }
+            
+            movimiento.setEstado_movimiento("A");
+            movimientoDocumentoService.save(movimiento);
+            
+            response.put("success", true);
+            return ResponseEntity.ok(response);
+        } catch (EntityNotFoundException e) {
+            response.put("success", false);
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("success", false);
+            return ResponseEntity.internalServerError().body(response);
+        }
     }
 
 }

@@ -28,9 +28,9 @@
     
       </div>
 
-      <div class="modal fade bd-example-modal-lg" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+      <div class="modal fade " id="exampleModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
       aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-dialog " role="document" style="max-width: 80%; width: 1200px;">
         <div class="modal-content">
           <div class="modal-header" style="background-color: #007bff; color: white;">
             <h5 class="modal-title" id="exampleModalCenterTitle">Lista de solicitudes de Recepción de Hoja de Ruta</h5>
@@ -54,26 +54,21 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="hojaRuta, rowStat: ${hojasRutasInterno}">
+                        <tr th:each="mds, rowStat: ${movimientoDocumentosSolicitados}">
                             <td th:text="${rowStat.count}"></td>
-                            <td th:text="${hojaRuta.hojaRutaTexto}+${#dates.format(hojaRuta.fechaCreacion, 'yyyy')}"></td>
-                            <td th:text="${hojaRuta.nombreEmisorText}"></td>
-                            <td th:text="${hojaRuta.ref}"></td>
-                            <td th:text="${#dates.format(hojaRuta.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
+                            <td th:text="${mds.unidadOrigen.sigla}+'-'+${mds.hojaRuta.nroRuta}+'/'+${#dates.format(mds.hojaRuta.fechaCreacion, 'yyyy')}"></td>
+                            <td th:text="${mds.unidadDestino.nombre}"></td>
+                            <td th:text="${mds.hojaRuta.ref}"></td>
+                            <td th:text="${#dates.format(mds.hojaRuta.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
                             <td>
-                              AAAAAAAA
-                                <!-- <a href="#" class="btn btn-icon icon-left btn-primary" 
-                                th:attr="onclick='cargarFormulario(\'' + ${hojaRuta.id_hoja_ruta} + '\', \'' + ${hojaRuta.tipo_derivacion} + '\')'"
-                                data-toggle="modal" data-target=".modal-horaRutaEdit">
-                                    <i class="far fa-edit"></i>Editar</a>
-                                <a href="#" class="btn btn-icon icon-left btn-success"
-                                th:attr="onclick='verDocumento(\'' + ${hojaRuta.id_hoja_ruta} + '\')'"
-                                data-toggle="modal" data-target=".modal-horaRuta">
-                                <i class="far fa-file-archive"></i>Ver</a>
-                                <a class="btn btn-icon icon-left btn-success" style="color:white;"
-                                data-toggle="modal" data-target=".modal-horaRuta"
-                                th:attr="onclick='generarHojaRuta(\'' + ${hojaRuta.id_hoja_ruta} + '\', \'' + ${hojaRuta.tipo_derivacion} + '\')'">
-                                <i class="fa fa-print"></i>Imprimir</a> -->
+                              <center> <a href="#" class="btn btn-icon icon-left btn-success" 
+                                data-toggle="modal" 
+                                data-target="#resultadoModal"
+                                th:data-id-hoja-ruta="${mds.hojaRuta.id_hoja_ruta}">
+                                <i class="far fa-share-square"></i>Recepcionar
+                              </a></center>
+                              
+                                
                             </td>
                         </tr>
                     </tbody>
@@ -84,7 +79,7 @@
         </div>
       </div>
     </div>
-     
+    <div th:replace="notificacion/modal-solicitudes-form :: recepcionModal">
 
       <footer th:replace="layout/footer :: footer">
       </footer>
@@ -96,6 +91,101 @@
 
   <div th:replace="layout/script :: script">
   </div>
+
+  <script>
+      $('#resultadoModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); // Botón que activó el modal
+    var idHojaRuta = button.data('id-hoja-ruta');
+    var modal = $(this);
+    modal.find('#id_hoja_ruta').val(idHojaRuta);
+  
+  });
+    // Dropzone y validacion de pdf
+    $('.dropzone-pdf').bs_dropzone({
+          boxClass: 'alert p-5 text-center font-weight-bold',
+          noneColorClass: 'alert-info border-info',
+          dragColorClass: 'alert-warning border-warning',
+          doneColorClass: 'alert-success border-success',
+          failColorClass: 'alert-danger border-danger'
+        });
+
+        $('#inputFile').on('change', function (event) {
+          const fileInput = event.target;
+
+          // Obtener el archivo seleccionado
+          const file = fileInput.files[0];
+
+          if (file.type != 'application/pdf') {
+            $('#alertaInputFile').html(`<div class="alert alert-danger alert-dismissible show fade">
+                      <div class="alert-body">
+                        <button class="close" data-dismiss="alert">
+                          <span>&times;</span>
+                        </button>
+                        Solo se admiten archivos tipo PDF, el archivo cargado no se registrará.
+                      </div>
+                    </div>`);
+            fileInput.value = null;
+            //dropzone.bs_dropzone('reset');
+            $('#previsualizacionDoc').html("");
+            $('#regMovimientoFormulario').addClass('was-validated');
+            // Limpiar el input si el archivo no es PDF
+
+          } else {
+            $('#previsualizacionDoc').html(`
+                        <div class="row d-flex justify-content-center" >
+                            <div id="pdf-preview"></div>
+                        </div>
+                `);
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+              const typedarray = new Uint8Array(e.target.result);
+
+              pdfjsLib.getDocument(typedarray).promise.then(pdf => {
+                pdf.getPage(1).then(page => {
+                  const scale = 0.3;
+                  const viewport = page.getViewport({ scale });
+
+                  // Limpia el contenedor de la previsualización antes de añadir una nueva página
+                  $('#pdf-preview').empty();
+
+                  // Prepara el canvas usando las dimensiones de la página PDF
+                  const canvas = document.createElement('canvas');
+                  const context = canvas.getContext('2d');
+                  canvas.height = viewport.height;
+                  canvas.width = viewport.width;
+
+                  $('#pdf-preview').append(canvas);
+
+                  // Renderiza la página del PDF en el contexto del canvas
+                  const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                  };
+                  page.render(renderContext);
+                });
+              });
+            };
+
+            reader.readAsArrayBuffer(file);
+            $('#alertaInputFile').html(`<div class="alert alert-success alert-dismissible show fade">
+                      <div class="alert-body">
+                        <button class="close" data-dismiss="alert">
+                          <span>&times;</span>
+                        </button>
+                        El archivo subido es valido.
+                      </div>
+                    </div>`);
+          }
+        });
+  </script>
+  <style>
+    #pdf-preview {
+      width: 187px;
+      height: 245px;
+      border: 1px solid #ddd;
+    }
+  </style>
 </body>
 
 

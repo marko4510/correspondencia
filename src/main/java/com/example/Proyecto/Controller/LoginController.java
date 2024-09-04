@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
-
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -27,10 +27,12 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.Proyecto.Model.Cargo;
+import com.example.Proyecto.Model.MovimientoDocumento;
 import com.example.Proyecto.Model.Persona;
 import com.example.Proyecto.Model.Unidad;
 import com.example.Proyecto.Model.Usuario;
 import com.example.Proyecto.Service.CargoService;
+import com.example.Proyecto.Service.MovimientoDocumentoService;
 import com.example.Proyecto.Service.PersonaService;
 import com.example.Proyecto.Service.UnidadService;
 import com.example.Proyecto.Service.UsuarioService;
@@ -52,6 +54,9 @@ public class LoginController {
     @Autowired
     private CargoService cargoService;
 
+    @Autowired
+    private MovimientoDocumentoService movimientoDocumentoService;
+
     @GetMapping("/")
     public String inicio() {
 
@@ -69,6 +74,12 @@ public class LoginController {
             model.addAttribute("usuario", usuario);
             HttpSession session = request.getSession(true);
             session.setAttribute("usuario", usuario);
+              Unidad unidad = user.getUnidad();
+         
+            List<MovimientoDocumento> movimientoDocumentosSolicitados = movimientoDocumentoService.ListaMovimientosSolicitados(unidad.getId_unidad().intValue());
+        
+            model.addAttribute("movimientoDocumentosSolicitados", movimientoDocumentosSolicitados);
+            model.addAttribute("numSolicitud", movimientoDocumentosSolicitados.size());
             return "index";
         } else {
             System.out.println("No inicio sesion");

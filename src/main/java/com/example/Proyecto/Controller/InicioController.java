@@ -11,15 +11,19 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
 
 import com.example.Proyecto.Model.Cargo;
+import com.example.Proyecto.Model.HojaRuta;
+import com.example.Proyecto.Model.MovimientoDocumento;
 import com.example.Proyecto.Model.Persona;
 import com.example.Proyecto.Model.Unidad;
 import com.example.Proyecto.Model.Usuario;
 import com.example.Proyecto.Service.CargoService;
+import com.example.Proyecto.Service.MovimientoDocumentoService;
 import com.example.Proyecto.Service.PersonaService;
 import com.example.Proyecto.Service.UnidadService;
 import com.example.Proyecto.Service.UsuarioService;
@@ -56,11 +60,15 @@ public class InicioController {
 
     @Autowired
     private UnidadService unidadService;
+
+    @Autowired
+    private MovimientoDocumentoService movimientoDocumentoService;
     @RequestMapping(value = "/inicio", method = RequestMethod.GET)
-    public String inicio(HttpServletRequest request) {
+    public String inicio(HttpServletRequest request, Model model) {
 
         if (request.getSession().getAttribute("usuario") != null) {
-
+           
+          
             return "index";
         }else{
             return "redirect:/login";

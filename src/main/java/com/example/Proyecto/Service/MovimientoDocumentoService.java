@@ -10,5 +10,6 @@ public interface MovimientoDocumentoService {
     void deleteById(Long id);
     public List<MovimientoDocumento> obtener_Flujo_Documento(String nroRuta);
     public List<MovimientoDocumento> obtener_Flujos_Documentos(Integer nroRuta, Integer unidad_origen, String gestion);
+    public List<MovimientoDocumento> ListaMovimientosSolicitados(Integer unidad_destino);
 
 }
