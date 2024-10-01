@@ -14,18 +14,8 @@
               onclick="cargarCamposBusqueda()">
               <span aria-hidden="true">&times;</span>
             </button>
-          </div>
-<<<<<<< HEAD
-          <form th:action="@{/regMovimientoDocumento}" id="regMovimientoFormulario" enctype="multipart/form-data"
-            method="POST" novalidate>
-            <div class="modal-body">
-              <hr>
-              <input type="hidden" class="form-control" id="id_hoja_ruta" name="id_hoja_ruta">
+          </div>         
 
-
-         
-
-=======
           <form th:action="@{/regMovimientoHojaRutaNotificacion}" id="regMovimientoFormulario2"
             enctype="multipart/form-data" method="POST" novalidate>
             <div class="modal-body">
@@ -34,7 +24,6 @@
               <input type="hidden" id="id_movimiento_documento" name="id_movimiento_documento">
 
 
->>>>>>> 1c20f98 (Componentes Notificacion)
               <div class="row">
                 <div class="form-group col-md-6">
                   <label>Instrucción</label>
@@ -66,30 +55,19 @@
                   <label>Unidad Destino</label>
                   <select class="form-control select2" style="width: 100%;" name="id_unidad_destino"
                     id="idUnidadDestino" onchange="cargarSelectUsuario()" required>
-<<<<<<< HEAD
                     <option value="" selected>Seleccione...</option>
-=======
-                    <option value="">Seleccione...</option>
->>>>>>> 1c20f98 (Componentes Notificacion)
+
                     <option th:each="u : ${unidades}" th:text="${u.nombre}" th:value="${u.id_unidad}"
                       th:selected="${u.id_unidad == idUnidad}">
                     </option>
                   </select>
-<<<<<<< HEAD
+
                 </div>
-                <div class="form-group col-md-6">
-                  <label>Responsable</label>
-                  <select class="form-control select2" style="width: 100%;" name="userDestino" id="selectUsuarios2"
-=======
-                  <div class="invalid-feedback">
-                    Debe seleccionar una unidad de destino
-                  </div>
-                </div>
+              
                 <div class="form-group col-md-6">
                   <label>Responsable</label>
                   <select class="form-control select2" style="width: 100%;" name="userDestino" id="selectUsuarios3"
->>>>>>> 1c20f98 (Componentes Notificacion)
-                    required="">
+                    >
                     <option th:value="${edit}? ${idResponsable}: ''"
                       th:text="${edit}? ${nombreResponsable}:'Seleccione una Persona...'" selected>
                     </option>
@@ -119,12 +97,6 @@
         </div>
       </div>
     </div>
-
-<<<<<<< HEAD
-    
-=======
-
->>>>>>> 1c20f98 (Componentes Notificacion)
 
 
   </div>
