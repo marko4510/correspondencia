@@ -17,6 +17,7 @@ import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +81,18 @@ public class recepcionController {
     @RequestMapping(value = "/recepcion", method = RequestMethod.GET)
     public String prueba(HttpServletRequest request, Model model) {
         if (request.getSession().getAttribute("usuario") != null) {
-            Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+            Usuario user = (Usuario) request.getSession().getAttribute("usuario");
+            Usuario usuario = usuarioService.findById(user.getId_usuario());
+            model.addAttribute("usuario", usuario);
+            HttpSession session = request.getSession(true);
+            session.setAttribute("usuario", usuario);
+            Unidad unidad = user.getUnidad();
+
+             List<MovimientoDocumento> movimientoDocumentosSolicitados = movimientoDocumentoService.ListaMovimientosSolicitados(unidad.getId_unidad().intValue());
+        
+            model.addAttribute("movimientoDocumentosSolicitados", movimientoDocumentosSolicitados);
+            model.addAttribute("numSolicitud", movimientoDocumentosSolicitados.size());
+
             List<HojaRuta> hojaRutas = hojaRutaService.findAll();
             // Extraer los años y almacenarlos en un Set para evitar duplicados
             Set<Integer> years = hojaRutas.stream()

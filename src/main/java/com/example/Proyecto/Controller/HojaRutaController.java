@@ -15,6 +15,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import java.sql.SQLException;
 
@@ -86,6 +87,18 @@ public class HojaRutaController {
     @GetMapping("/inicio")
     public String inicio(HttpServletRequest request, Model model) {
         if (request.getSession().getAttribute("usuario") != null) {
+             Usuario user = (Usuario) request.getSession().getAttribute("usuario");
+            Usuario usuario = usuarioService.findById(user.getId_usuario());
+            model.addAttribute("usuario", usuario);
+            HttpSession session = request.getSession(true);
+            session.setAttribute("usuario", usuario);
+            Unidad unidad = user.getUnidad();
+
+             List<MovimientoDocumento> movimientoDocumentosSolicitados = movimientoDocumentoService.ListaMovimientosSolicitados(unidad.getId_unidad().intValue());
+        
+            model.addAttribute("movimientoDocumentosSolicitados", movimientoDocumentosSolicitados);
+            model.addAttribute("numSolicitud", movimientoDocumentosSolicitados.size());
+            model.addAttribute("unidades", unidadService.findAll());
             model.addAttribute("opcion", "administrar hoja ruta");
             return "hojaRuta/ventana";
         } else {

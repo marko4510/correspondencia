@@ -2,6 +2,8 @@ package com.example.Proyecto.Controller;
 
 import javax.servlet.annotation.HttpConstraint;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import java.net.http.HttpRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +70,18 @@ public class InicioController {
 
         if (request.getSession().getAttribute("usuario") != null) {
            
-          
+            Usuario user = (Usuario) request.getSession().getAttribute("usuario");
+            Usuario usuario = usuarioService.findById(user.getId_usuario());
+            model.addAttribute("usuario", usuario);
+            HttpSession session = request.getSession(true);
+            session.setAttribute("usuario", usuario);
+            Unidad unidad = user.getUnidad();
+
+             List<MovimientoDocumento> movimientoDocumentosSolicitados = movimientoDocumentoService.ListaMovimientosSolicitados(unidad.getId_unidad().intValue());
+        
+            model.addAttribute("movimientoDocumentosSolicitados", movimientoDocumentosSolicitados);
+            model.addAttribute("numSolicitud", movimientoDocumentosSolicitados.size());
+            model.addAttribute("unidades", unidadService.findAll());
             return "index";
         }else{
             return "redirect:/login";

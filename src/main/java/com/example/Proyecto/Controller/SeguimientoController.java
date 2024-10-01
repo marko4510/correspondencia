@@ -1,10 +1,13 @@
 package com.example.Proyecto.Controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.nio.file.Path;
@@ -73,6 +76,18 @@ public class SeguimientoController {
     public String inicio(HttpServletRequest request, Model model) {
 
         if (request.getSession().getAttribute("usuario") != null) {
+              Usuario user = (Usuario) request.getSession().getAttribute("usuario");
+            Usuario usuario = usuarioService.findById(user.getId_usuario());
+            model.addAttribute("usuario", usuario);
+            HttpSession session = request.getSession(true);
+            session.setAttribute("usuario", usuario);
+            Unidad unidad = user.getUnidad();
+
+             List<MovimientoDocumento> movimientoDocumentosSolicitados = movimientoDocumentoService.ListaMovimientosSolicitados(unidad.getId_unidad().intValue());
+        
+            model.addAttribute("movimientoDocumentosSolicitados", movimientoDocumentosSolicitados);
+            model.addAttribute("numSolicitud", movimientoDocumentosSolicitados.size());
+            
             List<HojaRuta> hojaRutas = hojaRutaService.findAll();
 
             Set<Integer> years = hojaRutas.stream()
@@ -175,50 +190,7 @@ public class SeguimientoController {
         }
     }
 
-    @GetMapping("/hojaruta/{id_hoja_ruta}")
-    public ResponseEntity<?> generarHojaRuta(@PathVariable(name = "id_hoja_ruta") Long id_hoja_ruta, Model model,
-            HttpServletRequest request, HttpServletResponse response) {
-
-        Documento documento = documentoService.findById(id_hoja_ruta);
-        HojaRuta hojaRuta = hojaRutaService.findById(id_hoja_ruta);
-        String fechaCreacionStr = hojaRuta.getFechaCreacion().toString(); // Supongamos que es una cadena como
-                                                                          // '2024-08-21 16:55:29.393'
-
-        // Usa LocalDateTime y ajusta el formato del DateTimeFormatter
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-        LocalDateTime fechaCreacion = LocalDateTime.parse(fechaCreacionStr, formatter);
-
-        // Formatea la fecha y hora al formato deseado
-        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm ");
-        String fechaCreacionFormatted = fechaCreacion.format(outputFormatter);
-
-        int year = fechaCreacion.getYear();
-
-        model.addAttribute("hojaRuta", hojaRuta);
-        if (hojaRuta.getTipo_derivacion().equals("Interno")) {
-            Integer id_usuario_emisor = hojaRuta.getUsuario_emisor();
-            Long id_usuario_emisor_long = id_usuario_emisor.longValue();
-            Usuario usuario_emisor = usuarioService.findById(id_usuario_emisor_long);
-            model.addAttribute("usuario_emisor", usuario_emisor);
-            model.addAttribute("interno", true);
-        }
-        if (hojaRuta.getTipo_derivacion().equals("Externo")) {
-            model.addAttribute("usuario_emisor", hojaRuta.getEntidadExterna().getNombre());
-            model.addAttribute("externo", true);
-        }
-
-        String textoQR = "Hoja de Ruta: " + hojaRuta.getNroRuta() + "/" + year + "\n" +
-                "Fecha: " + fechaCreacionFormatted + "\n" +
-                "Identificador: " + generarAlfanumerico(hojaRuta.getId_hoja_ruta());
-        model.addAttribute("textoQR", textoQR);
-
-        WebContext context = new WebContext(request, response, request.getServletContext());
-        context.setVariables(model.asMap());
-
-        String htmlContent = templateEngine.process("seguimiento/hojaDeRuta", context);
-
-        return ResponseEntity.ok().body(htmlContent);
-    }
+  
 
     public static String generarAlfanumerico(Long valor) {
         String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -235,6 +207,48 @@ public class SeguimientoController {
         }
 
         return resultado.toString();
+    }
+
+    @GetMapping("/hojaruta/{id_hoja_ruta}")
+    public ResponseEntity<?> generarHojaRuta(@PathVariable(name = "id_hoja_ruta") Long id_hoja_ruta, Model model,
+            HttpServletRequest request, HttpServletResponse response) {
+        Documento documento = documentoService.findById(id_hoja_ruta);
+        HojaRuta hojaRuta = hojaRutaService.findById(id_hoja_ruta);
+        
+        // Convertir java.util.Date a LocalDateTime
+        Date fechaCreacionDate = hojaRuta.getFechaCreacion();
+        LocalDateTime fechaCreacion = fechaCreacionDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        
+        // Formatea la fecha y hora al formato deseado
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        String fechaCreacionFormatted = fechaCreacion.format(outputFormatter);
+        
+        int year = fechaCreacion.getYear();
+        model.addAttribute("hojaRuta", hojaRuta);
+        
+        if (hojaRuta.getTipo_derivacion().equals("Interno")) {
+            Integer id_usuario_emisor = hojaRuta.getUsuario_emisor();
+            Long id_usuario_emisor_long = id_usuario_emisor.longValue();
+            Usuario usuario_emisor = usuarioService.findById(id_usuario_emisor_long);
+            model.addAttribute("usuario_emisor", usuario_emisor);
+            model.addAttribute("interno", true);
+        }
+        if (hojaRuta.getTipo_derivacion().equals("Externo")) {
+            model.addAttribute("usuario_emisor", hojaRuta.getEntidadExterna().getNombre());
+            model.addAttribute("externo", true);
+        }
+        
+        String textoQR = "Hoja de Ruta: " + hojaRuta.getNroRuta() + "/" + year + "\n" +
+                "Fecha: " + fechaCreacionFormatted + "\n" +
+                "Identificador: " + generarAlfanumerico(hojaRuta.getId_hoja_ruta());
+        model.addAttribute("textoQR", textoQR);
+        
+        WebContext context = new WebContext(request, response, request.getServletContext());
+        context.setVariables(model.asMap());
+        String htmlContent = templateEngine.process("seguimiento/hojaDeRuta", context);
+        return ResponseEntity.ok().body(htmlContent);
     }
 
     @GetMapping("/buscar_documentoInicial/{nroRuta}")
