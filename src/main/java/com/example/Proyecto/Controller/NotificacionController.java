@@ -129,7 +129,7 @@ public class NotificacionController {
 
         // Configurar el nuevo movimiento de documento
         nuevoMovimientoDocumento.setHojaRuta(hojaRuta);
-        nuevoMovimientoDocumento.setEstado_movimiento("P");
+        nuevoMovimientoDocumento.setEstado_movimiento("P"); //
         nuevoMovimientoDocumento.setFechaHoraRegistro(new Date());
         nuevoMovimientoDocumento.setUnidadDestino(unidadDestino);
         nuevoMovimientoDocumento.setUnidadOrigen(usuarioActual.getUnidad());

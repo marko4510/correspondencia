@@ -1,8 +1,10 @@
 package com.example.Proyecto.Controller;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.Proyecto.Model.Documento;
+import com.example.Proyecto.Model.MovimientoDocumento;
+import com.example.Proyecto.Model.Unidad;
 import com.example.Proyecto.Model.Usuario;
+import com.example.Proyecto.Service.MovimientoDocumentoService;
 import com.example.Proyecto.Service.PersonaService;
 import com.example.Proyecto.Service.UnidadService;
 import com.example.Proyecto.Service.UsuarioService;
@@ -26,6 +31,9 @@ import com.example.Proyecto.Service.UsuarioService;
 @Controller
 @RequestMapping("/usuario")
 public class UsuarioController {
+
+    @Autowired
+    private MovimientoDocumentoService movimientoDocumentoService;
 
     @Autowired
     private UsuarioService usuarioService;
@@ -39,6 +47,17 @@ public class UsuarioController {
      @GetMapping("/inicio")
     public String inicioUsuario(HttpServletRequest request, Model model) {
         if (request.getSession().getAttribute("usuario") != null) {
+             Usuario user = (Usuario) request.getSession().getAttribute("usuario");
+            Usuario usuario = usuarioService.findById(user.getId_usuario());
+            model.addAttribute("usuario", usuario);
+            HttpSession session = request.getSession(true);
+            session.setAttribute("usuario", usuario);
+            Unidad unidad = user.getUnidad();
+
+             List<MovimientoDocumento> movimientoDocumentosSolicitados = movimientoDocumentoService.ListaMovimientosSolicitados(unidad.getId_unidad().intValue());
+        
+            model.addAttribute("movimientoDocumentosSolicitados", movimientoDocumentosSolicitados);
+            model.addAttribute("numSolicitud", movimientoDocumentosSolicitados.size());
             model.addAttribute("opcion", "administrar usuario");
             return "usuario/ventana";
     } else {

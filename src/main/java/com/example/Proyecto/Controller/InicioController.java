@@ -99,7 +99,7 @@ public class InicioController {
     @PostMapping("/actualizarPersonas")
     public ResponseEntity< ?> actualizarPersonas() throws IOException, InterruptedException, ParseException {
       
-        String url = "http://192.168.10.93:3333/api/londraPost/v1/personasLondra/obtenerDatos";
+        String url = "http://virtual.uap.edu.bo:7174/api/londraPost/v1/personasLondra/obtenerDatos";
 
         // Crear encabezados
         HttpHeaders headers = new HttpHeaders();
@@ -152,16 +152,28 @@ public class InicioController {
                     cargoService.save(cargo);
                 }
 
-                Unidad unidad = unidadService.obtener_unidadPorNombre(data.get("direccion").toString());
+                String direccion2 = data.get("direccion").toString();
+
+                // Verificar si la dirección contiene "(E)" al final y removerlo
+                if (direccion2.endsWith("(E)")) {
+                    // Eliminar el "(E)" al final de la dirección
+                    direccion2 = direccion2.substring(0, direccion2.length() - 3).trim();
+                }
+
+                Unidad unidad = unidadService.obtener_unidadPorNombre(direccion2);
                 if (unidad == null) {
                     unidad = new Unidad();
                     unidad.setEstado("A");
-                    unidad.setNombre(data.get("direccion").toString());
+                    unidad.setNombre(direccion2);
                     unidad.setContadorCite(0);
                     unidad.setContadorHojaRuta(0);
                     unidadService.save(unidad);
                 }else{
-                    unidad.setNombre(data.get("direccion").toString());
+                    unidad.setNombre(direccion2);
+                    if (unidad.getContadorCite() == null && unidad.getContadorHojaRuta() == null) {
+                        unidad.setContadorCite(0);
+                        unidad.setContadorHojaRuta(0);
+                    }
                     unidadService.save(unidad);
                 }
                 

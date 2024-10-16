@@ -171,11 +171,21 @@ public class LoginController {
                    
                 }
 
-                Unidad unidadExiste = unidadService.obtener_unidadPorNombre(data.get("eo_descripcion").toString());
+                String direccion2 = data.get("eo_descripcion").toString();
+
+                // Verificar si la dirección contiene "(E)" al final y removerlo
+                if (direccion2.endsWith("(E)")) {
+                    // Eliminar el "(E)" al final de la dirección
+                    direccion2 = direccion2.substring(0, direccion2.length() - 3).trim();
+                }
+
+                Unidad unidadExiste = unidadService.obtener_unidadPorNombre(direccion2);
                 if (unidadExiste == null) {
                     unidadExiste = new Unidad();
                     unidadExiste.setEstado("A");
-                    unidadExiste.setNombre(data.get("eo_descripcion").toString());
+                    unidadExiste.setNombre(direccion2);
+                    unidadExiste.setContadorCite(0);
+                    unidadExiste.setContadorHojaRuta(0);
                     unidadService.save(unidadExiste);
                 }
 

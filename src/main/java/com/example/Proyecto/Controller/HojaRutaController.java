@@ -460,7 +460,6 @@ public class HojaRutaController {
       parametros.put("logoUAP", logoUAP);
       parametros.put("casillaMarcada", casillaMarcada);
       parametros.put("casillaSinMarcar", casillaSinMarcar);
-      
 
       ByteArrayOutputStream stream;
       try {

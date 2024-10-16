@@ -27,7 +27,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="usu, rowStat: ${usuarios}">
+                                <tr th:each="usu, rowStat: ${usuarios}" th:if="${usu.estado != 'X'}">
                                     <td th:text="${rowStat.count}"></td>
                                     <td th:text="${usu.usuario_nom}"></td>
                                     <td th:text="${usu.contrasena}"></td>
