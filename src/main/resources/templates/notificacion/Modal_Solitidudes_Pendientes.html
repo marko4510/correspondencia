@@ -1,0 +1,33 @@
+<div class="table-responsive">
+    <table class="table table-hover" id="table-1">
+      <thead>
+        <tr>
+          <th class="text-center">#</th>
+          <th>Nro. Hoja Ruta</th>
+          <th>Emisor</th>
+          <th>Referecia</th>
+          <th>Fecha Registro</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="mds, rowStat: ${movimientoDocumentosSolicitados}">
+          <td th:text="${rowStat.count}"></td>
+          <td
+            th:text="${mds.unidadOrigen.sigla}+'-'+${mds.hojaRuta.nroRuta}+'/'+${#dates.format(mds.hojaRuta.fechaCreacion, 'yyyy')}">
+          </td>
+          <td th:text="${mds.unidadDestino.nombre}"></td>
+          <td th:text="${mds.hojaRuta.ref}"></td>
+          <td th:text="${#dates.format(mds.hojaRuta.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
+          <td>
+            <center>
+              <a href="#" class="btn btn-icon icon-left btn-success" data-toggle="modal"
+                data-target="#formulario_Solicitud" th:attr="onclick='CargarFormularioSolicitud(\'' + ${mds.id_movimiento_documento} + '\')'">
+                <i class="far fa-share-square"></i>Recepcionar
+              </a>
+            </center>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>

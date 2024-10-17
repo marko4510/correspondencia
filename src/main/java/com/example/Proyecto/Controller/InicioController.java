@@ -77,7 +77,7 @@ public class InicioController {
             session.setAttribute("usuario", usuario);
             Unidad unidad = user.getUnidad();
 
-             List<MovimientoDocumento> movimientoDocumentosSolicitados = movimientoDocumentoService.ListaMovimientosSolicitados(unidad.getId_unidad().intValue());
+            List<MovimientoDocumento> movimientoDocumentosSolicitados = movimientoDocumentoService.ListaMovimientosSolicitados(unidad.getId_unidad().intValue());
         
             model.addAttribute("movimientoDocumentosSolicitados", movimientoDocumentosSolicitados);
             model.addAttribute("numSolicitud", movimientoDocumentosSolicitados.size());

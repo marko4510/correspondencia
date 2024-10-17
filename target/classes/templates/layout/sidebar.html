@@ -2,16 +2,15 @@
     <aside id="sidebar-wrapper">
       <div class="sidebar-brand">
         <a th:href="@{../../../../inicio}"> <img alt="image" src="../../../assets/img/UAP_DIGITAL_R" class="header-logo" style="height: 75px; padding-top: 10px;"/> 
-          <span class="logo-name">Correspondecia</span>
+          <span class="logo-name">Correspondencia</span>
         </a>
       </div>
       <ul th:if="${session.usuario.estado != 'P'}" class="sidebar-menu">
         <li class="menu-header">---------------------------------------</li>
-        <button type="button" class="btn btn-danger btn-icon icon-left " style="width: 250px;" data-toggle="modal" data-target="#exampleModalCenter2" >
+        <!-- <button type="button" class="btn btn-danger btn-icon icon-left " style="width: 250px;" data-toggle="modal" data-target="#exampleModalCenter2" >
           <i class="fas fa-envelope"></i> Solicitudes de Hoja de Ruta<span class="badge badge-transparent" th:text="${numSolicitud}">4</span>
-        </button>
+        </button> -->
         
-
         <li th:class="${opcion == 'administrar hoja ruta'}? 'dropdown active': 'dropdown'">
           <a th:href="@{/hojaRuta/inicio}" class="nav-link"><i data-feather="file-minus"></i><span>Gestionar Hojas de Ruta</span></a>
         </li>
