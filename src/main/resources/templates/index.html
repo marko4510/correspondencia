@@ -59,6 +59,35 @@
         </div>
       </div>
 
+      <div class="modal fade modal-horaRuta" tabindex="-1" role="dialog" id="documentoPDF" aria-labelledby="myLargeModalLabel"
+        aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-lg pullDown" style="max-width: 85%; width: 150%;">
+          <div class="modal-content" id="DocumentoPDF">
+      
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade " id="ModalCites" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog " role="document" style="max-width: 80%; width: 1200px;">
+          <div class="modal-content">
+            <div class="modal-header" style="background-color: #007bff; color: white;">
+              <h5 class="modal-title" id="exampleModalCenterTitle">Cites
+              </h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <div id="Tabla_Solicitudes"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <footer th:replace="layout/footer :: footer">
       </footer>
     </div>
@@ -133,6 +162,21 @@
           console.error('Hubo un problema con la solicitud AJAX:', status, error);
         }
       });
+    }
+
+    function VerDocumentoPDF(id){
+      $('#DocumentoPDF').html(
+        `<!-- Modal Header -->
+<div class="modal-header">
+    <h5 class="modal-title" id="myLargeModalLabel">Visualización de Documento</h5>
+    <a type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </a>
+</div>
+<div class="modal-body">
+    <embed src="/hojaRuta/verDocumento/${id}" type="application/pdf" frameborder="0" style="height: 600px; width: 100%;"></embed>
+</div>
+`);
     }
     </script>
    

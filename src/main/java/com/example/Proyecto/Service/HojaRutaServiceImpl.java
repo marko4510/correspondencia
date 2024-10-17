@@ -60,5 +60,11 @@ public class HojaRutaServiceImpl implements HojaRutaService{
         return dao.obtenerHojasDeRutaPorUnidadYGestionYTipoDerivacion(unidad_origen, gestion, derivacion);
     }
 
+    @Override
+    public List<HojaRuta> ObtenerHojasDeRutaPorUnidadyGestion(Integer unidad_origen, String gestion) {
+        // TODO Auto-generated method stub
+        return dao.ObtenerHojasDeRutaPorUnidadyGestion(unidad_origen, gestion);
+    }
+
 
 }

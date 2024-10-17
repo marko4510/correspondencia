@@ -1,5 +1,7 @@
 package com.example.Proyecto.Controller;
 
+import java.time.LocalDate;
+
 import javax.servlet.annotation.HttpConstraint;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -25,6 +27,8 @@ import com.example.Proyecto.Model.Persona;
 import com.example.Proyecto.Model.Unidad;
 import com.example.Proyecto.Model.Usuario;
 import com.example.Proyecto.Service.CargoService;
+import com.example.Proyecto.Service.DocumentoService;
+import com.example.Proyecto.Service.HojaRutaService;
 import com.example.Proyecto.Service.MovimientoDocumentoService;
 import com.example.Proyecto.Service.PersonaService;
 import com.example.Proyecto.Service.UnidadService;
@@ -52,6 +56,12 @@ import java.util.Date;
 public class InicioController {
 
     @Autowired
+    private HojaRutaService hojaRutaService;
+
+    @Autowired
+    private DocumentoService documentoService;
+
+    @Autowired
     private PersonaService personaService;
 
     @Autowired
@@ -72,6 +82,7 @@ public class InicioController {
            
             Usuario user = (Usuario) request.getSession().getAttribute("usuario");
             Usuario usuario = usuarioService.findById(user.getId_usuario());
+            String gestion = String.valueOf(LocalDate.now().getYear());
             model.addAttribute("usuario", usuario);
             HttpSession session = request.getSession(true);
             session.setAttribute("usuario", usuario);
@@ -81,7 +92,11 @@ public class InicioController {
         
             model.addAttribute("movimientoDocumentosSolicitados", movimientoDocumentosSolicitados);
             model.addAttribute("numSolicitud", movimientoDocumentosSolicitados.size());
-            model.addAttribute("unidades", unidadService.findAll());
+            model.addAttribute("documentosUnidad", documentoService.obtener_DocumentosPorUnidadYGestion(user.getUnidad().getId_unidad().intValue(), gestion));
+            model.addAttribute("hojasRutas", hojaRutaService.ObtenerHojasDeRutaPorUnidadyGestion(unidad.getId_unidad().intValue(), gestion));
+            model.addAttribute("opcion", "Menu_principal");
+            
+
             return "index";
         }else{
             return "redirect:/login";

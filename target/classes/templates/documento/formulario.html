@@ -25,13 +25,16 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12 mb-1">
+            <div class="form-group col-md-12">
                 <label>Tipo Documento</label>
-                <select class="form-control" style="width: 100%;" th:field="${documento.tipoDocumento}">
-                    <!-- <option value="" selected>Seleccionar</option> -->
+                <select class="form-control select2" style="width: 100%;" th:field="${documento.tipoDocumento}" required>
+                    <option value="" selected >Seleccionar</option>
                     <option th:each="tipo: ${tipoDocumentos}" th:value="${tipo.id_tipo_documento}"
                         th:text="${tipo.nombre}" th:selected="${tipo == documento.tipoDocumento}"></option>
                 </select>
+                <div class="invalid-feedback">
+                    Tiene que seleccionar un Tipo de Documento
+                </div>
             </div>
         </div>
         <div class="form-group mb-0">
@@ -66,6 +69,7 @@
 <script>
 
     $(document).ready(function () {
+        $('.select2').select2();
 
         $('#formularioModalDocumento').on('submit', function (event) {
             event.preventDefault(); // Previene el envío del formulario

@@ -7,7 +7,7 @@
             <div class="col-lg-4 col-md-6 col-sm-6 col-12">
               <div class="card card-statistic-1" >
                 <div class="card-icon l-bg-red">
-                  <i class="material-icons">notifications</i> <span class="icon-name"></span>
+                  <i class="material-icons" style="font-size: 30px;">notifications</i> 
                 </div>
                 <div class="card-wrap" role="button" tabindex="0" data-toggle="modal" data-target="#ModalSolitudesHojasDeRuta" onclick="CargarSolicitudes()">
                   <div class="padding-20">
@@ -15,7 +15,7 @@
                       <h3 class="font-light mb-0" th:text="${numSolicitud}">
                         <i class="ti-arrow-up text-success"></i> 524
                       </h3>
-                      <span class="text-muted">Solicitudes Hojas de Ruta Pendientes</span>
+                      <span class="text-muted"> <b>Solicitudes Hojas de Ruta Pendientes</b></span>
                     </div>
                   </div>
                 </div>
@@ -24,15 +24,15 @@
             <div class="col-lg-4 col-md-6 col-sm-6 col-12">
               <div class="card card-statistic-1">
                 <div class="card-icon l-bg-green">
-                  <i class="fas fa-cart-plus"></i>
+                  <i class="material-icons" style="font-size: 30px;">content_copy</i>
                 </div>
                 <div class="card-wrap" role="button" tabindex="0">
                   <div class="padding-20">
                     <div class="text-right">
-                      <h3 class="font-light mb-0">
+                      <h3 class="font-light mb-0" th:text="${hojasRutas.size()}">
                         <i class="ti-arrow-up text-success"></i> 524
                       </h3>
-                      <span class="text-muted">Hojas de Ruta Recibidas</span>
+                      <span class="text-muted"><b>Hojas de Ruta Generadas</b></span>
                     </div>
                   </div>
                 </div>
@@ -41,15 +41,15 @@
             <div class="col-lg-4 col-md-6 col-sm-6 col-12">
               <div class="card card-statistic-1">
                 <div class="card-icon l-bg-orange">
-                  <i class="fas fa-cart-plus"></i>
+                  <i class="material-icons" style="font-size: 30px;">description</i> 
                 </div>
                 <div class="card-wrap" role="button" tabindex="0">
                   <div class="padding-20">
                     <div class="text-right">
-                      <h3 class="font-light mb-0">
-                        <i class="ti-arrow-up text-success"></i> 524
+                      <h3 class="font-light mb-0" th:text="${documentosUnidad.size()}">
+                        <i class="ti-arrow-up text-success" ></i> 524
                       </h3>
-                      <span class="text-muted">Hojas de Ruta Archivadas</span>
+                      <span class="text-muted"><b>Cites Generados</b></span>
                     </div>
                   </div>
                 </div>

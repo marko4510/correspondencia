@@ -11,6 +11,9 @@
           <i class="fas fa-envelope"></i> Solicitudes de Hoja de Ruta<span class="badge badge-transparent" th:text="${numSolicitud}">4</span>
         </button> -->
         
+        <li th:class="${opcion == 'Menu_principal'}? 'dropdown active': 'dropdown'">
+          <a th:href="@{/inicio}" class="nav-link"><i data-feather="home"></i><span>Menu Principal</span></a>
+        </li>
         <li th:class="${opcion == 'administrar hoja ruta'}? 'dropdown active': 'dropdown'">
           <a th:href="@{/hojaRuta/inicio}" class="nav-link"><i data-feather="file-minus"></i><span>Gestionar Hojas de Ruta</span></a>
         </li>
