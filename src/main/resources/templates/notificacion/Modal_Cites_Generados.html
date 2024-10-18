@@ -1,0 +1,48 @@
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <h4>SELECCIONE EL TIPO DE DOCUMENTO</h4>
+        </div>
+        <div class="card-body">
+            <div class="row mb-12">
+
+                <div class="col-12">
+                    <div class="form-group">
+                        <label>Tipo de Documento</label>
+                        <select class="form-control select2" style="width: 100%;" name="id_tipo_documento"
+                            id="id_tipo_documento" onchange="cargarListaDeCites()">
+                            <option value="" selected disabled>Seleccione...</option>
+                            <option th:each="td : ${TipoDocumentos}" th:value="${td.id_tipo_documento}"
+                                th:text="${td.nombre}"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="input-group-append">
+                <button class="btn btn-primary" >Buscar</button> &nbsp;&nbsp;
+                <button class="btn btn-warning" >Limpiar</button>
+            </div> -->
+        </div>
+    </div>
+
+    
+    <div class="card" id="card_lista">
+        <div class="card-header">
+            <h4 id="titulo"></h4>
+        </div>
+        <div class="card-body">
+            <div class="row mb-12">
+                <div id="Lista_Cites">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<script>
+    $(document).ready(function(){
+        $('.select2').select2();
+
+    });
+</script>

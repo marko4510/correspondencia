@@ -1,5 +1,5 @@
 <!-- Large modal -->
-<div class="modal fade bd-example-modal-lg" id="resultadoModal" tabindex="-1" role="dialog"  
+<div class="modal fade bd-example-modal-lg" id="resultadoModal" tabindex="-1" role="dialog"
   aria-labelledby="myLargeModalLabel" aria-hidden="true" data-backdrop="static">
   <div class="modal-dialog modal-lg" style="max-width: 85%; width: 120%;">
     <div class="modal-content">
@@ -33,7 +33,7 @@
                 Introduzca el asunto del documento
               </div>
             </div>
-           
+
             <div class="form-group col-md-2">
               <label></label>
               <a class="btn btn-icon icon-left btn-success form-control" style="color: white;"
@@ -50,9 +50,9 @@
               <div id="alertaInputFile"></div>
               <div id="previsualizacionDoc"></div>
             </div>
-         
+
           </div>
-      
+
           <hr>
 
           <div class="row">
@@ -80,7 +80,7 @@
                 Introduzca el asunto del documento
               </div>
             </div>
-           
+
             <div class="form-group col-md-6">
               <label>Unidad Destino</label>
               <select class="form-control select2" style="width: 100%;" name="id_unidad_destino" id="idUnidadDestino"
@@ -100,7 +100,7 @@
                 </option>
               </select>
             </div>
-          
+
           </div>
 
         </div>
@@ -121,6 +121,12 @@
   $(document).ready(function () {
     $('#regMovimientoFormulario').submit(function (event) {
       event.preventDefault();
+
+      //Verifica la validez del formulario
+      if (this.checkValidity() === false) {
+        $(this).addClass('was-validated');
+        return;
+      }
       var form = $(this)[0];
       var formData = new FormData(form);
 
@@ -233,34 +239,34 @@
   });
 
   function cargarSelectUsuario() {
-   
-        $.ajax({
-            type: 'POST',
-            url: "/cargarSelectUsuarios/" + $('#idUnidadDestino').val(),  // Ruta del método del controlador en Spring Boot
-            success: function (response) {
-                // 'response' es una lista de arrays de cadenas
-                //console.log('Lista de usuarios:', response);
 
-                // Obtener el elemento <select> con id "selectUsuarios"
-                const selectUsuarios = $('#selectUsuarios2');
-                selectUsuarios.empty();  // Limpiar las opciones existentes
+    $.ajax({
+      type: 'POST',
+      url: "/cargarSelectUsuarios/" + $('#idUnidadDestino').val(),  // Ruta del método del controlador en Spring Boot
+      success: function (response) {
+        // 'response' es una lista de arrays de cadenas
+        //console.log('Lista de usuarios:', response);
 
-                // Iterar sobre cada array en la respuesta
-                response.forEach(user => {
-                    // user es un array de dos elementos: [id, nombreCompleto]
-                    const option = $('<option></option>')
-                        .val(user[0])  // El valor del option es el ID del usuario
-                        .text(user[1]);  // El texto del option es el nombre completo del usuario
+        // Obtener el elemento <select> con id "selectUsuarios"
+        const selectUsuarios = $('#selectUsuarios2');
+        selectUsuarios.empty();  // Limpiar las opciones existentes
 
-                    // Agregar la opción al <select>
-                    selectUsuarios.append(option);
-                });
-            },
-            error: function (xhr, status, error) {
-                console.error('Hubo un problema con la solicitud AJAX:', status, error);
-            }
+        // Iterar sobre cada array en la respuesta
+        response.forEach(user => {
+          // user es un array de dos elementos: [id, nombreCompleto]
+          const option = $('<option></option>')
+            .val(user[0])  // El valor del option es el ID del usuario
+            .text(user[1]);  // El texto del option es el nombre completo del usuario
+
+          // Agregar la opción al <select>
+          selectUsuarios.append(option);
         });
-    }
+      },
+      error: function (xhr, status, error) {
+        console.error('Hubo un problema con la solicitud AJAX:', status, error);
+      }
+    });
+  }
 </script>
 <style>
   #pdf-preview {

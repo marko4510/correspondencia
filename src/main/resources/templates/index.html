@@ -48,7 +48,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <h4 class="modal-title" id="myLargeModalLabel">Formulario de Recepción de Documento</h4>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="cargarCamposBusqueda()">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
@@ -59,31 +59,32 @@
         </div>
       </div>
 
-      <div class="modal fade modal-horaRuta" tabindex="-1" role="dialog" id="documentoPDF" aria-labelledby="myLargeModalLabel"
-        aria-hidden="true" data-backdrop="static">
-        <div class="modal-dialog modal-lg pullDown" style="max-width: 85%; width: 150%;">
-          <div class="modal-content" id="DocumentoPDF">
-      
-          </div>
-        </div>
-      </div>
-
-      <div class="modal fade " id="ModalCites" tabindex="-1" role="dialog"
-        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal fade " id="ModalCites" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
         <div class="modal-dialog " role="document" style="max-width: 80%; width: 1200px;">
           <div class="modal-content">
             <div class="modal-header" style="background-color: #007bff; color: white;">
-              <h5 class="modal-title" id="exampleModalCenterTitle">Cites
+              <h5 class="modal-title" id="exampleModalCenterTitle">Cites Generados
               </h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div class="card">
-              <div class="card-body">
-                <div id="Tabla_Solicitudes"></div>
-              </div>
+            <div class="card-body">
+              <div id="Tabla_Solicitudes_Cites"></div>
             </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade modal-horaRuta" tabindex="-1" role="dialog" id="documentoPDF"
+        aria-labelledby="myLargeModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-lg pullDown" style="max-width: 85%; width: 150%;">
+          <div class="modal-content" id="DocumentoPDF">
+
           </div>
         </div>
       </div>
@@ -97,91 +98,160 @@
     <script>
       function CargarSolicitudes() {
 
-          $.ajax({
-            type: 'POST',
-            url: "/solitudes_Pendientes",
-            success: function (response) {
-              $("#Tabla_Solicitudes").html(response);
-            },
-            error: function (xhr) {
-              Swal.fire(
-                'Error',
-                'Ocurrió un error al procesar la solicitud.',
-                'error'
-              );
-            }
-          });
-        }
+        $.ajax({
+          type: 'POST',
+          url: "/solitudes_Pendientes",
+          success: function (response) {
+            $("#Tabla_Solicitudes").html(response);
+          },
+          error: function (xhr) {
+            Swal.fire(
+              'Error',
+              'Ocurrió un error al procesar la solicitud.',
+              'error'
+            );
+          }
+        });
+      }
 
       function CargarFormularioSolicitud(id_movimiento_documento) {
 
-          $.ajax({
-            type: 'POST',
-            url: "/formulario_Solicitud/"+id_movimiento_documento,
-            success: function (response) {
-              $("#Formulario_Solicitud").html(response);
-            },
-            error: function (xhr) {
-              Swal.fire(
-                'Error',
-                'Ocurrió un error al procesar la solicitud.',
-                'error'
-              );
-            }
-          });
-        }
+        $.ajax({
+          type: 'POST',
+          url: "/formulario_Solicitud/" + id_movimiento_documento,
+          success: function (response) {
+            $("#Formulario_Solicitud").html(response);
+          },
+          error: function (xhr) {
+            Swal.fire(
+              'Error',
+              'Ocurrió un error al procesar la solicitud.',
+              'error'
+            );
+          }
+        });
+      }
 
-        // Función para cargar usuarios
-    function cargarSelectUsuario() {
-      var idUnidadDestino = $('#idUnidadDestino').val();
-      $.ajax({
-        type: 'POST',
-        url: "/cargarSelectUsuarios/" + idUnidadDestino,
-        success: function (response) {
-          var selectUsuarios = $('#selectUsuarios3');
-          selectUsuarios.empty();
-          selectUsuarios.append($('<option>', {
-            value: '',
-            text: 'Seleccione una Persona...'
-          }));
-
-          $.each(response, function (index, user) {
+      // Función para cargar usuarios
+      function cargarSelectUsuario() {
+        var idUnidadDestino = $('#idUnidadDestino').val();
+        $.ajax({
+          type: 'POST',
+          url: "/cargarSelectUsuarios/" + idUnidadDestino,
+          success: function (response) {
+            var selectUsuarios = $('#selectUsuarios3');
+            selectUsuarios.empty();
             selectUsuarios.append($('<option>', {
-              value: user[0],
-              text: user[1]
+              value: '',
+              text: 'Seleccione una Persona...'
             }));
-          });
 
-          // Reinicializar Select2 después de cargar las opciones
-          selectUsuarios.trigger('change').select2({
-            width: '100%',
-            dropdownParent: $('#formulario_Solicitud')
-          });
-        },
-        error: function (xhr, status, error) {
-          console.error('Hubo un problema con la solicitud AJAX:', status, error);
+            $.each(response, function (index, user) {
+              selectUsuarios.append($('<option>', {
+                value: user[0],
+                text: user[1]
+              }));
+            });
+
+            // Reinicializar Select2 después de cargar las opciones
+            selectUsuarios.trigger('change').select2({
+              width: '100%',
+              dropdownParent: $('#formulario_Solicitud')
+            });
+          },
+          error: function (xhr, status, error) {
+            console.error('Hubo un problema con la solicitud AJAX:', status, error);
+          }
+        });
+      }
+
+      function VerDocumentoPDF(id) {
+        $('#DocumentoPDF').html(
+          `<!-- Modal Header -->
+        <div class="modal-header">
+        <h5 class="modal-title" id="myLargeModalLabel">Visualización de Documento</h5>
+        <a type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </a>
+        </div>
+        <div class="modal-body">
+        <embed src="/hojaRuta/verDocumento/${id}" type="application/pdf" frameborder="0" style="height: 600px; width: 100%;"></embed>
+        </div>
+        `);
+      }
+
+      function CargarCites() {
+
+        $.ajax({
+          type: 'POST',
+          url: "/cites_generados",
+          success: function (response) {
+            $("#Tabla_Solicitudes_Cites").html(response);
+            $("#card_lista").hide();
+          },
+          error: function (xhr) {
+            Swal.fire(
+              'Error',
+              'Ocurrió un error al procesar la solicitud.',
+              'error'
+            );
+          }
+        });
+      }
+
+      function cargarListaDeCites() {
+        var id_tipo_documento = $('#id_tipo_documento').val();
+        var tipo_documento = $("#id_tipo_documento option:selected").text();
+        Swal.fire({
+          title: 'Cargando...',
+          text: 'Por favor, espere mientras se cargan los datos.',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();  // Muestra un spinner de carga
+          }
+        });
+
+        $.ajax({
+          type: 'POST',
+          url: "/lista_cites/" + id_tipo_documento,
+          success: function (response) {
+            Swal.close();
+            // Mostrar Swal de "actualización exitosa"
+            Swal.fire({
+              icon: 'success',
+              title: 'Operacion exitosa',
+              text: 'Los datos han sido cargados correctamente.'
+            });
+            $("#card_lista").show();
+            $("#titulo").text("LISTA DE CITES "+tipo_documento)
+            $("#Lista_Cites").html(response); 
+          },
+          error: function (xhr, status, error) {
+            console.error('Hubo un problema con la solicitud AJAX:', status, error);
+          }
+        });
+      }
+
+      function Archivar() {
+          var instruccion = $('#instruccion').val();
+          if (instruccion == "Archivar") {
+            // Ocultar los divs
+            $("#unidad_destino").hide();
+            $("#responsable").hide();
+
+            // Desactivar los inputs dentro de esos divs
+            $('#idUnidadDestino').prop('disabled', true);
+            $('#selectUsuarios3').prop('disabled', true);
+          } else {
+            // Si se selecciona otra instrucción, volver a mostrar y activar los inputs
+            $("#unidad_destino").show();
+            $("#responsable").show();
+
+            $('#idUnidadDestino').prop('disabled', false);
+            $('#selectUsuarios3').prop('disabled', false);
+          }
         }
-      });
-    }
-
-    function VerDocumentoPDF(id){
-      $('#DocumentoPDF').html(
-        `<!-- Modal Header -->
-<div class="modal-header">
-    <h5 class="modal-title" id="myLargeModalLabel">Visualización de Documento</h5>
-    <a type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </a>
-</div>
-<div class="modal-body">
-    <embed src="/hojaRuta/verDocumento/${id}" type="application/pdf" frameborder="0" style="height: 600px; width: 100%;"></embed>
-</div>
-`);
-    }
     </script>
-   
 
 </body>
-
-
 </html>

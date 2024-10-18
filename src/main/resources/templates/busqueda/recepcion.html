@@ -157,68 +157,6 @@
     </div>
   </div>
 
-   <!-- INICIO MODAL SOLICITUDES -->
-   <div class="modal fade " id="exampleModalCenter2" tabindex="-1" role="dialog"
-   aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-   <div class="modal-dialog " role="document" style="max-width: 80%; width: 1200px;">
-     <div class="modal-content">
-       <div class="modal-header" style="background-color: #007bff; color: white;">
-         <h5 class="modal-title" id="exampleModalCenterTitle">Lista de solicitudes de Recepción de Hoja de Ruta
-         </h5>
-         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-           <span aria-hidden="true">&times;</span>
-         </button>
-       </div>
-       <div class="card">
- 
-         <div class="card-body">
-           <div class="table-responsive">
-             <table class="table table-hover" id="table-1">
- 
-               <thead>
-                 <tr>
-                   <th class="text-center">#</th>
-                   <th>Nro. Hoja Ruta</th>
-                   <th>Emisor</th>
-                   <th>Referecia</th>
-                   <th>Fecha Registro</th>
-                   <th>Acciones</th>
-                 </tr>
-               </thead>
-               <tbody>
- 
-                
- 
-                 <tr th:each="mds, rowStat: ${movimientoDocumentosSolicitados}">
-                   <td th:text="${rowStat.count}"></td>
-                   <td
-                     th:text="${mds.unidadOrigen.sigla}+'-'+${mds.hojaRuta.nroRuta}+'/'+${#dates.format(mds.hojaRuta.fechaCreacion, 'yyyy')}">
-                   </td>
-                   <td th:text="${mds.unidadDestino.nombre}"></td>
-                   <td th:text="${mds.hojaRuta.ref}"></td>
-                   <td th:text="${#dates.format(mds.hojaRuta.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
-                   <td>
-                     <center>
-                       <a href="#" class="btn btn-icon icon-left btn-success" data-toggle="modal"
-                         data-target="#resultadoModal" th:data-id-hoja-ruta="${mds.hojaRuta.id_hoja_ruta}"
-                         th:data-id-movimiento-documento="${mds.id_movimiento_documento}">
-                         <i class="far fa-share-square"></i>Recepcionar
-                       </a>
-                     </center>
- 
- 
-                   </td>
-                 </tr>
- 
-               </tbody>
-             </table>
-           </div>
-         </div>
-       </div>
-     </div>
-   </div>
- </div>
- 
  </div>
   <div th:replace="layout/script :: script">
   </div>

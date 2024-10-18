@@ -31,4 +31,7 @@ public interface DocumentoDao extends JpaRepository<Documento, Long> {
             """, nativeQuery = true)
     public List<Documento> obtener_DocumentosPorUnidadYGestionYTipoDocumento(Integer unidad_origen, String gestion, Long tipoDocumento);
 
+    @Query(value = "select d.* from documento d \n" + //
+                        "where d.tipo_documento_id_tipo_documento = ?1",nativeQuery = true)
+    public List<Documento> Obtener_Cites_Por_Tipodocumento(Long id_tipo_documento);
 }

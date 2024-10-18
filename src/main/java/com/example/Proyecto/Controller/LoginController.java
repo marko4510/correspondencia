@@ -32,6 +32,8 @@ import com.example.Proyecto.Model.Persona;
 import com.example.Proyecto.Model.Unidad;
 import com.example.Proyecto.Model.Usuario;
 import com.example.Proyecto.Service.CargoService;
+import com.example.Proyecto.Service.DocumentoService;
+import com.example.Proyecto.Service.HojaRutaService;
 import com.example.Proyecto.Service.MovimientoDocumentoService;
 import com.example.Proyecto.Service.PersonaService;
 import com.example.Proyecto.Service.UnidadService;
@@ -42,6 +44,13 @@ import com.example.Proyecto.Service.UsuarioService;
 @Controller
 public class LoginController {
     
+
+    @Autowired
+    private HojaRutaService hojaRutaService;
+
+    @Autowired
+    private DocumentoService documentoService;
+
     @Autowired
     private UsuarioService usuarioService;
 
@@ -70,18 +79,21 @@ public class LoginController {
             System.out.println("inicio sesion");
             Usuario user = (Usuario) request.getSession().getAttribute("usuario");
             Usuario usuario = usuarioService.findById(user.getId_usuario());
+            String gestion = String.valueOf(LocalDate.now().getYear());
             System.out.println("USUARIO ACTIVO---" + usuario.getUsuario_nom());
             model.addAttribute("usuario", usuario);
             HttpSession session = request.getSession(true);
             session.setAttribute("usuario", usuario);
-              Unidad unidad = user.getUnidad();
+            Unidad unidad = user.getUnidad();
          
             List<MovimientoDocumento> movimientoDocumentosSolicitados = movimientoDocumentoService.ListaMovimientosSolicitados(unidad.getId_unidad().intValue());
         
             model.addAttribute("movimientoDocumentosSolicitados", movimientoDocumentosSolicitados);
             model.addAttribute("numSolicitud", movimientoDocumentosSolicitados.size());
+            model.addAttribute("documentosUnidad", documentoService.obtener_DocumentosPorUnidadYGestion(user.getUnidad().getId_unidad().intValue(), gestion));
+            model.addAttribute("hojasRutas", hojaRutaService.ObtenerHojasDeRutaPorUnidadyGestion(unidad.getId_unidad().intValue(), gestion));
+            model.addAttribute("opcion", "Menu_principal");
 
-            model.addAttribute("unidades", unidadService.findAll());
             return "index";
         } else {
             System.out.println("No inicio sesion");

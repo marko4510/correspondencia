@@ -94,7 +94,6 @@ public class UsuarioController {
     public ResponseEntity<String> registrar(@Validated Usuario usuario, HttpServletRequest request) {
         try {
             
-      
             usuarioService.save(usuario);
             return ResponseEntity.ok("Registrado");
         } catch (Exception e) {

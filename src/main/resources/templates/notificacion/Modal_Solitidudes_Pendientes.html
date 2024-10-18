@@ -1,33 +1,64 @@
 <div class="table-responsive">
-    <table class="table table-hover" id="table-1">
-      <thead>
-        <tr>
-          <th class="text-center">#</th>
-          <th>Nro. Hoja Ruta</th>
-          <th>Emisor</th>
-          <th>Referecia</th>
-          <th>Fecha Registro</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="mds, rowStat: ${movimientoDocumentosSolicitados}">
-          <td th:text="${rowStat.count}"></td>
-          <td
-            th:text="${mds.unidadOrigen.sigla}+'-'+${mds.hojaRuta.nroRuta}+'/'+${#dates.format(mds.hojaRuta.fechaCreacion, 'yyyy')}">
-          </td>
-          <td th:text="${mds.unidadDestino.nombre}"></td>
-          <td th:text="${mds.hojaRuta.ref}"></td>
-          <td th:text="${#dates.format(mds.hojaRuta.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
-          <td>
-            <center>
-              <a href="#" class="btn btn-icon icon-left btn-success" data-toggle="modal"
-                data-target="#formulario_Solicitud" th:attr="onclick='CargarFormularioSolicitud(\'' + ${mds.id_movimiento_documento} + '\')'">
-                <i class="far fa-share-square"></i>Recepcionar
-              </a>
-            </center>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <table class="table table-hover" id="table-1">
+    <thead>
+      <tr>
+        <th class="text-center">#</th>
+        <th>Nro. Hoja Ruta</th>
+        <th>Emisor</th>
+        <th>Referecia</th>
+        <th>Fecha Registro</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="mds, rowStat: ${movimientoDocumentosSolicitados}">
+        <td th:text="${rowStat.count}"></td>
+        <td
+          th:text="${mds.unidadOrigen.sigla}+'-'+${mds.hojaRuta.nroRuta}+'/'+${#dates.format(mds.hojaRuta.fechaCreacion, 'yyyy')}">
+        </td>
+        <td th:text="${mds.unidadDestino.nombre}"></td>
+        <td th:text="${mds.hojaRuta.ref}"></td>
+        <td th:text="${#dates.format(mds.hojaRuta.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
+        <td>
+          <center>
+            <a href="#" class="btn btn-icon icon-left btn-success" data-toggle="modal"
+              data-target="#formulario_Solicitud"
+              th:attr="onclick='CargarFormularioSolicitud(\'' + ${mds.id_movimiento_documento} + '\')'">
+              <i class="far fa-share-square"></i>Recepcionar
+            </a>
+          </center>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<script>
+  $(document).ready(function () {
+      $('#table-1').DataTable({
+          language: {
+              "sProcessing": "Procesando...",
+              "sLengthMenu": "Mostrar _MENU_ registros",
+              "sZeroRecords": "No se encontraron resultados",
+              "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+              "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+              "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+              "sInfoPostFix": "",
+              "sSearch": "Buscar:",
+              "sUrl": "",
+              "sInfoThousands": ",",
+              "sLoadingRecords": "Cargando...",
+              "oPaginate": {
+                  "sFirst": "Primero",
+                  "sLast": "Último",
+                  "sNext": "Siguiente",
+                  "sPrevious": "Anterior"
+              },
+              "oAria": {
+                  "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                  "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+              }
+          }
+      });
+
+  });
+</script>

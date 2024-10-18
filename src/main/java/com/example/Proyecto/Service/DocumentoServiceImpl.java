@@ -63,5 +63,11 @@ public class DocumentoServiceImpl implements DocumentoService{
         return dao.obtener_DocumentosPorUnidadYGestionYTipoDocumento(unidad_origen, gestion, tipoDocumento);
     }
 
+    @Override
+    public List<Documento> Obtener_Cites_Por_Tipodocumento(Long id_tipo_documento) {
+        // TODO Auto-generated method stub
+        return dao.Obtener_Cites_Por_Tipodocumento(id_tipo_documento);
+    }
+
 
 }

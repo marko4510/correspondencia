@@ -1,0 +1,59 @@
+<div class="table-responsive">
+    <table class="table table-hover" id="table-2">
+        <thead>
+            <tr>
+                <th class="text-center" width="1%">#</th>
+                <th width="10%">Cite</th>
+                <th width="10%">Tipo Documento</th>
+                <th width="10%">Fecha Registro</th>
+                <th width="60%">Referencia</th>
+                <th width="9%">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="c, rowStat: ${cites}">
+                <td th:text="${rowStat.count}"></td>
+                <td th:text="${c.citeTexto}+'/'+${#dates.format(c.fechaCreacion, 'yyyy')}"></td>
+                <td th:text="${c.tipoDocumento.nombre}"></td>
+                <td th:text="${#dates.format(c.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
+                <td th:text="${c.ref}"></td>
+                <td>
+                    <a href="#" class="btn btn-icon icon-left btn-success"
+                        th:attr="onclick='VerDocumentoPDF(\'' + ${c.id_documento} + '\')'" data-toggle="modal"
+                        data-target="#documentoPDF">
+                        <i class="far fa-file-archive"></i>Ver</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#table-2').DataTable({
+            language: {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            }
+        });
+
+    });
+</script>

@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.example.Proyecto.Config;
+import com.example.Proyecto.Model.Documento;
 import com.example.Proyecto.Model.HojaRuta;
 import com.example.Proyecto.Model.MovimientoDocumento;
 import com.example.Proyecto.Model.Unidad;
@@ -26,6 +27,7 @@ import com.example.Proyecto.Model.Usuario;
 import com.example.Proyecto.Service.DocumentoService;
 import com.example.Proyecto.Service.HojaRutaService;
 import com.example.Proyecto.Service.MovimientoDocumentoService;
+import com.example.Proyecto.Service.TipoDocumentoService;
 import com.example.Proyecto.Service.UnidadService;
 import com.example.Proyecto.Service.UsuarioService;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,6 +35,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class NotificacionController {
+
+    @Autowired
+    private TipoDocumentoService tipoDocumentoService;
     
     @Autowired
     private DocumentoService documentoService;
@@ -58,13 +63,13 @@ public class NotificacionController {
 
     @PostMapping("/regMovimientoHojaRutaNotificacion")
     public ResponseEntity<String> regMovimientoHojaRutaNotificacion(
-            @RequestParam("id_hoja_ruta") Long id_hoja_ruta,
-            @RequestParam(value = "id_movimiento_documento", required = false) Long id_movimiento,
-            @RequestParam(value = "id_unidad_destino", required = false) Long id_unidad_destino,
-            @RequestParam(value = "userDestino", required = false) Integer id_user_destino,
-            @RequestParam("observacion") String observacion,
+            @RequestParam(name = "id_hoja_ruta", required = false) Long id_hoja_ruta,
+            @RequestParam(name = "id_movimiento_documento", required = false) Long id_movimiento,
+            @RequestParam(name = "id_unidad_destino", required = false) Long id_unidad_destino,
+            @RequestParam(name = "userDestino", required = false) Integer id_user_destino,
+            @RequestParam(name = "observacion", required = false) String observacion,
             @RequestParam("instruccion") String instruccion,
-            @RequestParam(value = "file", required = false) MultipartFile archivo,
+            @RequestParam(name = "file", required = false) MultipartFile archivo,
             HttpServletRequest request) {
         try {
             // Log de los parámetros recibidos
@@ -79,16 +84,17 @@ public class NotificacionController {
 
             // Validaciones iniciales
             if (id_hoja_ruta == null) {
-                return ResponseEntity.badRequest().body("El ID de hoja de ruta es requerido");
+                return ResponseEntity.badRequest().body("El ID de hoja de ruta es requerido y no puede ser null");
             }
             if (id_movimiento == null) {
-                return ResponseEntity.badRequest().body("El ID de movimiento documento es requerido");
+                return ResponseEntity.badRequest()
+                        .body("El ID de movimiento documento es requerido y no puede ser null");
             }
-            if (id_unidad_destino == null) {
-                return ResponseEntity.badRequest().body("Debe seleccionar una unidad de destino");
+            if (id_unidad_destino == null && !instruccion.equals("Archivar")) {
+                return ResponseEntity.badRequest().body("Debe seleccionar una unidad de destino y no puede ser null");
             }
-            if (id_user_destino == null) {
-                return ResponseEntity.badRequest().body("Debe seleccionar un usuario de destino");
+            if (id_user_destino == null && !instruccion.equals("Archivar")) {
+                return ResponseEntity.badRequest().body("Debe seleccionar un usuario de destino y no puede ser null");
             }
 
             // Buscar y validar el movimiento de documento actual
@@ -107,10 +113,14 @@ public class NotificacionController {
                 return ResponseEntity.badRequest().body("No se encontró la hoja de ruta especificada");
             }
 
-            // Buscar y validar la unidad de destino
-            Unidad unidadDestino = unidadService.findById(id_unidad_destino);
-            if (unidadDestino == null) {
-                return ResponseEntity.badRequest().body("La unidad de destino seleccionada no es válida");
+            // Buscar y validar la unidad de destino, excepto cuando la instrucción es
+            // "Archivar"
+            Unidad unidadDestino = null;
+            if (!instruccion.equals("Archivar")) {
+                unidadDestino = unidadService.findById(id_unidad_destino);
+                if (unidadDestino == null) {
+                    return ResponseEntity.badRequest().body("La unidad de destino seleccionada no es válida");
+                }
             }
 
             // Obtener información del usuario actual
@@ -135,9 +145,13 @@ public class NotificacionController {
 
             // Configurar el nuevo movimiento de documento
             nuevoMovimientoDocumento.setHojaRuta(hojaRuta);
-            nuevoMovimientoDocumento.setEstado_movimiento("P"); //
+            if (instruccion.equals("Archivar")) {
+                nuevoMovimientoDocumento.setEstado_movimiento("HA"); // Estado de archivado
+            } else {
+                nuevoMovimientoDocumento.setEstado_movimiento("P"); // Estado pendiente
+                nuevoMovimientoDocumento.setUnidadDestino(unidadDestino);
+            }
             nuevoMovimientoDocumento.setFechaHoraRegistro(new Date());
-            nuevoMovimientoDocumento.setUnidadDestino(unidadDestino);
             nuevoMovimientoDocumento.setUnidadOrigen(usuarioActual.getUnidad());
             nuevoMovimientoDocumento.setUsuarioRegistro(usuarioActual.getId_usuario().intValue());
             nuevoMovimientoDocumento.setInstruccion(instruccion);
@@ -147,19 +161,19 @@ public class NotificacionController {
             // Guardar el nuevo movimiento de documento
             try {
                 movimientoDocumentoService.save(nuevoMovimientoDocumento);
+                return ResponseEntity.ok("Movimiento de documento registrado exitosamente");
             } catch (Exception e) {
                 System.out.println("Error al guardar el nuevo movimiento de documento: " + e.getMessage());
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Error al guardar el nuevo movimiento de documento");
             }
-
-            return ResponseEntity.ok("Movimiento de documento registrado exitosamente");
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error interno del servidor: " + e.getMessage());
         }
     }
+
 
     @PostMapping("/solitudes_Pendientes")
     public String solitudes_Pendientes(Model model, HttpServletRequest request) {
@@ -197,10 +211,43 @@ public class NotificacionController {
     public String formulario_Solicitud(Model model, @PathVariable(name = "id_movimiento_documento",required = false)Long id_movimiento_documento) {
         MovimientoDocumento movimientoDocumento = movimientoDocumentoService.findById(id_movimiento_documento);
         model.addAttribute("md", movimientoDocumento);
+        model.addAttribute("hojaRuta", movimientoDocumento.getHojaRuta());
         model.addAttribute("unidades", unidadService.findAll());
 
         return "notificacion/modal-solicitudes-form";
     }
     
+    @PostMapping("/cites_generados")
+    public String cites_generados(Model model) {
+
+        model.addAttribute("TipoDocumentos", tipoDocumentoService.findAll());
+        
+        return "notificacion/Modal_Cites_Generados";
+    }
+    
+    @PostMapping("/lista_cites/{id_tipo_documento}")
+    public String lista_cites(Model model,@PathVariable(name = "id_tipo_documento",required = false)Long id_tipo_documento, HttpServletRequest request) {
+
+        Usuario user = (Usuario) request.getSession().getAttribute("usuario");
+        String gestion = String.valueOf(LocalDate.now().getYear());
+        Unidad unidad1 = user.getUnidad();
+
+        List<Documento> lDocumentos = documentoService.obtener_DocumentosPorUnidadYGestionYTipoDocumento(unidad1.getId_unidad().intValue(),gestion,id_tipo_documento);
+
+        String cite = "";
+        for (Documento documento : lDocumentos) {
+            Unidad unidad = unidadService.findById((long) documento.getUnidad_origen());
+            if (documento.getCite() < 10) {
+                cite = unidad.getSigla() + " N°" + "0" + documento.getCite();
+            } else {
+                cite = unidad.getSigla() + " N°" + documento.getCite();
+            }
+            documento.setCiteTexto(cite);
+        }
+
+        model.addAttribute("cites", lDocumentos);
+    
+        return "notificacion/Lista_Cites_Generados";
+    }
     
 }

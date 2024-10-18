@@ -19,6 +19,7 @@
                                     <th class="text-center">
                                         #
                                     </th>
+                                    <th>Persona</th>
                                     <th>Nombre de Usuario</th>
                                     <th>Contraseña</th>
                                     <th>Rol</th>
@@ -29,9 +30,12 @@
                             <tbody>
                                 <tr th:each="usu, rowStat: ${usuarios}" th:if="${usu.estado != 'X'}">
                                     <td th:text="${rowStat.count}"></td>
+                                    <td th:text="${usu.persona.nombre + ' ' + usu.persona.ap_paterno +' '+ usu.persona.ap_materno}"></td>
                                     <td th:text="${usu.usuario_nom}"></td>
                                     <td th:text="${usu.contrasena}"></td>
-                                    <td th:text="${usu.estado}"></td>
+                                    <td th:if="${usu.estado == 'P'}" th:text="${'Pendiente'}"></td>
+                                    <td th:if="${usu.estado == 'A'}" th:text="${'Activo'}"></td>
+                                    <td th:if="${usu.estado == 'S'}" th:text="${'Administrador'}"></td>
                                     <td th:text="${usu.unidad.nombre}"></td>
                                     <td>
                                         <a href="#" class="btn btn-icon icon-left btn-primary" 

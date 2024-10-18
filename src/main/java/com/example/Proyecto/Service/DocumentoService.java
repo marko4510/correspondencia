@@ -14,5 +14,6 @@ public interface DocumentoService {
     public List<Documento> obtener_DocumentosUnidad(Integer unidad_origen);
     public List<Documento> obtener_DocumentosPorUnidadYGestion(Integer unidad_origen, String gestion);
     public List<Documento> obtener_DocumentosPorUnidadYGestionYTipoDocumento(Integer unidad_origen, String gestion, Long tipoDocumento);
-    
+    public List<Documento> Obtener_Cites_Por_Tipodocumento(Long id_tipo_documento);
+
 }
