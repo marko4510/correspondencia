@@ -1,0 +1,81 @@
+<div class="modal-header" style="background-color: #007bff; color: white;">
+    <h5 class="modal-title" id="exampleModalCenterTitle">Hojas de Rutas Archivado
+    </h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+        <table class="table table-hover" id="table-3">
+            <thead>
+                <tr>
+                  <th class="text-center" >#</th>
+                  <th>Nro. Hoja Ruta</th>
+                  <th>Emisor</th>
+                  <th>Referecia</th>
+                  <th>Fecha Registro</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="mds, rowStat: ${Movimientosarchivados}">
+                  <td th:text="${rowStat.count}"></td>
+                  <td
+                    th:text="${mds.citeTexto}">
+                  </td>
+                  <td th:text="${mds.unidadOrigenTexto}"></td>
+                  <td th:text="${mds.hojaRuta.ref}"></td>
+                  <td th:text="${#dates.format(mds.hojaRuta.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
+                  <td>
+                    <center>
+                      <a href="#" class="btn btn-icon icon-left btn-success"
+                        th:attr="onclick='VerDocumentoHojaDeRuta(\'' + ${mds.hojaRuta.id_hoja_ruta} + '\')'" data-toggle="modal"
+                        data-target="#documentoPDF">
+                        <i class="far fa-file-archive"></i>Ver Documento</a>
+                    </center>
+                  </td>
+                </tr>
+              </tbody>
+        </table>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+  </div>
+
+  <script>
+    $(document).ready(function () {
+        $('#table-3').DataTable({
+            language: {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sSearch": "Buscar:",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            },
+            columns: [
+                { width: "5%" },   // Columna 1: #
+                { width: "15%" },  // Columna 2: Nro. Hoja Ruta
+                { width: "25%" },  // Columna 3: Emisor
+                { width: "30%" },  // Columna 4: Referencia
+                { width: "15%" },  // Columna 5: Fecha Registro
+                { width: "10%" }   // Columna 6: Acciones
+            ],
+            autoWidth: false // Desactivar el ajuste automático de ancho
+        });
+    });
+</script>

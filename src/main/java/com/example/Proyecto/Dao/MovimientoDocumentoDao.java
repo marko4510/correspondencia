@@ -39,5 +39,8 @@ public interface MovimientoDocumentoDao extends JpaRepository<MovimientoDocument
     @Query(value = "SELECT * FROM movimiento_documento md WHERE estado_movimiento = 'P' AND md.id_unidad_destino = ?1", nativeQuery = true)
     public List<MovimientoDocumento> ListaMovimientosSolicitados(Integer unidad_destino);
 
+    @Query(value = "SELECT md.* FROM movimiento_documento md WHERE md.estado_movimiento = 'HA' AND md.id_unidad_origen = ?1 AND TO_CHAR(md.fecha_hora_registro , 'YYYY') = ?2", nativeQuery = true)
+    public List<MovimientoDocumento> Lista_Archivados(Long unidad_origen, String gestion);
+
     
 }

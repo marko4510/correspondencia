@@ -87,11 +87,13 @@ public class LoginController {
             Unidad unidad = user.getUnidad();
          
             List<MovimientoDocumento> movimientoDocumentosSolicitados = movimientoDocumentoService.ListaMovimientosSolicitados(unidad.getId_unidad().intValue());
+            List<MovimientoDocumento> movimientoArchivados = movimientoDocumentoService.Lista_Archivados(unidad.getId_unidad(),gestion);
         
             model.addAttribute("movimientoDocumentosSolicitados", movimientoDocumentosSolicitados);
             model.addAttribute("numSolicitud", movimientoDocumentosSolicitados.size());
             model.addAttribute("documentosUnidad", documentoService.obtener_DocumentosPorUnidadYGestion(user.getUnidad().getId_unidad().intValue(), gestion));
             model.addAttribute("hojasRutas", hojaRutaService.ObtenerHojasDeRutaPorUnidadyGestion(unidad.getId_unidad().intValue(), gestion));
+            model.addAttribute("archivados", movimientoArchivados);
             model.addAttribute("opcion", "Menu_principal");
 
             return "index";

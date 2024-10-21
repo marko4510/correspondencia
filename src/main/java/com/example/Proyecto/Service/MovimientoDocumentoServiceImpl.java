@@ -55,6 +55,12 @@ public class MovimientoDocumentoServiceImpl implements MovimientoDocumentoServic
         return movimientoDocumentoDao.ListaMovimientosSolicitados(unidad_destino);
     }
 
+    @Override
+    public List<MovimientoDocumento> Lista_Archivados(Long unidad_origen, String gestion) {
+        // TODO Auto-generated method stub
+        return movimientoDocumentoDao.Lista_Archivados(unidad_origen, gestion);
+    }
+
  
     
 }

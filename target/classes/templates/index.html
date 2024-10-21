@@ -80,6 +80,16 @@
         </div>
       </div>
 
+      <div class="modal fade " id="ModalArchivados" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog " role="document" style="max-width: 80%; width: 1200px;">
+          <div class="modal-content">
+            <div id="Lista_Archivados"></div>
+
+          </div>
+        </div>
+      </div>
+
       <div class="modal fade modal-horaRuta" tabindex="-1" role="dialog" id="documentoPDF"
         aria-labelledby="myLargeModalLabel" aria-hidden="true" data-backdrop="static">
         <div class="modal-dialog modal-lg pullDown" style="max-width: 85%; width: 150%;">
@@ -165,7 +175,7 @@
         });
       }
 
-      function VerDocumentoPDF(id) {
+      function VerDocumentoHojaDeRuta(id) {
         $('#DocumentoPDF').html(
           `<!-- Modal Header -->
         <div class="modal-header">
@@ -176,6 +186,20 @@
         </div>
         <div class="modal-body">
         <embed src="/hojaRuta/verDocumento/${id}" type="application/pdf" frameborder="0" style="height: 600px; width: 100%;"></embed>
+        </div>
+        `);
+      }
+      function VerDocumentoCite(id) {
+        $('#DocumentoPDF').html(
+          `<!-- Modal Header -->
+        <div class="modal-header">
+        <h5 class="modal-title" id="myLargeModalLabel">Visualización de Documento</h5>
+        <a type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </a>
+        </div>
+        <div class="modal-body">
+        <embed src="/documento/verDocumento/${id}" type="application/pdf" frameborder="0" style="height: 600px; width: 100%;"></embed>
         </div>
         `);
       }
@@ -251,7 +275,26 @@
             $('#selectUsuarios3').prop('disabled', false);
           }
         }
+
+        function CargarArchivados() {
+
+            $.ajax({
+              type: 'POST',
+              url: "/archivados",
+              success: function (response) {
+                $("#Lista_Archivados").html(response);
+              },
+              error: function (xhr) {
+                Swal.fire(
+                  'Error',
+                  'Ocurrió un error al procesar la solicitud.',
+                  'error'
+                );
+              }
+            });
+          }
     </script>
+
 
 </body>
 </html>

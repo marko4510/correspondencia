@@ -11,5 +11,6 @@ public interface MovimientoDocumentoService {
     public List<MovimientoDocumento> obtener_Flujo_Documento(String nroRuta);
     public List<MovimientoDocumento> obtener_Flujos_Documentos(Integer nroRuta, Integer unidad_origen, String gestion);
     public List<MovimientoDocumento> ListaMovimientosSolicitados(Integer unidad_destino);
+    public List<MovimientoDocumento> Lista_Archivados(Long unidad_origen,String gestion);
 
 }

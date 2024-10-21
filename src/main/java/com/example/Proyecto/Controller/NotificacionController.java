@@ -250,4 +250,47 @@ public class NotificacionController {
         return "notificacion/Lista_Cites_Generados";
     }
     
+    @PostMapping("/archivados")
+    public String archivados(Model model, HttpServletRequest request) {
+        try {
+            Usuario user = (Usuario) request.getSession().getAttribute("usuario");
+            if (user == null) {
+                throw new IllegalStateException("Usuario no encontrado en la sesión.");
+            }
+
+            String gestion = String.valueOf(LocalDate.now().getYear());
+
+            Unidad unidad = user.getUnidad();
+            if (unidad == null) {
+                throw new IllegalStateException("Unidad no encontrada para el usuario.");
+            }
+
+            List<MovimientoDocumento> movimientoDocumentosSolicitados = movimientoDocumentoService
+                    .Lista_Archivados(unidad.getId_unidad(),gestion);
+            List<MovimientoDocumento> lmovimientoDocumentosSolicitados = movimientoDocumentoService
+                    .Lista_Archivados(unidad.getId_unidad(),gestion);
+
+            // model.addAttribute("Movimientosarchivados", movimientoDocumentosSolicitados);
+
+            String cite = "";
+            String unidadOrigenText = "";
+            for (MovimientoDocumento movimientoDocumento : lmovimientoDocumentosSolicitados) {
+                Unidad unidadOrigen = unidadService.findById(movimientoDocumento.getHojaRuta().getUnidad_registro().longValue());
+                
+                    cite = unidadOrigen.getSigla() + "-" + movimientoDocumento.getHojaRuta().getNroRuta() + "/"+ gestion;
+                    unidadOrigenText = unidadOrigen.getNombre();
+                    movimientoDocumento.setUnidadOrigenTexto(unidadOrigenText);
+                    movimientoDocumento.setCiteTexto(cite);
+            }
+
+            model.addAttribute("Movimientosarchivados", movimientoDocumentosSolicitados);
+
+
+            return "notificacion/Modal_Archivados";
+        } catch (Exception e) {
+            e.printStackTrace(); // Puedes cambiar esto por un log adecuado en producción
+            model.addAttribute("error", "Ocurrió un error al procesar la solicitud.");
+            return "error"; // O un template de error adecuado
+        }
+    }
 }
