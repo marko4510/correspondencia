@@ -177,6 +177,11 @@ public class NotificacionController {
 
     @PostMapping("/solitudes_Pendientes")
     public String solitudes_Pendientes(Model model, HttpServletRequest request) {
+        
+        if (request.getSession().getAttribute("usuario") == null) {
+            return "redirect:/";
+        }
+
         try {
             Usuario user = (Usuario) request.getSession().getAttribute("usuario");
             if (user == null) {
@@ -209,6 +214,8 @@ public class NotificacionController {
 
     @PostMapping("/formulario_Solicitud/{id_movimiento_documento}")
     public String formulario_Solicitud(Model model, @PathVariable(name = "id_movimiento_documento",required = false)Long id_movimiento_documento) {
+
+        
         MovimientoDocumento movimientoDocumento = movimientoDocumentoService.findById(id_movimiento_documento);
         model.addAttribute("md", movimientoDocumento);
         model.addAttribute("hojaRuta", movimientoDocumento.getHojaRuta());
@@ -218,7 +225,11 @@ public class NotificacionController {
     }
     
     @PostMapping("/cites_generados")
-    public String cites_generados(Model model) {
+    public String cites_generados(Model model, HttpServletRequest request) {
+
+        if (request.getSession().getAttribute("usuario") == null) {
+            return "redirect:/";
+        }
 
         model.addAttribute("TipoDocumentos", tipoDocumentoService.findAll());
         
@@ -252,8 +263,14 @@ public class NotificacionController {
     
     @PostMapping("/archivados")
     public String archivados(Model model, HttpServletRequest request) {
+
+        if (request.getSession().getAttribute("usuario") == null) {
+            return "redirect:/";
+        }
+
         try {
-            Usuario user = (Usuario) request.getSession().getAttribute("usuario");
+
+                Usuario user = (Usuario) request.getSession().getAttribute("usuario");
             if (user == null) {
                 throw new IllegalStateException("Usuario no encontrado en la sesión.");
             }
@@ -285,8 +302,8 @@ public class NotificacionController {
 
             model.addAttribute("Movimientosarchivados", movimientoDocumentosSolicitados);
 
-
             return "notificacion/Modal_Archivados";
+
         } catch (Exception e) {
             e.printStackTrace(); // Puedes cambiar esto por un log adecuado en producción
             model.addAttribute("error", "Ocurrió un error al procesar la solicitud.");

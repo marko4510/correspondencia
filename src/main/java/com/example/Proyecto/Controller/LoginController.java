@@ -138,7 +138,6 @@ public class LoginController {
 
         try {
             
-
             Usuario usuario = usuarioService.obtener_Usuario(codFuncionario, ci);
 
             if (usuario != null && !usuario.getEstado().equals("X")) {
@@ -237,6 +236,6 @@ public class LoginController {
 			session.invalidate();
 			flash.addAttribute("validado", "Se cerro sesion con exito!");
 		}
-		return "redirect:/login";
+		return "redirect:/";
     }
 }
