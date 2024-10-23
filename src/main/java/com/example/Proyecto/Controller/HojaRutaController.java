@@ -284,6 +284,7 @@ public class HojaRutaController {
             @RequestParam("observacion") String observacion,
             @RequestParam("instruccion") String instruccion,
             @RequestParam("userEmisor") Integer userEmisor,
+            @RequestParam(name = "usuario_destino",required = false)Integer usuario_destino,
             @RequestParam(value = "numeroInicial", required = false) int numeroInicial) {
         try {
             MovimientoDocumento movimientoDocumento = new MovimientoDocumento();
@@ -327,6 +328,7 @@ public class HojaRutaController {
             movimientoDocumento.setUnidadOrigen(usuario.getUnidad());
             movimientoDocumento.setUsuarioRegistro(user.getId_usuario().intValue());
             movimientoDocumento.setInstruccion(instruccion);
+            movimientoDocumento.setUsuarioDestino(usuario_destino);
             movimientoDocumento.setObservaciones(observacion);
             movimientoDocumentoService.save(movimientoDocumento);
             return ResponseEntity.ok("Registrado");
@@ -448,11 +450,11 @@ public class HojaRutaController {
       String logoUAP = logoUAPPath.toString();
 
       Path casillaMarcadaPath = Paths.get(projectPath.toString(), "src", "main", "resources", "static", "assets", "img",
-      "casilla-marcada.png");
+      "checked.png");
       String casillaMarcada = casillaMarcadaPath.toString();
 
       Path casillaSinMarcarPath = Paths.get(projectPath.toString(), "src", "main", "resources", "static", "assets", "img",
-      "casilla-sin-marcar.png");
+      "check.png");
       String casillaSinMarcar = casillaSinMarcarPath.toString();
       // System.out.println(imagen);
       Map<String, Object> parametros = new HashMap<>();
@@ -480,4 +482,6 @@ public class HojaRutaController {
       }
 
    }
+
+   
 }

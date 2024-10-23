@@ -37,12 +37,14 @@ public class EntidadExternaController {
     private EntidadExternaService entidadExternaService;
 
     @PostMapping("/entidadExternaForm")
-    public ResponseEntity<String> entidadExternaForm(@RequestParam("nom_externo") String nom_externo) {
+    public ResponseEntity<String> entidadExternaForm(@RequestParam(name = "nom_externo",required = false) String nom_externo,
+    @RequestParam(name = "cargo",required = false)String cargo) {
         if (entidadExternaService.buscarPorNombre(nom_externo) == null) {
             EntidadExterna entidadExterna = new EntidadExterna();
 
             entidadExterna.setEstado("A");
             entidadExterna.setNombre(nom_externo);
+            entidadExterna.setNom_cargo(cargo);
             entidadExternaService.save(entidadExterna);
 
             return ResponseEntity.ok("ok");

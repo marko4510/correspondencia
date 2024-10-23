@@ -29,6 +29,7 @@ public class EntidadExterna implements Serializable{
     private Long id_entidad_externa;
 
     private String nombre;
+    private String nom_cargo;
     private String estado;
 
     @JsonIgnore

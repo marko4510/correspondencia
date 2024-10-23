@@ -124,7 +124,7 @@
             <div th:class="${edit}? 'form-group col-md-6' : 'form-group col-md-4'">
                 <div class="form-group">
                     <label>Adjuntar Documento</label>
-                    <input type="file" class=" dropzone-pdf" th:if="${edit == null}" required="" id="inputFile" name="file"
+                    <input type="file" class=" dropzone-pdf" th:if="${edit == null}" id="inputFile" name="file"
                         accept="application/pdf">
                     <input type="file" class=" dropzone-pdf" th:if="${edit != null}" id="inputFile" name="file"
                         accept="application/pdf">
@@ -149,11 +149,20 @@
 
     $(document).ready(function () {
         $('#openSecondModal').on('click', function () {
+            // Mostrar el segundo modal
             $('#exampleModalCenter').modal('show');
+
             // Aumentar el z-index del segundo modal para que se superponga al primero
             $('#exampleModalCenter').css('z-index', parseInt($('#firstModal').css('z-index')) + 10);
+
             // Aumentar el z-index del backdrop del segundo modal
             $('.modal-backdrop').last().css('z-index', parseInt($('#firstModal').css('z-index')) + 5);
+
+            // Reinicializar select2 en el segundo modal
+            $('#exampleModalCenter .select2').select2({
+                dropdownParent: $('#exampleModalCenter'),  // Esto asegura que el dropdown se renderice dentro del modal
+                width: '100%'  // Asegurarse de que ocupe el ancho completo
+            });
         });
 
         //cargarEntidadExternos();

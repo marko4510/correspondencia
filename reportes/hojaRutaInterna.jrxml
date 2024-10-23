@@ -121,7 +121,7 @@ order by md.id_movimiento_documento asc]]>
 	<parameter name="casillaSinMarcar" class="java.lang.String"/>
 	<parameter name="casillaMarcada" class="java.lang.String"/>
 	<parameter name="idHojaRuta" class="java.lang.Long"/>
-	<queryString>
+	<queryString language="plsql">
 		<![CDATA[select hr.nro_ruta, EXTRACT(YEAR FROM hr.fecha_creacion) as gestion, 
 (select CONCAT(p.nombre, ' ', p.ap_materno, ' ', p.ap_materno) as nombre_persona from usuario u 
 left join persona p on p.id_persona = u.id_persona 
@@ -216,7 +216,7 @@ from hoja_ruta hr where hr.id_hoja_ruta = $P{idHojaRuta}]]>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["NO: "]]></textFieldExpression>
+				<textFieldExpression><![CDATA["N°: "]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="420" y="50" width="140" height="22" uuid="7fcf41a5-e540-4b15-8d7f-1280e0c17522"/>

@@ -66,13 +66,33 @@
         </div>
         <form th:action="@{/entidadExterna/entidadExternaForm}" id="formEntidadExterna" method="post">
           <div class="modal-body">
+
             <div class="form-group col-md-12">
-              <input type="hidden" name="id_entidad_externa" id="id_entidad_externa">
-              <input type="text" class="form-control" id="nom_externo" name="nom_externo" required>
+              <label>Seleccione Tipo de Externo</label>
+              <select class="form-control select2" style="width: 100%" name="tipo_externo" id="tipo_externo" onchange="CargarTipoExterno()" required>
+                <option value="" selected disabled>Seleccione...</option>
+                <option value="1">Persona</option>
+                <option value="2">Empresa o Entidad</option>
+              </select>
               <div class="invalid-feedback">
-                Tiene que introducir el numero de una hoja de ruta
+                Tiene que seleccionar una instrucción
               </div>
             </div>
+
+            <div class="form-group col-md-12" id="nombre_externo">
+              <input type="hidden" name="id_entidad_externa" id="id_entidad_externa">
+              <input type="text" class="form-control" id="nom_externo" name="nom_externo" placeholder="Nombre" required >
+              <div class="invalid-feedback">
+                Tiene que introducir Nombre
+              </div>
+            </div>
+            <div class="form-group col-md-12" id="cargo_externo">
+              <input type="text" class="form-control" id="cargo" name="cargo" placeholder="Cargo" required>
+              <div class="invalid-feedback">
+                Tiene que introducir Cargo
+              </div>
+            </div>
+
           </div>
           <div class="modal-footer bg-whitesmoke br">
             <button type="submit" class="btn btn-primary">GUARDAR</button>
@@ -89,7 +109,8 @@
   <script>
     $(document).ready(function () {
       cargarTabla();
-
+      $("#nombre_externo").hide();
+      $("#cargo_externo").hide();
       $('#formEntidadExterna').on('submit', function (event) {
         event.preventDefault(); // Previene el envío del formulario
 
@@ -119,6 +140,7 @@
               cargarEntidadExternos($('#nom_externo').val());
               cargarTabla();
               $('#nom_externo').val('');
+              $('#cargo').val('');
               $('#exampleModalCenter').modal('hide');
             } else if (response === "invalido") {
               Swal.fire(
@@ -223,6 +245,63 @@
     <embed src="/hojaRuta/verDocumento/${id}" type="application/pdf" frameborder="0" style="height: 600px; width: 100%;"></embed>
 </div>
 `);
+    }
+
+    function CargarTipoExterno(){
+      var tipo = $('#tipo_externo').val();
+
+      if(tipo == 1){
+        $("#nombre_externo").show();
+        $("#cargo_externo").show();
+
+        $('#nom_externo').prop('disabled', false);
+        $('#cargo').prop('disabled', false);
+      }else{
+        $("#nombre_externo").show();
+        $("#cargo_externo").hide();
+
+        $('#nom_externo').prop('disabled', false);
+        $('#cargo').prop('disabled', true);
+      }
+    }
+
+    function CargarResponsablesDeUnidad(){
+
+      var id_unidad_session = $('#id_unidad_session').val();
+      var id_unidad = $('#id_unidad_destino').val();
+      if(id_unidad_session == id_unidad){
+
+        $("#usuarios_unidad").show();
+
+        $.ajax({
+            type: 'POST',
+            url: "/cargarSelectUsuarios/" + id_unidad,  // Ruta del método del controlador en Spring Boot
+            success: function (response) {
+                
+                // Obtener el elemento <select> con id "selectUsuarios"
+                const selectUsuarios = $('#usuarios');
+                selectUsuarios.empty();  // Limpiar las opciones existentes
+
+                // Iterar sobre cada array en la respuesta
+                response.forEach(user => {
+                    // user es un array de dos elementos: [id, nombreCompleto]
+                    const option = $('<option></option>')
+                        .val(user[0])  // El valor del option es el ID del usuario
+                        .text(user[1]);  // El texto del option es el nombre completo del usuario
+
+                    // Agregar la opción al <select>
+                    selectUsuarios.append(option);
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Hubo un problema con la solicitud AJAX:', status, error);
+            }
+        });
+
+      }else{
+        $("#usuarios_unidad").hide();
+      }
+      
     }
 
   </script>
