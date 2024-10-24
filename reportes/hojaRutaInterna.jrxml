@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.21.3.final using JasperReports Library version 6.21.3-4a3078d20785ebe464f18037d738d12fc98c13cf  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="hojaRutaInterna" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1fe43170-bca1-451c-82eb-c5f88eb8cd1f">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="correspondencia"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CPONDENCIA LOCAL"/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<pen lineStyle="Solid"/>
 		<box>
@@ -60,11 +60,11 @@
 	</style>
 	<subDataset name="detallesHojaRuta" uuid="9d10b960-9909-43e5-abfd-8924c17a0772">
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="correspondencia"/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CPONDENCIA LOCAL"/>
 		<parameter name="idHojaRuta" class="java.lang.Long"/>
 		<parameter name="casillaMarcada" class="java.lang.String"/>
 		<parameter name="CasillaSinMarcar" class="java.lang.String"/>
-		<queryString language="SQL">
+		<queryString language="plsql">
 			<![CDATA[select 
 ROW_NUMBER() OVER (ORDER BY md.id_movimiento_documento) AS nro_instructivo,
 (select u.sigla from unidad u where u.id_unidad = md.id_unidad_origen) as unidad_emisora,
@@ -123,7 +123,7 @@ order by md.id_movimiento_documento asc]]>
 	<parameter name="idHojaRuta" class="java.lang.Long"/>
 	<queryString language="plsql">
 		<![CDATA[select hr.nro_ruta, EXTRACT(YEAR FROM hr.fecha_creacion) as gestion, 
-(select CONCAT(p.nombre, ' ', p.ap_materno, ' ', p.ap_materno) as nombre_persona from usuario u 
+(select CONCAT(p.nombre, ' ', p.ap_paterno, ' ', p.ap_materno) as nombre_persona from usuario u 
 left join persona p on p.id_persona = u.id_persona 
 where u.id_usuario = hr.usuario_emisor) as persona_emisora,
 (select c.nombre from cargo c 
@@ -132,7 +132,7 @@ left join usuario u on u.id_persona = p.id_persona
 where u.id_usuario = hr.usuario_emisor) as cargo, 
 (select un.sigla from unidad un
 left join usuario u on u.unidad_id = un.id_unidad 
-where u.id_usuario = hr.usuario_emisor) as unidad_emisora,
+where u.id_usuario = hr.usuario_registro) as unidad_emisora,
 TO_CHAR(hr.fecha_creacion, 'DD-MM-YY') as fecha,
 upper(hr.ref) as referencia
 from hoja_ruta hr where hr.id_hoja_ruta = $P{idHojaRuta}]]>
@@ -275,7 +275,7 @@ from hoja_ruta hr where hr.id_hoja_ruta = $P{idHojaRuta}]]>
 				<textFieldExpression><![CDATA[$F{referencia}]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement x="0" y="188" width="570" height="252" uuid="c46118e6-bf83-4efa-8f46-076936b55aae">
+				<reportElement x="0" y="188" width="570" height="235" uuid="c46118e6-bf83-4efa-8f46-076936b55aae">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 1_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 1_CH"/>
@@ -296,10 +296,10 @@ from hoja_ruta hr where hr.id_hoja_ruta = $P{idHojaRuta}]]>
 					</datasetRun>
 					<jr:column width="570" uuid="919c371b-5f42-4db8-9160-94fe38095f70">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
-						<jr:detailCell style="Table 1_TD" height="251">
+						<jr:detailCell style="Table 1_TD" height="235">
 							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<textField>
-								<reportElement x="1" y="60" width="179" height="30" uuid="2e55c997-44d2-4a7a-b66e-b9a223233cfd"/>
+								<reportElement x="0" y="50" width="180" height="20" uuid="2e55c997-44d2-4a7a-b66e-b9a223233cfd"/>
 								<box>
 									<pen lineWidth="1.0"/>
 									<topPen lineWidth="0.0"/>
@@ -311,7 +311,7 @@ from hoja_ruta hr where hr.id_hoja_ruta = $P{idHojaRuta}]]>
 								<textFieldExpression><![CDATA[$F{unidad_emisora}]]></textFieldExpression>
 							</textField>
 							<staticText>
-								<reportElement x="1" y="20" width="179" height="30" uuid="9c3f30f8-389b-4215-9d5e-914c0eddc52b"/>
+								<reportElement x="0" y="20" width="180" height="20" uuid="9c3f30f8-389b-4215-9d5e-914c0eddc52b"/>
 								<box>
 									<pen lineWidth="1.0"/>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -319,22 +319,26 @@ from hoja_ruta hr where hr.id_hoja_ruta = $P{idHojaRuta}]]>
 									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 									<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font isBold="true"/>
+								</textElement>
 								<text><![CDATA[UNIDAD EMISORA]]></text>
 							</staticText>
 							<staticText>
-								<reportElement x="180" y="20" width="200" height="30" uuid="44d00204-6269-42ca-ab7e-fdf024379326"/>
+								<reportElement x="180" y="20" width="200" height="20" uuid="44d00204-6269-42ca-ab7e-fdf024379326"/>
 								<box>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 									<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font isBold="true"/>
+								</textElement>
 								<text><![CDATA[UNIDAD RECEPTORA]]></text>
 							</staticText>
 							<staticText>
-								<reportElement x="380" y="20" width="190" height="30" uuid="2c42cc93-ee77-483a-9a22-b77b6b374f6f"/>
+								<reportElement x="380" y="20" width="190" height="20" uuid="2c42cc93-ee77-483a-9a22-b77b6b374f6f"/>
 								<box>
 									<pen lineWidth="1.0"/>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -342,21 +346,24 @@ from hoja_ruta hr where hr.id_hoja_ruta = $P{idHojaRuta}]]>
 									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 									<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font isBold="true"/>
+								</textElement>
 								<text><![CDATA[FECHA]]></text>
 							</staticText>
 							<textField>
-								<reportElement x="180" y="60" width="200" height="30" uuid="b06214bb-d096-4455-8b83-43fe435316d3"/>
+								<reportElement x="180" y="50" width="200" height="20" uuid="b06214bb-d096-4455-8b83-43fe435316d3"/>
 								<box>
 									<leftPen lineWidth="1.0"/>
 									<bottomPen lineWidth="1.0"/>
 									<rightPen lineWidth="1.0"/>
 								</box>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{unidad_receptora}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{unidad_receptora} == null ? $F{unidad_emisora} : $F{unidad_receptora}
+]]></textFieldExpression>
 							</textField>
 							<staticText>
-								<reportElement x="1" y="50" width="179" height="10" uuid="dfb1452e-a9a1-4695-890d-d74e0bc66756"/>
+								<reportElement x="0" y="40" width="180" height="10" uuid="dfb1452e-a9a1-4695-890d-d74e0bc66756"/>
 								<box leftPadding="1" rightPadding="1">
 									<pen lineWidth="1.0" lineStyle="Solid"/>
 									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -370,7 +377,7 @@ from hoja_ruta hr where hr.id_hoja_ruta = $P{idHojaRuta}]]>
 								<text><![CDATA[ De:]]></text>
 							</staticText>
 							<staticText>
-								<reportElement x="180" y="50" width="200" height="10" uuid="3ce47d4d-3324-4350-a94d-cc2801d49e20"/>
+								<reportElement x="180" y="40" width="200" height="10" uuid="3ce47d4d-3324-4350-a94d-cc2801d49e20"/>
 								<box leftPadding="1" rightPadding="1">
 									<pen lineWidth="1.0" lineStyle="Solid"/>
 									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -384,7 +391,7 @@ from hoja_ruta hr where hr.id_hoja_ruta = $P{idHojaRuta}]]>
 								<text><![CDATA[ A:]]></text>
 							</staticText>
 							<textField>
-								<reportElement x="380" y="50" width="190" height="40" uuid="0230fd31-9322-48d7-8113-4745870635a8"/>
+								<reportElement x="380" y="40" width="190" height="30" uuid="0230fd31-9322-48d7-8113-4745870635a8"/>
 								<box>
 									<pen lineWidth="1.0"/>
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -396,7 +403,7 @@ from hoja_ruta hr where hr.id_hoja_ruta = $P{idHojaRuta}]]>
 								<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
 							</textField>
 							<staticText>
-								<reportElement x="30" y="100" width="60" height="15" uuid="6c8efc4f-1c0d-4615-a964-4c117a9e7553">
+								<reportElement x="30" y="85" width="60" height="15" uuid="6c8efc4f-1c0d-4615-a964-4c117a9e7553">
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
 								</reportElement>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -405,7 +412,7 @@ from hoja_ruta hr where hr.id_hoja_ruta = $P{idHojaRuta}]]>
 								<text><![CDATA[Informar:]]></text>
 							</staticText>
 							<staticText>
-								<reportElement x="30" y="115" width="60" height="15" uuid="383dd3e3-0b49-408d-a4cc-eee1e0354ba3">
+								<reportElement x="30" y="100" width="60" height="15" uuid="383dd3e3-0b49-408d-a4cc-eee1e0354ba3">
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
 								</reportElement>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -414,7 +421,7 @@ from hoja_ruta hr where hr.id_hoja_ruta = $P{idHojaRuta}]]>
 								<text><![CDATA[Contestar:]]></text>
 							</staticText>
 							<staticText>
-								<reportElement x="30" y="130" width="60" height="15" uuid="e3857736-2019-4225-8554-af59d39005ba">
+								<reportElement x="30" y="115" width="60" height="15" uuid="e3857736-2019-4225-8554-af59d39005ba">
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
 								</reportElement>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -423,7 +430,7 @@ from hoja_ruta hr where hr.id_hoja_ruta = $P{idHojaRuta}]]>
 								<text><![CDATA[Tomar nota:]]></text>
 							</staticText>
 							<staticText>
-								<reportElement x="30" y="145" width="60" height="15" uuid="6b2a1387-67af-4c06-b8aa-b32cd852eb14">
+								<reportElement x="30" y="130" width="60" height="15" uuid="6b2a1387-67af-4c06-b8aa-b32cd852eb14">
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
 								</reportElement>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -432,7 +439,7 @@ from hoja_ruta hr where hr.id_hoja_ruta = $P{idHojaRuta}]]>
 								<text><![CDATA[Dar Curso:]]></text>
 							</staticText>
 							<staticText>
-								<reportElement x="30" y="160" width="60" height="15" uuid="2fc1f339-3bb0-4a5b-a0b2-e992494932bd">
+								<reportElement x="30" y="145" width="60" height="15" uuid="2fc1f339-3bb0-4a5b-a0b2-e992494932bd">
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
 								</reportElement>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -441,7 +448,7 @@ from hoja_ruta hr where hr.id_hoja_ruta = $P{idHojaRuta}]]>
 								<text><![CDATA[Coordinar:]]></text>
 							</staticText>
 							<staticText>
-								<reportElement x="30" y="175" width="60" height="15" uuid="ef12f6ee-29d8-4dd3-b02f-61cfffbdc065">
+								<reportElement x="30" y="160" width="60" height="15" uuid="ef12f6ee-29d8-4dd3-b02f-61cfffbdc065">
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
 								</reportElement>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -450,7 +457,7 @@ from hoja_ruta hr where hr.id_hoja_ruta = $P{idHojaRuta}]]>
 								<text><![CDATA[Archivar:]]></text>
 							</staticText>
 							<staticText>
-								<reportElement x="30" y="190" width="60" height="15" uuid="0be25739-253f-47ee-8ac1-9896b6372377">
+								<reportElement x="30" y="175" width="60" height="15" uuid="0be25739-253f-47ee-8ac1-9896b6372377">
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
 								</reportElement>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -459,47 +466,50 @@ from hoja_ruta hr where hr.id_hoja_ruta = $P{idHojaRuta}]]>
 								<text><![CDATA[Otro:]]></text>
 							</staticText>
 							<textField>
-								<reportElement x="210" y="100" width="350" height="105" uuid="1d402997-a5b5-4b17-a422-571b070afd97"/>
+								<reportElement x="170" y="85" width="370" height="105" uuid="1d402997-a5b5-4b17-a422-571b070afd97"/>
+								<textElement>
+									<font size="8"/>
+								</textElement>
 								<textFieldExpression><![CDATA[$F{observaciones}]]></textFieldExpression>
 							</textField>
 							<image>
-								<reportElement x="100" y="100" width="20" height="15" uuid="a309f832-44aa-47eb-90e0-e1b83c4973da">
+								<reportElement x="100" y="85" width="20" height="15" uuid="a309f832-44aa-47eb-90e0-e1b83c4973da">
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
 								</reportElement>
 								<imageExpression><![CDATA[$F{instruccion}.equals("Informar") ? $P{casillaMarcada} : $P{CasillaSinMarcar}]]></imageExpression>
 							</image>
 							<image>
-								<reportElement x="100" y="115" width="20" height="15" uuid="62e102fe-00de-41af-8721-4678c9448872">
+								<reportElement x="100" y="100" width="20" height="15" uuid="62e102fe-00de-41af-8721-4678c9448872">
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
 								</reportElement>
 								<imageExpression><![CDATA[$F{instruccion}.equals("Contestar") ? $P{casillaMarcada} : $P{CasillaSinMarcar}]]></imageExpression>
 							</image>
 							<image>
-								<reportElement x="100" y="130" width="20" height="15" uuid="ac6f780a-4c13-43fa-93de-b41c8575e828">
+								<reportElement x="100" y="115" width="20" height="15" uuid="ac6f780a-4c13-43fa-93de-b41c8575e828">
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
 								</reportElement>
 								<imageExpression><![CDATA[$F{instruccion}.equals("Tomar nota") ? $P{casillaMarcada} : $P{CasillaSinMarcar}]]></imageExpression>
 							</image>
 							<image>
-								<reportElement x="100" y="145" width="20" height="15" uuid="50e63135-59fc-4afb-b2b3-1d96aca86678">
+								<reportElement x="100" y="130" width="20" height="15" uuid="50e63135-59fc-4afb-b2b3-1d96aca86678">
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
 								</reportElement>
 								<imageExpression><![CDATA[$F{instruccion}.equals("Dar curso") ? $P{casillaMarcada} : $P{CasillaSinMarcar}]]></imageExpression>
 							</image>
 							<image>
-								<reportElement x="100" y="160" width="20" height="15" uuid="0c708d59-cc79-4301-aec5-8d88518cc071">
+								<reportElement x="100" y="145" width="20" height="15" uuid="0c708d59-cc79-4301-aec5-8d88518cc071">
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
 								</reportElement>
 								<imageExpression><![CDATA[$F{instruccion}.equals("Coordinar") ? $P{casillaMarcada} : $P{CasillaSinMarcar}]]></imageExpression>
 							</image>
 							<image>
-								<reportElement x="100" y="175" width="20" height="15" uuid="6ea01b87-866b-4dd8-8a6d-92e94b33bf3c">
+								<reportElement x="100" y="160" width="20" height="15" uuid="6ea01b87-866b-4dd8-8a6d-92e94b33bf3c">
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
 								</reportElement>
 								<imageExpression><![CDATA[$F{instruccion}.equals("Archivar") ? $P{casillaMarcada} : $P{CasillaSinMarcar}]]></imageExpression>
 							</image>
 							<image>
-								<reportElement x="100" y="190" width="20" height="15" uuid="4c8f5380-a25f-453c-92d7-9b0436b5a243">
+								<reportElement x="100" y="175" width="20" height="15" uuid="4c8f5380-a25f-453c-92d7-9b0436b5a243">
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
 								</reportElement>
 								<imageExpression><![CDATA[$F{instruccion}.equals("Otro") ? $P{casillaMarcada} : $P{CasillaSinMarcar}]]></imageExpression>
@@ -507,12 +517,12 @@ from hoja_ruta hr where hr.id_hoja_ruta = $P{idHojaRuta}]]>
 							<textField>
 								<reportElement x="180" y="0" width="200" height="20" uuid="b7ca9534-3943-472a-be1a-4bc99316cdce"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="DejaVu Serif"/>
+									<font fontName="DejaVu Serif" isBold="true"/>
 								</textElement>
 								<textFieldExpression><![CDATA["INSTRUCTIVO "+$F{nro_instructivo}]]></textFieldExpression>
 							</textField>
 							<staticText>
-								<reportElement x="280" y="210" width="200" height="30" uuid="4c397366-89a3-4bfb-a8ef-9c07e7752ee4"/>
+								<reportElement x="280" y="214" width="200" height="15" uuid="4c397366-89a3-4bfb-a8ef-9c07e7752ee4"/>
 								<box>
 									<pen lineWidth="1.0"/>
 									<topPen lineWidth="1.0" lineStyle="Dotted"/>
@@ -522,6 +532,10 @@ from hoja_ruta hr where hr.id_hoja_ruta = $P{idHojaRuta}]]>
 								</box>
 								<textElement textAlignment="Center"/>
 								<text><![CDATA[Firma]]></text>
+							</staticText>
+							<staticText>
+								<reportElement x="170" y="85" width="370" height="105" uuid="fee1fcd8-0c7e-4aa2-9a6b-64ad027e4330"/>
+								<text><![CDATA[........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................]]></text>
 							</staticText>
 						</jr:detailCell>
 					</jr:column>

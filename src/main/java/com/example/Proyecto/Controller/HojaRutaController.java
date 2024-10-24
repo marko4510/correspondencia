@@ -117,7 +117,7 @@ public class HojaRutaController {
         for (HojaRuta hojaRuta : hojasRutasInterno) {
             Usuario userEmi = usuarioService.findById(hojaRuta.getUsuario_emisor().longValue());
             hojaRuta.setHojaRutaTexto(usuario.getUnidad().getSigla() + "-" + hojaRuta.getNroRuta() + "/");
-            hojaRuta.setNombreEmisorText(userEmi.getPersona().getNombre() + " " + userEmi.getPersona().getAp_materno()
+            hojaRuta.setNombreEmisorText(userEmi.getPersona().getNombre() + " " + userEmi.getPersona().getAp_paterno()
                     + " " + userEmi.getPersona().getAp_materno());
         }
         model.addAttribute("hojasRutasInterno", hojasRutasInterno);
