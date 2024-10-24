@@ -31,27 +31,37 @@ public class UtilidadServiceImpl implements UtilidadService {
     @Override
     public ByteArrayOutputStream compilarAndExportarReporte(String nombreArchivo, Map<String, Object> params)
             throws IOException, JRException, SQLException {
-        Connection con = null;
-
-        // return stream;
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-
+        Connection con = null;  // Inicializamos la conexión como null
         Path rootPath = Paths.get("").toAbsolutePath();
         Path directorio = Paths.get(rootPath.toString(), "reportes", nombreArchivo);
         String ruta = directorio.toString();
 
         try (InputStream reportStream = new FileInputStream(ruta)) {
+            // Obtener la conexión de la base de datos
             con = dataSource.getConnection();
 
+            // Compilar y llenar el reporte
             JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
-
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, con);
+
+            // Exportar el reporte a PDF
             JasperExportManager.exportReportToPdfStream(jasperPrint, stream);
         } catch (IOException | JRException | SQLException e) {
+            // Manejar las excepciones adecuadamente
             System.out.println("ERROR: " + e.getMessage());
             e.printStackTrace();
+        } finally {
+            // Cerrar la conexión si no es nula
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    System.out.println("Error cerrando la conexión: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
         }
-        con.close();
         return stream;
     }
 

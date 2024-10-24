@@ -439,10 +439,31 @@ public class HojaRutaController {
          @PathVariable("idHojaRuta") Long idHojaRuta, @PathVariable("tipo") String tipo) throws SQLException {
       // byte[] bytes = generarPdf(id_formularioTransferencia);
       HojaRuta hojaRuta = hojaRutaService.findById(idHojaRuta);
-      String nombreArchivo = "hojaRutaInterna.jrxml";
-      if (tipo.equals("Externo")) {
-        nombreArchivo = "hojaRutaExterna.jrxml";
+      String nombreArchivo = "";
+      int numeroMovimientos = hojaRuta.getMovimientos().size();
+
+      switch (tipo) {
+          case "Externo":
+              if (numeroMovimientos > 1) {
+                  nombreArchivo = "hojaRutaExterna.jrxml";
+              }else if (numeroMovimientos == 1) {
+                nombreArchivo = "hojaRutaExternaM.jrxml";
+            }
+              break;
+          case "Interno":
+              if (numeroMovimientos > 1) {
+                  nombreArchivo = "hojaRutaInterna.jrxml";
+              } else if (numeroMovimientos == 1) {
+                  nombreArchivo = "hojaRutaInternaM.jrxml";
+              }
+              break;
+          default:
+              System.out.println("Tipo desconocido: " + tipo);
+              break;
       }
+
+      System.out.println("Número de movimientos: " + numeroMovimientos);
+
       Path projectPath = Paths.get("").toAbsolutePath();
 
       Path logoUAPPath = Paths.get(projectPath.toString(), "src", "main", "resources", "static", "assets", "img",
