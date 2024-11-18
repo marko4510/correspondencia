@@ -7,19 +7,20 @@
 </div>
 
 <!-- Formulario -->
-<form th:action="${edit}? @{/hojaRuta/modificar}: @{/hojaRuta/registrar}" id="formularioModalhojaRuta"
+<form th:action="@{${edit != null} ? '/hojaRuta/modificar' : '/hojaRuta/registrar'}" id="formularioModalhojaRuta"
     enctype="multipart/form-data" method="POST" novalidate>
     <div class="modal-body">
-        <th:block th:if="${edit != null}">
-            <input type="hidden" th:field="${hojaRuta.id_hoja_ruta}">
-        </th:block>
+    
+        <input type="hidden" th:field="${hojaRuta.id_hoja_ruta}">
+     
         <input type="hidden" name="numeroInicial" th:value="${hojaRutasUnidad.size}" th:if="${hojaRutasUnidad.size > 0}"
             readonly>
         <div class="row" th:if="${hojaRutasUnidad.size > 0}">
             <div class="form-group col-md-6">
                 <label>Nro. Hoja de Ruta</label>
                 <input type="number" class="form-control" id="nroHojaRuta"
-                    th:value="${edit}? ${hojaRuta.nroRuta} : ${nroHojaRutaSiguiente}" readonly>
+                    th:value="${edit != null ? hojaRuta.nroRuta : nroHojaRutaSiguiente}" readonly>
+
                 <div class="invalid-feedback">
                     Tiene que introducir el numero de una hoja de ruta
                 </div>
@@ -62,8 +63,9 @@
                                 <label>Responsable</label>
                                 <select class="form-control select2" style="width: 100%;" name="userEmisor"
                                     id="selectUsuarios" required="">
-                                    <option th:value="${edit}? ${idResponsable}: ''"
-                                        th:text="${edit}? ${nombreResponsable}:'Seleccione una Persona...'" selected>
+                                    <option th:value="${edit != null ? idResponsable : ''}"
+                                        th:text="${edit != null ? nombreResponsable : 'Seleccione una Persona...'}"
+                                        selected>
                                     </option>
                                 </select>
                                 <div class="invalid-feedback">
@@ -83,8 +85,8 @@
                         <div class="form-group col-md-12">
                             <label>Unidad Destino</label>
                             <input type="hidden" id="id_unidad_session" th:value="${session.usuario.unidad.id_unidad}">
-                            <select class="form-control select2" style="width: 100%" name="id_unidad_destino" id="id_unidad_destino"
-                                onchange="CargarResponsablesDeUnidad()" required="">
+                            <select class="form-control select2" style="width: 100%" name="id_unidad_destino"
+                                id="id_unidad_destino" onchange="CargarResponsablesDeUnidad()" required>
                                 <option value="">Seleccionar una Unidad Destino...</option>
                                 <option th:each="uni : ${unidades}" th:value="${uni.id_unidad}"
                                     th:if="${uni.estado != 'X'}" th:text="${uni.nombre}">
@@ -96,9 +98,9 @@
                         </div>
                         <div class="form-group col-md-12" id="usuarios_unidad">
                             <label>Responsable</label>
-                            
+
                             <select class="form-control select2" style="width: 100%" name="usuario_destino"
-                               id="usuarios" required="">
+                                id="usuarios">
                                 <option value="">Seleccionar una Unidad Destino...</option>
                                 <option th:each="uni : ${unidades}" th:value="${uni.id_unidad}"
                                     th:if="${uni.estado != 'X'}" th:text="${uni.nombre}">
@@ -114,30 +116,30 @@
             <div th:class="${edit}? 'form-group col-md-6' : 'form-group col-md-4'">
                 <div class="form-group col-md-12">
                     <label>Adjuntar Documento</label>
-                    <input type="file" class=" dropzone-pdf" th:if="${edit == null}" id="inputFile" name="file"
-                        accept="application/pdf">
-                    <input type="file" class=" dropzone-pdf" th:if="${edit != null}" id="inputFile" name="file"
-                        accept="application/pdf">
-                    <div id="alertaInputFile"></div>
+                    <input type="file" class=" dropzone-pdf" id="inputFile" name="file" accept="application/pdf">
+                    <!-- <input type="file" class=" dropzone-pdf" th:if="${edit != null}" id="inputFile" name="file"
+                        accept="application/pdf"> -->
+
                     <div class="invalid-feedback">
                         Debe adjuntar el documento escaneado en PDF
                     </div>
+                    <div id="alertaInputFile"></div>
                     <div id="previsualizacionDoc"></div>
                 </div>
             </div>
             <div class="col-md-12">
                 <div class="card-body">
                     <div class="row">
-            
+
                         <div class="col-md-12">
-            
+
                             <label>Referencia</label>
                             <textarea class="form-control" required="" th:field="${hojaRuta.ref}"></textarea>
                             <div class="invalid-feedback">
                                 Introduzca el referencia del documento
                             </div>
                         </div>
-            
+
                         <div class="form-group col-md-6">
                             <label>Instrucción</label>
                             <select class="form-control select2" style="width: 100%" name="instruccion" required>
@@ -164,7 +166,7 @@
                     </div>
                 </div>
             </div>
-            
+
         </div>
     </div>
     <div class="modal-footer">
@@ -244,8 +246,6 @@
                                             );
                                             console.error('Error:', error);
                                         });
-
-
                                 }
                             });
                         }

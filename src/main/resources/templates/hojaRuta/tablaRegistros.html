@@ -7,23 +7,25 @@
                     <div class="d-flex justify-content-end">
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".modal-horaRuta"
                             onclick="cargarFormulari()">Registrar Hoja de Ruta Interna</button>
-                        <button type="button" class="btn btn-warning" data-toggle="modal" data-target=".modal-horaRutaExterno"
-                            onclick="cargarFormulariExterno()">Registrar Hoja de Ruta Externa</button>
+                        <button type="button" class="btn btn-warning" data-toggle="modal"
+                            data-target=".modal-horaRutaExterno" onclick="cargarFormulariExterno()">Registrar Hoja de
+                            Ruta Externa</button>
                     </div>
                 </div>
                 <div class="card-body">
                     <ul class="nav nav-tabs" id="myTab2" role="tablist">
                         <li class="nav-item">
-                          <a class="nav-link active" id="home-tab2" data-toggle="tab" href="#tabInterno" role="tab"
-                            aria-controls="home" aria-selected="true">Interno</a>
+                            <a class="nav-link active" id="home-tab2" data-toggle="tab" href="#tabInterno" role="tab"
+                                aria-controls="home" aria-selected="true">Interno</a>
                         </li>
                         <li class="nav-item">
-                          <a class="nav-link" id="profile-tab2" data-toggle="tab" href="#tabExterno" role="tab"
-                            aria-controls="profile" aria-selected="false">Externo</a>
+                            <a class="nav-link" id="profile-tab2" data-toggle="tab" href="#tabExterno" role="tab"
+                                aria-controls="profile" aria-selected="false">Externo</a>
                         </li>
-                      </ul>
-                      <div class="tab-content tab-bordered" id="myTab3Content">
-                        <div class="tab-pane fade show active" id="tabInterno" role="tabpanel" aria-labelledby="home-tab2">
+                    </ul>
+                    <div class="tab-content tab-bordered" id="myTab3Content">
+                        <div class="tab-pane fade show active" id="tabInterno" role="tabpanel"
+                            aria-labelledby="home-tab2">
                             <div class="table-responsive">
                                 <table class="table table-hover" id="table-1">
                                     <thead>
@@ -39,23 +41,27 @@
                                     <tbody>
                                         <tr th:each="hojaRuta, rowStat: ${hojasRutasInterno}">
                                             <td th:text="${rowStat.count}"></td>
-                                            <td th:text="${hojaRuta.hojaRutaTexto}+${#dates.format(hojaRuta.fechaCreacion, 'yyyy')}"></td>
+                                            <td
+                                                th:text="${hojaRuta.hojaRutaTexto}+${#dates.format(hojaRuta.fechaCreacion, 'yyyy')}">
+                                            </td>
                                             <td th:text="${hojaRuta.nombreEmisorText}"></td>
                                             <td th:text="${hojaRuta.ref}"></td>
-                                            <td th:text="${#dates.format(hojaRuta.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
+                                            <td
+                                                th:text="${#dates.format(hojaRuta.fechaCreacion, 'dd/MM/yyyy hh:mm a')}">
+                                            </td>
                                             <td>
-                                                <a href="#" class="btn btn-icon icon-left btn-primary" 
-                                                th:attr="onclick='cargarFormulario(\'' + ${hojaRuta.id_hoja_ruta} + '\', \'' + ${hojaRuta.tipo_derivacion} + '\')'"
-                                                data-toggle="modal" data-target=".modal-horaRutaEdit">
+                                                <a href="#" class="btn btn-icon icon-left btn-primary"
+                                                    th:attr="onclick='cargarFormulario(\'' + ${hojaRuta.id_hoja_ruta} + '\', \'' + ${hojaRuta.tipo_derivacion} + '\')'"
+                                                    data-toggle="modal" data-target=".modal-horaRutaEdit">
                                                     <i class="far fa-edit"></i>Editar</a>
                                                 <a href="#" class="btn btn-icon icon-left btn-success"
-                                                th:attr="onclick='verDocumento(\'' + ${hojaRuta.id_hoja_ruta} + '\')'"
-                                                data-toggle="modal" data-target=".modal-horaRuta">
-                                                <i class="far fa-file-archive"></i>Ver</a>
+                                                    th:attr="onclick='verDocumento(\'' + ${hojaRuta.id_hoja_ruta} + '\')'"
+                                                    data-toggle="modal" data-target=".modal-horaRuta">
+                                                    <i class="far fa-file-archive"></i>Ver</a>
                                                 <a class="btn btn-icon icon-left btn-success" style="color:white;"
-                                                data-toggle="modal" data-target=".modal-horaRuta"
-                                                th:attr="onclick='generarHojaRuta(\'' + ${hojaRuta.id_hoja_ruta} + '\', \'' + ${hojaRuta.tipo_derivacion} + '\')'">
-                                                <i class="fa fa-print"></i>Imprimir</a>
+                                                    data-toggle="modal" data-target=".modal-horaRuta"
+                                                    th:attr="onclick='generarHojaRuta(\'' + ${hojaRuta.id_hoja_ruta} + '\', \'' + ${hojaRuta.tipo_derivacion} + '\')'">
+                                                    <i class="fa fa-print"></i>Imprimir</a>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -78,34 +84,37 @@
                                     <tbody>
                                         <tr th:each="hojaRuta, rowStat: ${hojasRutasExterno}">
                                             <td th:text="${rowStat.count}"></td>
-                                            <td th:text="${hojaRuta.hojaRutaTexto}+${#dates.format(hojaRuta.fechaCreacion, 'yyyy')}"></td>
+                                            <td
+                                                th:text="${hojaRuta.hojaRutaTexto}+${#dates.format(hojaRuta.fechaCreacion, 'yyyy')}">
+                                            </td>
                                             <td th:text="${hojaRuta.nombreEmisorText}"></td>
                                             <td th:text="${hojaRuta.ref}"></td>
-                                            <td th:text="${#dates.format(hojaRuta.fechaCreacion, 'dd/MM/yyyy hh:mm a')}"></td>
+                                            <td
+                                                th:text="${#dates.format(hojaRuta.fechaCreacion, 'dd/MM/yyyy hh:mm a')}">
+                                            </td>
                                             <td>
-                                                <a href="#" class="btn btn-icon icon-left btn-primary" 
-                                                th:attr="onclick='cargarFormulario(\'' + ${hojaRuta.id_hoja_ruta} + '\', \'' + ${hojaRuta.tipo_derivacion} + '\')'"
-                                                data-toggle="modal" data-target=".modal-horaRutaEdit">
+                                                <a href="#" class="btn btn-icon icon-left btn-primary"
+                                                    th:attr="onclick='cargarFormulario(\'' + ${hojaRuta.id_hoja_ruta} + '\', \'' + ${hojaRuta.tipo_derivacion} + '\')'"
+                                                    data-toggle="modal" data-target=".modal-horaRutaEdit">
                                                     <i class="far fa-edit"></i>Editar</a>
                                                 <a href="#" class="btn btn-icon icon-left btn-success"
-                                                th:attr="onclick='verDocumento(\'' + ${hojaRuta.id_hoja_ruta} + '\')'"
-                                                data-toggle="modal" data-target=".modal-horaRuta">
-                                                <i class="far fa-file-archive"></i>Ver</a>
+                                                    th:attr="onclick='verDocumento(\'' + ${hojaRuta.id_hoja_ruta} + '\')'"
+                                                    data-toggle="modal" data-target=".modal-horaRuta">
+                                                    <i class="far fa-file-archive"></i>Ver</a>
                                                 <!-- <a class="btn btn-icon icon-left btn-success" style="color:white;"
                                                 th:attr="onclick='generarHojaRuta(\'' + ${hojaRuta.id_hoja_ruta} + '\')'">
                                                 <i class="fa fa-print"></i>Imprimir</a> -->
                                                 <a class="btn btn-icon icon-left btn-success" style="color:white;"
-                                                data-toggle="modal" data-target=".modal-horaRuta"
-                                                th:attr="onclick='generarHojaRuta(\'' + ${hojaRuta.id_hoja_ruta} + '\', \'' + ${hojaRuta.tipo_derivacion} + '\')'">
-                                                <i class="fa fa-print"></i>Imprimir</a>
+                                                    data-toggle="modal" data-target=".modal-horaRuta"
+                                                    th:attr="onclick='generarHojaRuta(\'' + ${hojaRuta.id_hoja_ruta} + '\', \'' + ${hojaRuta.tipo_derivacion} + '\')'">
+                                                    <i class="fa fa-print"></i>Imprimir</a>
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                      </div>
-                    
+                    </div>
                 </div>
             </div>
         </div>
@@ -170,8 +179,8 @@
     });
 
     function generarHojaRuta(id_documento, tipo_derivacion) {
-      $('#contenidoFormularioModal').html(
-        `<!-- Modal Header -->
+        $('#contenidoFormularioModal').html(
+            `<!-- Modal Header -->
 <div class="modal-header">
     <h5 class="modal-title" id="myLargeModalLabel">Visualización de la hoja de ruta</h5>
     <a type="button" class="close" data-dismiss="modal" aria-label="Close">
