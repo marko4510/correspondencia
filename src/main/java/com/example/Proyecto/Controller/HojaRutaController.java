@@ -2,6 +2,7 @@ package com.example.Proyecto.Controller;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -252,23 +253,34 @@ public class HojaRutaController {
     // }
 
     @GetMapping("/verDocumento/{id_hojaRuta}")
-    public ResponseEntity<Resource> verDocumento(@PathVariable("id_hojaRuta") Long id) throws IOException {
+    public ResponseEntity<?> verDocumento(@PathVariable("id_hojaRuta") Long id) throws IOException {
         HojaRuta hojaRuta = hojaRutaService.findById(id);
+
+        // Validar que el archivo tenga la extensión ".pdf"
+        if (!hojaRuta.getRuta().toLowerCase().endsWith(".pdf")) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("El archivo no Existe!!");
+        }
 
         // Obtener la ruta completa del archivo
         Path projectPath = Paths.get("").toAbsolutePath();
         String ruta = projectPath + "/uploads/" + hojaRuta.getRuta();
         System.out.println(ruta);
+
+        File archivo = new File(ruta);
+        if (!archivo.exists() || !archivo.isFile()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("El archivo no existe en el servidor.");
+        }
+
         // Cargar el archivo PDF como recurso
         Resource resource = new InputStreamResource(new FileInputStream(ruta));
 
         // Configurar las cabeceras de la respuesta
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=" + hojaRuta.getNroRuta()); // "inline"
-                                                                                                   // para
-                                                                                                   // visualizar
-                                                                                                   // en el
-                                                                                                   // navegador
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=" + hojaRuta.getNroRuta()); 
         headers.setContentType(MediaType.APPLICATION_PDF);
 
         // Devolver la respuesta con el archivo PDF

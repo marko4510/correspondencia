@@ -25,8 +25,8 @@
   <div th:replace="layout/script :: script">
   </div>
   <!-- Modal Formulario -->
-  <div class="modal fade modal-horaRuta" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-    aria-hidden="true" data-backdrop="static">
+  <div class="modal fade modal-horaRuta" id="documendoModal" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-lg pullDown" style="max-width: 85%; width: 150%;">
       <div class="modal-content" id="contenidoFormularioModal">
 
@@ -69,7 +69,8 @@
 
             <div class="form-group col-md-12">
               <label>Seleccione Tipo de Externo</label>
-              <select class="form-control select2" style="width: 100%" name="tipo_externo" id="tipo_externo" onchange="CargarTipoExterno()" required>
+              <select class="form-control select2" style="width: 100%" name="tipo_externo" id="tipo_externo"
+                onchange="CargarTipoExterno()" required>
                 <option value="" selected disabled>Seleccione...</option>
                 <option value="1">Persona</option>
                 <option value="2">Empresa o Entidad</option>
@@ -81,7 +82,7 @@
 
             <div class="form-group col-md-12" id="nombre_externo">
               <input type="hidden" name="id_entidad_externa" id="id_entidad_externa">
-              <input type="text" class="form-control" id="nom_externo" name="nom_externo" placeholder="Nombre" required >
+              <input type="text" class="form-control" id="nom_externo" name="nom_externo" placeholder="Nombre" required>
               <div class="invalid-feedback">
                 Tiene que introducir Nombre
               </div>
@@ -102,9 +103,9 @@
       </div>
     </div>
   </div>
- 
 
-</div>
+
+  </div>
 
   <script>
     $(document).ready(function () {
@@ -233,30 +234,78 @@
     }
 
     function verDocumento(id) {
-      $('#contenidoFormularioModal').html(
-        `<!-- Modal Header -->
-<div class="modal-header">
-    <h5 class="modal-title" id="myLargeModalLabel">Visualización de Documento</h5>
-    <a type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </a>
-</div>
-<div class="modal-body">
-    <embed src="/hojaRuta/verDocumento/${id}" type="application/pdf" frameborder="0" style="height: 600px; width: 100%;"></embed>
-</div>
-`);
+      // Mostrar SweetAlert de carga
+      Swal.fire({
+        title: 'Cargando documento...',
+        text: 'Por favor, espere un momento',
+        icon: 'info',
+        showConfirmButton: false,
+        allowOutsideClick: false
+      });
+
+      // Hacer una solicitud AJAX para obtener el PDF
+      $.ajax({
+        url: `/hojaRuta/verDocumento/${id}`,
+        type: 'GET',
+        success: function (response, status, xhr) {
+          // Solo si la respuesta es PDF, mostrarla en el modal
+          if (xhr.getResponseHeader('Content-Type') === 'application/pdf') {
+            $('#contenidoFormularioModal').html(
+              `<!-- Modal Header -->
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="myLargeModalLabel">Visualización de Documento</h5>
+                        <a type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </a>
+                    </div>
+                    <div class="modal-body">
+                        <embed src="/hojaRuta/verDocumento/${id}" type="application/pdf" frameborder="0" style="height: 600px; width: 100%;"></embed>
+                    </div>`
+            );
+            Swal.close(); // Cerrar el SweetAlert de carga
+          } else {
+            // Si no es un PDF, mostrar error
+            Swal.fire({
+              title: 'Error',
+              text: 'El archivo no es un documento PDF válido.',
+              icon: 'error',
+              confirmButtonText: 'Aceptar'
+            });
+          }
+        },
+        error: function (xhr) {
+          // Mostrar error si el archivo no es un PDF o ocurrió otro error
+          if (xhr.status === 400) {
+            Swal.fire({
+              title: 'Error',
+              text: xhr.responseText, // Mensaje de error devuelto por el servidor
+              icon: 'error',
+              confirmButtonText: 'Aceptar'
+            }).then(() => {
+              $('#documendoModal').modal('hide');
+            });
+          } else {
+            Swal.fire({
+              title: 'Error inesperado',
+              text: 'No se pudo cargar el documento.',
+              icon: 'error',
+              confirmButtonText: 'Aceptar'
+            });
+          }
+        }
+      });
     }
 
-    function CargarTipoExterno(){
+    function CargarTipoExterno() {
       var tipo = $('#tipo_externo').val();
 
-      if(tipo == 1){
+      if (tipo == 1) {
         $("#nombre_externo").show();
         $("#cargo_externo").show();
 
         $('#nom_externo').prop('disabled', false);
         $('#cargo').prop('disabled', false);
-      }else{
+      } else {
         $("#nombre_externo").show();
         $("#cargo_externo").hide();
 
@@ -265,43 +314,43 @@
       }
     }
 
-    function CargarResponsablesDeUnidad(){
+    function CargarResponsablesDeUnidad() {
 
       var id_unidad_session = $('#id_unidad_session').val();
       var id_unidad = $('#id_unidad_destino').val();
-      if(id_unidad_session == id_unidad){
+      if (id_unidad_session == id_unidad) {
 
         $("#usuarios_unidad").show();
 
         $.ajax({
-            type: 'POST',
-            url: "/cargarSelectUsuarios/" + id_unidad,  // Ruta del método del controlador en Spring Boot
-            success: function (response) {
-                
-                // Obtener el elemento <select> con id "selectUsuarios"
-                const selectUsuarios = $('#usuarios');
-                selectUsuarios.empty();  // Limpiar las opciones existentes
+          type: 'POST',
+          url: "/cargarSelectUsuarios/" + id_unidad,  // Ruta del método del controlador en Spring Boot
+          success: function (response) {
 
-                // Iterar sobre cada array en la respuesta
-                response.forEach(user => {
-                    // user es un array de dos elementos: [id, nombreCompleto]
-                    const option = $('<option></option>')
-                        .val(user[0])  // El valor del option es el ID del usuario
-                        .text(user[1]);  // El texto del option es el nombre completo del usuario
+            // Obtener el elemento <select> con id "selectUsuarios"
+            const selectUsuarios = $('#usuarios');
+            selectUsuarios.empty();  // Limpiar las opciones existentes
 
-                    // Agregar la opción al <select>
-                    selectUsuarios.append(option);
-                });
-            },
-            error: function (xhr, status, error) {
-                console.error('Hubo un problema con la solicitud AJAX:', status, error);
-            }
+            // Iterar sobre cada array en la respuesta
+            response.forEach(user => {
+              // user es un array de dos elementos: [id, nombreCompleto]
+              const option = $('<option></option>')
+                .val(user[0])  // El valor del option es el ID del usuario
+                .text(user[1]);  // El texto del option es el nombre completo del usuario
+
+              // Agregar la opción al <select>
+              selectUsuarios.append(option);
+            });
+          },
+          error: function (xhr, status, error) {
+            console.error('Hubo un problema con la solicitud AJAX:', status, error);
+          }
         });
 
-      }else{
+      } else {
         $("#usuarios_unidad").hide();
       }
-      
+
     }
 
   </script>
