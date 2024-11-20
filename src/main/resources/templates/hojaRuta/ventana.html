@@ -25,7 +25,7 @@
   <div th:replace="layout/script :: script">
   </div>
   <!-- Modal Formulario -->
-  <div class="modal fade modal-horaRuta" id="documendoModal" tabindex="-1" role="dialog"
+  <div class="modal fade modal-horaRuta"  tabindex="-1" role="dialog"
     aria-labelledby="myLargeModalLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-lg pullDown" style="max-width: 85%; width: 150%;">
       <div class="modal-content" id="contenidoFormularioModal">
@@ -51,8 +51,6 @@
       </div>
     </div>
   </div>
-
-
 
   <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true">
@@ -104,6 +102,14 @@
     </div>
   </div>
 
+  <div class="modal fade modal-documentoPDF" id="documendoModalPDF" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg pullDown" style="max-width: 85%; width: 150%;">
+      <div class="modal-content" id="contenidoDocumentoModal">
+
+      </div>
+    </div>
+  </div>
 
   </div>
 
@@ -173,8 +179,8 @@
         type: 'GET',
         url: "/hojaRuta/formulario",  // Ruta del metodo del controlador en Spring Boot
         success: function (response) {
-          $("#contenidoFormularioModalEdit").html("");
-          $("#contenidoFormularioExternoModal").html("");
+          // $("#contenidoFormularioModalEdit").html("");
+          // $("#contenidoFormularioExternoModal").html("");
           $("#contenidoFormularioModal").html(response);
           // Inicializar Select2 en el modal
           $('.select2').select2({
@@ -188,8 +194,8 @@
         type: 'GET',
         url: "/hojaRuta/formulario_externo",  // Ruta del metodo del controlador en Spring Boot
         success: function (response) {
-          $("#contenidoFormularioModal").html("");
-          $("#contenidoFormularioModalEdit").html("");
+          // $("#contenidoFormularioModal").html("");
+          // $("#contenidoFormularioModalEdit").html("");
           $("#contenidoFormularioExternoModal").html(response);
           // Inicializar Select2 en el modal
           $('.select2').select2({
@@ -198,8 +204,6 @@
         }
       });
     }
-
-
     function cargarFormulario(id, tipoDerivacion) {
       $.ajax({
         type: 'POST',
@@ -221,8 +225,6 @@
         }
       });
     }
-
-
     function cargarTabla() {
       $.ajax({
         type: 'POST',
@@ -250,7 +252,8 @@
         success: function (response, status, xhr) {
           // Solo si la respuesta es PDF, mostrarla en el modal
           if (xhr.getResponseHeader('Content-Type') === 'application/pdf') {
-            $('#contenidoFormularioModal').html(
+            console.log(status);
+              $('#contenidoDocumentoModal').html(
               `<!-- Modal Header -->
                     <div class="modal-header">
                         <h5 class="modal-title" id="myLargeModalLabel">Visualización de Documento</h5>
@@ -263,8 +266,10 @@
                     </div>`
             );
             Swal.close(); // Cerrar el SweetAlert de carga
+            
+            
           } else {
-            // Si no es un PDF, mostrar error
+          
             Swal.fire({
               title: 'Error',
               text: 'El archivo no es un documento PDF válido.',
@@ -276,15 +281,19 @@
         error: function (xhr) {
           // Mostrar error si el archivo no es un PDF o ocurrió otro error
           if (xhr.status === 400) {
+            console.log(xhr.status + "AAA");
+            $('#documendoModalPDF').modal('hide');
+
             Swal.fire({
               title: 'Error',
               text: xhr.responseText, // Mensaje de error devuelto por el servidor
               icon: 'error',
               confirmButtonText: 'Aceptar'
             }).then(() => {
-              $('#documendoModal').modal('hide');
+              $('#documendoModalPDF').modal('hide');
             });
           } else {
+            console.log(xhr.status + " DDD");
             Swal.fire({
               title: 'Error inesperado',
               text: 'No se pudo cargar el documento.',

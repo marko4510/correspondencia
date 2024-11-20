@@ -5,6 +5,8 @@
                 <div class="card-header d-flex justify-content-between">
                     <h4 class="d-flex justify-content-start">Lista de registros de hojas de ruta</h4>
                     <div class="d-flex justify-content-end">
+                        <!-- <button type="button" class="btn btn-info" data-toggle="modal" data-target=".modal-horaRuta"
+                            onclick="cargarFormulari()">Recepcionar Documento</button> -->
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".modal-horaRuta"
                             onclick="cargarFormulari()">Registrar Hoja de Ruta Interna</button>
                         <button type="button" class="btn btn-warning" data-toggle="modal"
@@ -56,7 +58,7 @@
                                                     <i class="far fa-edit"></i>Editar</a>
                                                 <a href="#" class="btn btn-icon icon-left btn-success"
                                                     th:attr="onclick='verDocumento(\'' + ${hojaRuta.id_hoja_ruta} + '\')'"
-                                                    data-toggle="modal" data-target=".modal-horaRuta">
+                                                    data-toggle="modal" data-target=".modal-documentoPDF">
                                                     <i class="far fa-file-archive"></i>Ver</a>
                                                 <a class="btn btn-icon icon-left btn-success" style="color:white;"
                                                     data-toggle="modal" data-target=".modal-horaRuta"
@@ -99,7 +101,7 @@
                                                     <i class="far fa-edit"></i>Editar</a>
                                                 <a href="#" class="btn btn-icon icon-left btn-success"
                                                     th:attr="onclick='verDocumento(\'' + ${hojaRuta.id_hoja_ruta} + '\')'"
-                                                    data-toggle="modal" data-target=".modal-horaRuta">
+                                                    data-toggle="modal" data-target=".modal-documentoPDF">
                                                     <i class="far fa-file-archive"></i>Ver</a>
                                                 <!-- <a class="btn btn-icon icon-left btn-success" style="color:white;"
                                                 th:attr="onclick='generarHojaRuta(\'' + ${hojaRuta.id_hoja_ruta} + '\')'">
